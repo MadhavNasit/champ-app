@@ -22,7 +22,7 @@ export const presets = {
    */
   stretch: {
     ...BASE,
-    resizeMode: "stretch",
+    resizeMode: "cover",
     width: null, // Have to set these to null because android ¯\_(ツ)_/¯
     height: null,
   } as ImageStyle,

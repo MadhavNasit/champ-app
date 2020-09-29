@@ -37,4 +37,7 @@ export interface TextFieldProps extends TextInputProps {
   preset?: "default"
 
   forwardedRef?: any
+
+  errorType?: "string" | "array"
+  errorList?: any
 }

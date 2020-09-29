@@ -20,6 +20,17 @@
     "androidReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running, run adb reverse tcp:9090 tcp:9090 from your terminal, and reload the app.",
     "iosReactotronHint": "If this doesn't work, ensure the Reactotron desktop app is running and reload app."
   },
+  "signinScreen": {
+    "Welcome": "Welcome Back,",
+    "SignInToContinue": "Sign in to continue",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter Email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter Password",
+    "signinButton": "SIGN IN",
+    "facebookSignIn": "Login with Facebook",
+    "gmailSignIn": "Login with gmail"
+  },
   "storybook": {
     "placeholder": "Placeholder",
     "field": "Field"
