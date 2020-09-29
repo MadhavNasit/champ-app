@@ -17,6 +17,7 @@ import {
 import { LoginManager } from "react-native-fbsdk";
 import { types } from "mobx-state-tree"
 import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { useStores } from "../../models"
 
 const FULL: ViewStyle = {
   flex: 1,
@@ -146,6 +147,7 @@ export const SigninScreen = observer(function SigninScreen() {
   const [accessToken, setAccessToken] = useState('');
 
   const passwordRef = useRef(null);
+  const { userAuth } = useStores();
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -161,6 +163,7 @@ export const SigninScreen = observer(function SigninScreen() {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
+      userAuth.setTokenAvaible();
       console.log(userInfo);
       console.tron.log(userInfo);
     } catch (error) {
@@ -188,6 +191,7 @@ export const SigninScreen = observer(function SigninScreen() {
             "Login success with permissions: " +
             result.grantedPermissions.toString()
           );
+          userAuth.setTokenAvaible();
           AccessToken.getCurrentAccessToken().then(
             (data) => {
               setAccessToken(data.accessToken.toString())
