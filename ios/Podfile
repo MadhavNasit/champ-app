@@ -11,7 +11,7 @@ target 'CHAMP' do
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
   pod 'RNGoogleSignin', :path => '../node_modules/@react-native-community/google-signin'
-
+  pod 'Firebase/Analytics'
   target 'CHAMPTests' do
     inherit! :complete
     # Pods for testing

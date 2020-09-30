@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "268623996927",
+    "firebase_url": "https://champ-1601360740208.firebaseio.com",
+    "project_id": "champ-1601360740208",
+    "storage_bucket": "champ-1601360740208.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268623996927:android:c4ff48d137caab5f0b29ca",
+        "android_client_info": {
+          "package_name": "com.champ"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "268623996927-58msmim502qhmj4cp3hbmu1cb3jbuvlo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyFvuwntSuahcsWEdeYPS7cLOYKhvl3r0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "268623996927-58msmim502qhmj4cp3hbmu1cb3jbuvlo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "268623996927-vde5bou0hjaln3qbo2m120753lko9ui3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.CHAMP"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

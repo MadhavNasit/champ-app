@@ -18,6 +18,7 @@
 		2FB7460679CCC5CDC6E5D100 /* libPods-CHAMP-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A302E5E3246D48DC8E806ED /* libPods-CHAMP-tvOSTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		89B5F3E17AEC4125DC9E5844 /* libPods-CHAMP-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2742833F24A7BDFF8C04BC /* libPods-CHAMP-tvOS.a */; };
+		9A6B34B82524431D00B25698 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9A6B34B72524431D00B25698 /* GoogleService-Info.plist */; };
 		BB004A3A204CF00EFE83B840 /* libPods-CHAMP-CHAMPTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC4AB4052D7A81736D7E6BBC /* libPods-CHAMP-CHAMPTests.a */; };
 		FA25475E507962D4B0E6BB4A /* libPods-CHAMP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5BC95B91DC92F22DAB42CE1 /* libPods-CHAMP.a */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,7 @@
 		7A233A77FE0F5EFFC87FEFD3 /* Pods-CHAMP-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHAMP-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CHAMP-tvOS/Pods-CHAMP-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CHAMP/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		85F2D717006BB4F8CB9999F0 /* Pods-CHAMP-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHAMP-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-CHAMP-tvOSTests/Pods-CHAMP-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9A6B34B72524431D00B25698 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A4C58FC7DCE49B119C967E95 /* Pods-CHAMP-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHAMP-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CHAMP-tvOSTests/Pods-CHAMP-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		A5BC95B91DC92F22DAB42CE1 /* libPods-CHAMP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CHAMP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD2742833F24A7BDFF8C04BC /* libPods-CHAMP-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CHAMP-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 		13B07FAE1A68108700A75B9A /* CHAMP */ = {
 			isa = PBXGroup;
 			children = (
+				9A6B34B72524431D00B25698 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -301,7 +304,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1160;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -349,6 +352,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				9A6B34B82524431D00B25698 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -681,6 +685,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CHAMP;
+				SWIFT_OBJC_BRIDGING_HEADER = "CHAMP-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -703,6 +708,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = CHAMP;
+				SWIFT_OBJC_BRIDGING_HEADER = "CHAMP-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

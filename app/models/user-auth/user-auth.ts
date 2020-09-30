@@ -6,7 +6,8 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree"
 export const UserAuthModel = types
   .model("UserAuth")
   .props({
-    isTokenAvaible: types.optional(types.boolean, false)
+    isTokenAvaible: types.optional(types.boolean, false),
+    userObj: types.optional(types.frozen(), [])
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({

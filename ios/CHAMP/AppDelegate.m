@@ -5,6 +5,7 @@
 #import <React/RCTRootView.h>
 #import "RNSplashScreen.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+@import Firebase;
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -52,6 +53,7 @@ static void InitializeFlipper(UIApplication *application) {
   [RNSplashScreen show];
   [[FBSDKApplicationDelegate sharedInstance] application:application
   didFinishLaunchingWithOptions:launchOptions];
+  [FIRApp configure];
   return YES;
 }
 

@@ -152,10 +152,9 @@ export const SigninScreen = observer(function SigninScreen() {
   useEffect(() => {
     GoogleSignin.configure({
 
-      webClientId: '268623996927-4u3sbg3r489fsjun36o1nep09d60late.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+      webClientId: '268623996927-58msmim502qhmj4cp3hbmu1cb3jbuvlo.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
       offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
       forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-      iosClientId: '268623996927-vde5bou0hjaln3qbo2m120753lko9ui3.apps.googleusercontent.com', // [iOS] optional, if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
     });
   }, [])
 
@@ -168,13 +167,13 @@ export const SigninScreen = observer(function SigninScreen() {
       console.tron.log(userInfo);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
+        Alert.alert("user cancelled the login flow");
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (e.g. sign in) is in progress already
+        Alert.alert("operation (e.g. sign in) is in progress already");
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
+        Alert.alert("play services not available or outdated");
       } else {
-        // some other error happened
+        console.log(error);
       }
     }
   };
