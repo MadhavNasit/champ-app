@@ -239,6 +239,7 @@ export const SigninScreen = observer(function SigninScreen() {
 
     if (emailValidated && passwordValidated) {
       console.tron.log('Sucess');
+      userAuth.setTokenAvaible();
     }
     else {
       setAftersubmitErrorCheck(true);

@@ -7,7 +7,8 @@ export const UserAuthModel = types
   .model("UserAuth")
   .props({
     isTokenAvaible: types.optional(types.boolean, false),
-    userObj: types.optional(types.frozen(), [])
+    userObj: types.optional(types.frozen(), []),
+    loginType: types.optional(types.string, '')
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
