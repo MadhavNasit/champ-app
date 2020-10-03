@@ -75,7 +75,7 @@ export function TabBar({ state, descriptors, navigation }) {
               : route.name;
 
         const isFocused = state.index === index;
-        const icon = route.name == 'dashboard' ? 'dashboard' : 'profile';
+        const icon = route.name == 'Dashboard' ? 'dashboard' : 'profile';
 
         const onPress = () => {
           const event = navigation.emit({

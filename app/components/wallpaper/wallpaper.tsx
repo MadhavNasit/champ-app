@@ -1,9 +1,10 @@
 import React from "react"
 import { Dimensions, Image, ImageStyle } from "react-native"
+import { icons } from "../icon/icons"
 import { presets } from "./wallpaper.presets"
 import { WallpaperProps } from "./wallpaper.props"
 
-const defaultImage = require("./bg.png")
+const defaultImage = icons.background;
 
 
 

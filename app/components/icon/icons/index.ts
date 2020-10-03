@@ -1,5 +1,5 @@
 export const icons = {
-  back: require("./arrow-left.png"),
+  back: require("./back.png"),
   bullet: require("./bullet.png"),
   background: require("./background.png"),
   logo: require("./logo.png"),
@@ -7,6 +7,7 @@ export const icons = {
   profile: require("./profile.png"),
   tab_active: require("./tab_active.png"),
   tab_inactive: require("./tab_inactive.png"),
+  hamburger: require("./hamburger.png"),
 }
 
 export type IconTypes = keyof typeof icons

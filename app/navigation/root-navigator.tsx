@@ -8,10 +8,12 @@ import React from "react"
 import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-import { PrimaryNavigator } from "./primary-navigator"
+// import { PrimaryNavigator } from "./primary-navigator"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../models"
 import { AuthNavigator } from "./auth-navigator"
+import { DashBoardNavigator } from "./dashboard-navigator"
+import { TabNavigator } from "./primary-navigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -45,7 +47,7 @@ const RootStack = observer(() => {
         (
           <Stack.Screen
             name="primaryStack"
-            component={PrimaryNavigator}
+            component={DashBoardNavigator}
             options={{
               headerShown: false,
             }}

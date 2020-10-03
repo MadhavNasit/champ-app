@@ -1,14 +1,12 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
-import { BulletItem, Button, Header, Screen, Text } from "../../components"
+import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { Header, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "../../models"
-import { icons } from "../../components/icon/icons"
-import { FlatList } from "react-native-gesture-handler"
-import { useNavigation } from "@react-navigation/native"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -20,45 +18,57 @@ const CONTAINER: ViewStyle = {
 const FlatListview: ViewStyle = {
   flexGrow: 1,
   justifyContent: 'center',
-  width: '100%',
 }
 const CategoryButton: ViewStyle = {
-  borderColor: color.palette.white,
-  borderWidth: 1,
-  alignItems: 'center',
+  // borderColor: color.palette.white,
+  // borderWidth: 1,
+  // alignItems: 'center',
   marginVertical: spacing[2],
   paddingVertical: spacing[4]
 }
+const SubCategoryButton: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center'
+}
+const IconStyle: ImageStyle = {
+  height: 60,
+  width: 60,
+  borderColor: color.palette.golden,
+  borderWidth: 2,
+  borderRadius: 60
+}
 const CategoryText: TextStyle = {
   color: color.palette.white,
-  letterSpacing: spacing[1]
+  fontSize: 18,
+  letterSpacing: 1,
+  textTransform: 'capitalize',
+  paddingLeft: spacing[3]
 }
 
-export const DashboardScreen = observer(function DashboardScreen() {
+export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }) {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
   // OR
   // const rootStore = useStores()
 
   // Pull in navigation via hook
-  const navigation = useNavigation()
-  const { userAuth, apiData } = useStores();
+  // const navigation = useNavigation()
+  const { apiData } = useStores();
 
   useEffect(() => {
-    apiData.getCategoryData();
-    apiData.getCategories();
+    apiData.getSubCategories(route.params.parentId);
   }, []);
 
   return (
     <Screen style={ROOT} preset="fixed">
       <Header
-        headerText='Dashboard'
+        headerText={route.params.categoryName}
         rightIcon='hamburger'
+        leftIcon='back'
       />
       <View style={CONTAINER}>
-        <Button onPress={() => userAuth.removeTokenAvaible()} text='Logout' />
         <FlatList
-          data={apiData.mainCategory}
+          data={apiData.subCategory}
           contentContainerStyle={FlatListview}
           renderItem={({ item, index }: any) => {
             return (
@@ -69,7 +79,10 @@ export const DashboardScreen = observer(function DashboardScreen() {
                   parentId: item.id,
                   categoryName: item.name
                 })}>
-                <Text style={CategoryText} text={item.name} />
+                <View style={SubCategoryButton}>
+                  <Image source={{ uri: item.icon }} style={IconStyle} />
+                  <Text style={CategoryText} text={item.name} />
+                </View>
               </TouchableOpacity>
             )
           }}

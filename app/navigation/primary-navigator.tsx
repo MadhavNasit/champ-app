@@ -2,26 +2,34 @@
  * This is primary Tab navigator which contain Dashboard and Profile Screens.
  */
 import React from "react"
+import { createNativeStackNavigator } from "react-native-screens/native-stack"
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DashboardScreen, ProfileScreen } from "../screens"
-import { TabBar } from "../components/tab-bar/tab-bar";
+import { DashboardScreen } from "../screens"
+import { SubCategoryScreen } from "../screens/sub-category-screen/sub-category-screen";
+import { ImageDetailScreen } from "../screens/image-detail-screen/image-detail-screen";
+import { VideoDetailScreen } from "../screens/video-detail-screen/video-detail-screen";
 
 export type PrimaryParamList = {
   dashboard: undefined,
-  profile: undefined
+  subcategory: undefined,
+  imagescreen: undefined,
+  videodetail: undefined
 }
 
-const Tab = createBottomTabNavigator<PrimaryParamList>()
-
+const Stack = createNativeStackNavigator<PrimaryParamList>()
 export function PrimaryNavigator() {
   return (
-    <Tab.Navigator tabBar={props => <TabBar {...props} />}>
-      <Tab.Screen name="dashboard" component={DashboardScreen} />
-      <Tab.Screen name="profile" component={ProfileScreen} />
-    </Tab.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }} >
+      <Stack.Screen name="dashboard" component={DashboardScreen} />
+      <Stack.Screen name="subcategory" component={SubCategoryScreen} />
+      <Stack.Screen name="imagescreen" component={ImageDetailScreen} />
+      <Stack.Screen name="videodetail" component={VideoDetailScreen} />
+    </Stack.Navigator>
   )
 }
+
+
+
 
 const exitRoutes = ["dashboard"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)
