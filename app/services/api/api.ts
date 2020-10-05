@@ -51,8 +51,6 @@ export class Api {
   async getCategories(): Promise<Types.GetCategories> {
     const response: ApiResponse<any> = await this.apisauce.get(`/category/0`)
 
-    console.tron.log(response);
-
     // the typical ways to die when calling an api
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)

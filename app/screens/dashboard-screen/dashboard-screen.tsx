@@ -1,14 +1,14 @@
 import React, { useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
+import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle } from "react-native"
 import { BulletItem, Button, Header, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
 import { icons } from "../../components/icon/icons"
-import { FlatList } from "react-native-gesture-handler"
-import { useNavigation } from "@react-navigation/native"
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
+import { async } from "validate.js"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -37,17 +37,26 @@ const CategoryText: TextStyle = {
 export const DashboardScreen = observer(function DashboardScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
-  // OR
+  // OR.
   // const rootStore = useStores()
 
   // Pull in navigation via hook
+
   const navigation = useNavigation()
-  const { userAuth, apiData } = useStores();
+  const { apiData } = useStores();
 
   useEffect(() => {
-    apiData.getCategoryData();
-    apiData.getCategories();
+    apiData.setSubCategoryIndex(0);
+  });
+  useEffect(() => {
+    LoadDataFromApi();
+    console.tron.log('In useeffect')
   }, []);
+
+  const LoadDataFromApi = async () => {
+    await apiData.getCategoryData();
+    await apiData.getCategories();
+  }
 
   return (
     <Screen style={ROOT} preset="fixed">
@@ -56,7 +65,6 @@ export const DashboardScreen = observer(function DashboardScreen() {
         rightIcon='hamburger'
       />
       <View style={CONTAINER}>
-        <Button onPress={() => userAuth.removeTokenAvaible()} text='Logout' />
         <FlatList
           data={apiData.mainCategory}
           contentContainerStyle={FlatListview}

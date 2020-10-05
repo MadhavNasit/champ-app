@@ -1,12 +1,14 @@
-import React, { useEffect } from "react"
+import React, { useCallback, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { Header, Screen, Text } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation, useIsFocused } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "../../models"
+import { is } from "ramda"
+import { async } from "validate.js"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -45,19 +47,29 @@ const CategoryText: TextStyle = {
   paddingLeft: spacing[3]
 }
 
-export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }) {
+export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
   // OR
   // const rootStore = useStores()
 
   // Pull in navigation via hook
-  // const navigation = useNavigation()
+  const navigation = useNavigation()
+  console.tron.log(navigation);
+  const isFocused = useIsFocused()
   const { apiData } = useStores();
 
   useEffect(() => {
-    apiData.getSubCategories(route.params.parentId);
+    LoadStoreData();
   }, []);
+  useEffect(() => {
+    LoadStoreData();
+  }, [isFocused, route.params.parentId]);
+  const LoadStoreData = async () => {
+    await apiData.getSubCategories(route.params.parentId);
+    await apiData.setSubCategoryIndex(route.params.parentId);
+    console.tron.log('Screen', route.params.parentId)
+  }
 
   return (
     <Screen style={ROOT} preset="fixed">
@@ -87,6 +99,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route, na
             )
           }}
           keyExtractor={(item, index) => index.toString()}
+          extraData={apiData.subCategory}
         />
       </View>
     </Screen>

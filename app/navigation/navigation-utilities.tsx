@@ -6,8 +6,8 @@ export const RootNavigation = {
   navigate(name: string) {
     name // eslint-disable-line no-unused-expressions
   },
-  goBack() {}, // eslint-disable-line @typescript-eslint/no-empty-function
-  resetRoot(state?: PartialState<NavigationState> | NavigationState) {}, // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  goBack() { }, // eslint-disable-line @typescript-eslint/no-empty-function
+  resetRoot(state?: PartialState<NavigationState> | NavigationState) { }, // eslint-disable-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   getRootState(): NavigationState {
     return {} as any
   },
@@ -100,7 +100,7 @@ export function useNavigationPersistence(storage: any, persistenceKey: string) {
 
     if (previousRouteName !== currentRouteName) {
       // track screens.
-      __DEV__ && console.tron.log(currentRouteName)
+      __DEV__ && console.tron.log('Nav Utiities', currentRouteName)
     }
 
     // Save the current route name for later comparision

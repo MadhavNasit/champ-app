@@ -1,5 +1,7 @@
 import { database } from "firebase";
 import { flow, Instance, SnapshotOut, types } from "mobx-state-tree"
+import { type } from "ramda";
+import { async } from "validate.js";
 import { Api } from "../../services/api";
 
 const api = new Api();
@@ -13,6 +15,7 @@ export const ApiDataModel = types
     categoryData: types.optional(types.frozen(), []),
     mainCategory: types.optional(types.frozen(), []),
     subCategory: types.optional(types.frozen(), []),
+    subCategoriesIndex: types.optional(types.number, 0)
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
@@ -20,11 +23,9 @@ export const ApiDataModel = types
     getCategoryData: flow(function* getCategoryData() {
       try {
         const res = yield api.getCategories();
-        console.tron.log('data', res.data.data.data)
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
             self.categoryData = res.data.data.data;
-            console.log(self.categoryData);
           }
         }
         else {
@@ -65,16 +66,16 @@ export const ApiDataModel = types
       }
       try {
         let index = self.categoryData.findIndex(x => x.id == parentId);
-        console.tron.log('index', index);
         const rawData = self.categoryData[index].children;
-        console.tron.log('raw', rawData);
         const subCategories = rawData.map(SubCategories)
-        console.tron.log('asd', subCategories);
         self.subCategory = subCategories;
       }
       catch {
         console.log('Error');
       }
+    },
+    setSubCategoryIndex(index: number) {
+      self.subCategoriesIndex = index;
     }
   }))
 
