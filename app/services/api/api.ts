@@ -64,4 +64,21 @@ export class Api {
       return { kind: "bad-data" }
     }
   }
+
+  async getSubCategories(parentId: number): Promise<Types.GetSubCategories> {
+    const response: ApiResponse<any> = await this.apisauce.get(`/category/${parentId}`)
+
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    // transform the data into the format we are expecting
+    try {
+      return { kind: "ok", data: response }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
 }

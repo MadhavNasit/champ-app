@@ -12,7 +12,7 @@ import { VideoDetailScreen } from "../screens/video-detail-screen/video-detail-s
 export type PrimaryParamList = {
   dashboard: undefined,
   subcategory: undefined,
-  imagescreen: undefined,
+  imagedetail: undefined,
   videodetail: undefined
 }
 
@@ -22,7 +22,7 @@ export function PrimaryNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }} >
       <Stack.Screen name="dashboard" component={DashboardScreen} />
       <Stack.Screen name="subcategory" component={SubCategoryScreen} />
-      <Stack.Screen name="imagescreen" component={ImageDetailScreen} />
+      <Stack.Screen name="imagedetail" component={ImageDetailScreen} />
       <Stack.Screen name="videodetail" component={VideoDetailScreen} />
     </Stack.Navigator>
   )

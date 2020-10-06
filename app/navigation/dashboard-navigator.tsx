@@ -1,7 +1,7 @@
 /**
  * This is primary Tab navigator which contain Dashboard and Profile Screens.
  */
-import React from "react"
+import React, { useEffect } from "react"
 
 import { createDrawerNavigator, DrawerItem } from '@react-navigation/drawer';
 import { ColorPropType, ImageStyle, SafeAreaView, TextStyle, View, ViewStyle } from "react-native";
@@ -84,7 +84,7 @@ const CustomDrawerContent = observer(() => {
               focused={apiData.subCategoriesIndex == 0 ? true : false}
               activeBackgroundColor={color.transparent}
             />
-            {apiData.mainCategory.map((item, key) => (
+            {apiData.categoryData.map((item, key) => (
               <DrawerItem
                 key={key}
                 label={item.name}

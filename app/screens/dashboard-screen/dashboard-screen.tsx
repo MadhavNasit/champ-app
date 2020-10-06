@@ -66,7 +66,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
       />
       <View style={CONTAINER}>
         <FlatList
-          data={apiData.mainCategory}
+          data={apiData.categoryData}
           contentContainerStyle={FlatListview}
           renderItem={({ item, index }: any) => {
             return (

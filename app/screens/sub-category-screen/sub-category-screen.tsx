@@ -9,6 +9,7 @@ import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "../../models"
 import { is } from "ramda"
 import { async } from "validate.js"
+import Swiper from 'react-native-swiper'
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -55,20 +56,19 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
 
   // Pull in navigation via hook
   const navigation = useNavigation()
-  console.tron.log(navigation);
+
   const isFocused = useIsFocused()
-  const { apiData } = useStores();
+  const { apiData, subCategories } = useStores();
 
   useEffect(() => {
-    LoadStoreData();
+    LoadStoreData(route.params.parentId);
   }, []);
   useEffect(() => {
-    LoadStoreData();
+    LoadStoreData(route.params.parentId);
   }, [isFocused, route.params.parentId]);
-  const LoadStoreData = async () => {
-    await apiData.getSubCategories(route.params.parentId);
-    await apiData.setSubCategoryIndex(route.params.parentId);
-    console.tron.log('Screen', route.params.parentId)
+  const LoadStoreData = async (parentId: number) => {
+    await subCategories.getSubCategoryData(parentId);
+    await apiData.setSubCategoryIndex(parentId);
   }
 
   return (
@@ -80,16 +80,17 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
       />
       <View style={CONTAINER}>
         <FlatList
-          data={apiData.subCategory}
+          data={subCategories.subCategory}
           contentContainerStyle={FlatListview}
           renderItem={({ item, index }: any) => {
             return (
               <TouchableOpacity
                 style={CategoryButton}
                 key={index}
-                onPress={() => navigation.navigate('subcategory', {
-                  parentId: item.id,
-                  categoryName: item.name
+                onPress={() => navigation.navigate(item.type == 'Image' ? 'imagedetail' : 'videodetail', {
+                  parentId: item.parent_id,
+                  subCategoryId: item.id,
+                  subCategoryName: item.name
                 })}>
                 <View style={SubCategoryButton}>
                   <Image source={{ uri: item.icon }} style={IconStyle} />
@@ -99,7 +100,6 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
             )
           }}
           keyExtractor={(item, index) => index.toString()}
-          extraData={apiData.subCategory}
         />
       </View>
     </Screen>
