@@ -1,22 +1,25 @@
-import React, { useEffect } from "react"
-import { observer } from "mobx-react-lite"
-import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle } from "react-native"
-import { BulletItem, Button, Header, Screen, Text } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
-import { color, spacing } from "../../theme"
-import { useStores } from "../../models"
-import { icons } from "../../components/icon/icons"
-import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native"
-import { async } from "validate.js"
+import React, { useEffect } from "react";
+import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle } from "react-native";
+import { observer } from "mobx-react-lite";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
+// Components and Screen imports
+import { Header, Screen, Text } from "../../components";
+import { color, spacing } from "../../theme";
+import { useStores } from "../../models";
+
+// Screen Styles
 const ROOT: ViewStyle = {
   flex: 1,
 }
+
+//Content View Styles
 const CONTAINER: ViewStyle = {
   flex: 1,
   paddingHorizontal: spacing[6]
 }
+
+// Category data render Styles
 const FlatListview: ViewStyle = {
   flexGrow: 1,
   justifyContent: 'center',
@@ -35,52 +38,55 @@ const CategoryText: TextStyle = {
 }
 
 export const DashboardScreen = observer(function DashboardScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-  // OR.
-  // const rootStore = useStores()
-
-  // Pull in navigation via hook
-
-  const navigation = useNavigation()
+  // contains navigation props and method
+  const navigation = useNavigation();
+  // Category data mobx store
   const { apiData } = useStores();
+  // return true if screen is focused
+  const isFocused = useIsFocused()
 
+  // Call api function if screen is focused
   useEffect(() => {
-    apiData.setSubCategoryIndex(0);
-  });
-  useEffect(() => {
-    LoadDataFromApi();
-    console.tron.log('In useeffect')
-  }, []);
+    if (isFocused) {
+      apiData.setSubCategoryIndex(0);
+      LoadDataFromApi();
+    }
+  }, [isFocused]);
 
+  // Call APi and store in model
   const LoadDataFromApi = async () => {
     await apiData.getCategoryData();
     await apiData.getCategories();
   }
 
+  // Render function for Categories
+  const RenderCategories = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={CategoryButton}
+        key={index}
+        onPress={() => navigation.navigate('subcategory', {
+          parentId: item.id,
+          categoryName: item.name
+        })}>
+        <Text style={CategoryText} text={item.name} />
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <Screen style={ROOT} preset="fixed">
+      {/* Header Component */}
       <Header
         headerText='Dashboard'
         rightIcon='hamburger'
       />
+      {/* Return Categories View */}
       <View style={CONTAINER}>
         <FlatList
           data={apiData.categoryData}
           contentContainerStyle={FlatListview}
-          renderItem={({ item, index }: any) => {
-            return (
-              <TouchableOpacity
-                style={CategoryButton}
-                key={index}
-                onPress={() => navigation.navigate('subcategory', {
-                  parentId: item.id,
-                  categoryName: item.name
-                })}>
-                <Text style={CategoryText} text={item.name} />
-              </TouchableOpacity>
-            )
-          }}
+          renderItem={RenderCategories}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>

@@ -7,4 +7,6 @@ import { LogBox } from "react-native"
 // prettier-ignore
 LogBox.ignoreLogs([
   "Require cycle:",
+  "componentWillUpdate has been renamed",
+  "componentWillReceiveProps has been renamed",
 ])

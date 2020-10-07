@@ -1,15 +1,11 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useEffect } from "react"
+import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, TouchableOpacity } from "react-native"
+
 import { observer } from "mobx-react-lite"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { useNavigation, useIsFocused } from "@react-navigation/native"
 import { Header, Screen, Text } from "../../components"
-import { useFocusEffect, useNavigation, useIsFocused } from "@react-navigation/native"
-// import { useStores } from "../../models"
 import { color, spacing } from "../../theme"
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler"
 import { useStores } from "../../models"
-import { is } from "ramda"
-import { async } from "validate.js"
-import Swiper from 'react-native-swiper'
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -88,7 +84,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
                 style={CategoryButton}
                 key={index}
                 onPress={() => navigation.navigate(item.type == 'Image' ? 'imagedetail' : 'videodetail', {
-                  parentId: item.parent_id,
+                  categoryId: item.parent_id,
                   subCategoryId: item.id,
                   subCategoryName: item.name
                 })}>

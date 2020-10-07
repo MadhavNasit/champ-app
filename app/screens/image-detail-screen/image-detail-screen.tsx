@@ -13,16 +13,16 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { useIsFocused } from "@react-navigation/native"
 import { async } from "validate.js"
 
-
+// Screen style
 const ROOT: ViewStyle = {
   flex: 1,
 }
-
 const CONTAINER: ViewStyle = {
   flex: 1,
   paddingHorizontal: spacing[6]
 }
 
+// nav Buttons Style
 const NavButtonView: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'space-between',
@@ -65,77 +65,111 @@ const NavPrevText: TextStyle = {
 const NavNextText: TextStyle = {
   color: color.palette.black
 }
-const TEXT: TextStyle = {
-  color: color.palette.white
+
+// Swiper Render View Style
+const SwipeImageView: ViewStyle = {
+  flex: 5,
+  paddingHorizontal: 10,
+  paddingVertical: 20
+}
+const SwipeImageStyle: ImageStyle = {
+  flex: 1
+}
+const SwipeTextView: ViewStyle = {
+  flex: 4,
+  paddingVertical: 10,
+  alignItems: 'center'
 }
 const ItemCaption: TextStyle = {
-  ...TEXT,
+  color: color.palette.white,
   fontSize: 20,
   fontWeight: 'bold'
 }
 
+// Swiper Component Styles
 const SwiperWrapper: ViewStyle = {
   flex: 1,
-  // justifyContent: 'center',
-  // alignItems: 'center',
-  // marginBottom: 15,
+  marginBottom: 15,
 }
 const SwiperSlide: ViewStyle = {
   flex: 1,
-  // justifyContent: 'center'
+}
+const DotStyle: ViewStyle = {
+  height: 13.3,
+  width: 13.3,
+  borderRadius: 13.3,
+  marginLeft: 8,
+  marginRight: 8
 }
 
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-  // OR
-  // const rootStore = useStores()
-
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
-
+  // Return true on Screen Focus
   const isFocused = useIsFocused();
+
+  // Store for Subcategory Data
   const { subCategories } = useStores();
+
+  // Data fetch on screen focus
   useEffect(() => {
-    getSubCategoryData(route.params.parentId, route.params.subCategoryId);
-    console.tron.log('In fn')
-  }, [isFocused])
+    if (isFocused) {
+      getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+    }
+  }, [isFocused]);
+
+  // Load data from Api and store in subcategories model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
   }
-  const swiperItems = subCategories.subCategoryMedia.map((item, key) => {
-    return (
-      <View key={key} style={SwiperSlide} >
-        <View style={{ flex: 5, paddingHorizontal: 10, paddingVertical: 20 }}>
-          <Image source={{ uri: item.url }} resizeMode='contain' style={{ flex: 1 }} />
-        </View>
-        <View style={{ flex: 4, paddingVertical: 10, alignItems: 'center' }} >
-          <Text text={item.caption} style={ItemCaption} />
-          <HTML html={'<div style="color: white; fontSize: 17">' + item.description + "</div>"} />
-        </View>
-      </View>
-    )
-  });
 
+  // Prev and Next button component
   const NavButton = (props) => {
     const { buttonStyle, icon, iconStyle, buttonText, textStyle } = props;
     return (
-      <TouchableOpacity style={buttonStyle}>
+      <TouchableOpacity
+        style={buttonStyle}
+      >
         <Icon icon={icon} style={iconStyle} />
         <Text text={buttonText} style={textStyle} />
       </TouchableOpacity>
     );
   }
 
+  // Swiper item render View
+  const swiperItems = subCategories.subCategoryMedia.map((item, key) => {
+    return (
+      <View key={key} style={SwiperSlide} >
+        <View style={SwipeImageView}>
+          <Image source={{ uri: item.url }} resizeMode='contain' style={SwipeImageStyle} />
+        </View>
+        <View style={SwipeTextView} >
+          <Text text={item.caption} style={ItemCaption} />
+          <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16 }, h2: { color: 'white' } }}
+            listsPrefixesRenderers={{
+              ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {
+                return (
+                  <Text style={{ color: 'white', fontSize: 16, marginRight: 5 }}>•</Text>
+                );
+              }
+            }}
+            html={'<div style="color: white">' + item.description + "</div>"}
+          />
+        </View>
+      </View>
+    )
+  });
+
   return (
     <Screen style={ROOT} preset="fixed">
+      {/* Header Compoennt */}
       <Header
         headerText={route.params.subCategoryName}
         rightIcon='hamburger'
         leftIcon='back'
       />
+      {/* Main contetnt View  */}
       <View style={CONTAINER}>
+        {/* Nav Buttons */}
         <View style={NavButtonView}>
           <NavButton
             buttonStyle={NavButtonPrev}
@@ -152,11 +186,12 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
             textStyle={NavNextText}
           />
         </View>
+        {/* Swiper component */}
         <View style={SwiperWrapper}>
           <Swiper
             showsPagination={true}
-            dotStyle={{ height: 13.3, width: 13.3, borderRadius: 13.3, marginLeft: 8, marginRight: 8 }}
-            activeDotStyle={{ height: 13.3, width: 13.3, borderRadius: 13.3, marginLeft: 8, marginRight: 8 }}
+            dotStyle={DotStyle}
+            activeDotStyle={DotStyle}
             dotColor={color.palette.white}
             activeDotColor={color.palette.golden}
             loop={false}
