@@ -9,7 +9,8 @@ api.setup();
 export const SubCategoriesModel = types
   .model("SubCategories")
   .props({
-    subCategory: types.optional(types.frozen(), []),
+    subCategoryData: types.optional(types.array(types.frozen()), []),
+    currentSubCategories: types.optional(types.frozen(), []),
     subCategoryMedia: types.optional(types.frozen(), [])
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -19,7 +20,16 @@ export const SubCategoriesModel = types
         const res = yield api.getSubCategories(parentId);
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
-            self.subCategory = res.data.data.data;
+            let indexOfCategory = findWithAttr(self.subCategoryData, parentId);
+            // let objectarray = Object.assign({}, res.data.data.data);
+            if (indexOfCategory == -1) {
+              self.subCategoryData.push({ parentId: parentId, data: res.data.data.data });
+              console.tron.log(self.subCategoryData);
+            }
+            else {
+              self.subCategoryData[indexOfCategory] = { parentId: parentId, data: res.data.data.data };
+              console.tron.log(self.subCategoryData);
+            }
           }
         }
         else {
@@ -31,11 +41,25 @@ export const SubCategoriesModel = types
       return { response: false, message: "Something went wrong." };
     }),
 
+    getCurrentSubCategories(parentId: number) {
+      let indexOfObject = findWithAttr(self.subCategoryData, parentId);
+      self.currentSubCategories = self.subCategoryData[indexOfObject].data;
+    },
+
     getSubCategoryMedia(subCategoryId: number) {
-      console.tron.log('Subcategory', self.subCategory);
-      const indexOfsubCategory = self.subCategory.findIndex(x => x.id == subCategoryId);
-      self.subCategoryMedia = self.subCategory[indexOfsubCategory].media;
-      console.tron.log('media', self.subCategoryMedia);
+      const indexOfsubCategory = self.currentSubCategories.findIndex(x => x.id == subCategoryId);
+      console.tron.log(self.currentSubCategories[indexOfsubCategory].type);
+      if (self.currentSubCategories[indexOfsubCategory].type != 'None') {
+        self.subCategoryMedia = self.currentSubCategories[indexOfsubCategory].media;
+      }
+      else {
+        self.subCategoryMedia = [];
+      }
+      console.tron.log(self.subCategoryMedia);
+    },
+
+    clearSubCategoryMedia() {
+      self.subCategoryMedia = [];
     }
 
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -47,6 +71,17 @@ export const SubCategoriesModel = types
 * Note that you'll need to import `omit` from ramda, which is already included in the project!
 *  .postProcessSnapshot(omit(["password", "socialSecurityNumber", "creditCardNumber"]))
 */
+function findWithAttr(array, parentId) {
+  for (var i = 0; i < array.length; i += 1) {
+    if (array[i].parentId == parentId) {
+      return i;
+    }
+    // if (array[i][attr] === value) {
+    //   return i;
+    // }
+  }
+  return -1;
+}
 
 type SubcategoriesType = Instance<typeof SubCategoriesModel>
 export interface Subcategories extends SubcategoriesType { }

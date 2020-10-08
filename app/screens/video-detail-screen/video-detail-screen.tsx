@@ -5,12 +5,11 @@ import HTML from 'react-native-render-html';
 import { Header, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
-import { color, spacing } from "../../theme"
+import { spacing } from "../../theme"
 import { useIsFocused } from "@react-navigation/native"
 import { useStores } from "../../models"
 
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
-import { none } from "ramda";
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -45,6 +44,8 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
       setPlaying(false);
       Alert.alert("video has finished playing!");
     }
+
+
   }, []);
 
   const togglePlaying = useCallback(() => {
@@ -52,10 +53,20 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
   }, []);
 
   useEffect(() => {
-    getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
-  }, [isFocused])
+    if (isFocused) {
+      console.tron.log('In useEffect Video');
+      getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+    }
+
+    return function cleanup() {
+      subCategories.clearSubCategoryMedia();
+      console.tron.log('Clean Data');
+    };
+  }, [isFocused]);
+
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
+    await subCategories.getCurrentSubCategories(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
   }
 
@@ -68,13 +79,16 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
 
   const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
+    console.tron.log('Item', item);
+    let videoId = item.url.match(urlReg)[7];
+    console.tron.log(item, videoId);
     return (
-      <View>
+      <View key={index}>
         <YoutubePlayer
           height={200}
           initialPlayerParams={initialParams}
           play={playing}
-          videoId={item.url.match(urlReg)[7]}
+          videoId={videoId}
           onChangeState={onStateChange}
         />
         <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16 }, h2: { color: 'white' } }}
@@ -85,7 +99,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
               );
             }
           }}
-          html={'<div style="color: white">' + item.description + "</div>"}
+          html={item.description}
         />
       </View>
     )

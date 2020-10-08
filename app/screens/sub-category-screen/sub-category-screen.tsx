@@ -56,14 +56,19 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
   const isFocused = useIsFocused()
   const { apiData, subCategories } = useStores();
 
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     LoadStoreData(route.params.parentId);
+  //   }
+  // }, [isFocused]);
+
   useEffect(() => {
     LoadStoreData(route.params.parentId);
-  }, []);
-  useEffect(() => {
-    LoadStoreData(route.params.parentId);
-  }, [isFocused, route.params.parentId]);
+  }, [route.params.parentId]);
+
   const LoadStoreData = async (parentId: number) => {
     await subCategories.getSubCategoryData(parentId);
+    await subCategories.getCurrentSubCategories(parentId);
     await apiData.setSubCategoryIndex(parentId);
   }
 
@@ -76,7 +81,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
       />
       <View style={CONTAINER}>
         <FlatList
-          data={subCategories.subCategory}
+          data={subCategories.currentSubCategories}
           contentContainerStyle={FlatListview}
           renderItem={({ item, index }: any) => {
             return (

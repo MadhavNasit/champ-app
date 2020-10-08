@@ -114,6 +114,11 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
     if (isFocused) {
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
     }
+
+    return function cleanup() {
+      subCategories.clearSubCategoryMedia();
+      console.tron.log('Clean Data');
+    };
   }, [isFocused]);
 
   // Load data from Api and store in subcategories model
