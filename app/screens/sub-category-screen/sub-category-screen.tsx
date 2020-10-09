@@ -3,6 +3,8 @@ import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, TouchableOpaci
 
 import { observer } from "mobx-react-lite"
 import { useNavigation, useIsFocused } from "@react-navigation/native"
+import FastImage from 'react-native-fast-image'
+
 import { Header, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
@@ -29,7 +31,7 @@ const SubCategoryButton: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center'
 }
-const IconStyle: ImageStyle = {
+const IconStyle = {
   height: 60,
   width: 60,
   borderColor: color.palette.golden,
@@ -94,7 +96,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) 
                   subCategoryName: item.name
                 })}>
                 <View style={SubCategoryButton}>
-                  <Image source={{ uri: item.icon }} style={IconStyle} />
+                  <FastImage source={{ uri: item.icon, priority: FastImage.priority.normal, }} style={IconStyle} resizeMode={FastImage.resizeMode.contain} />
                   <Text style={CategoryText} text={item.name} />
                 </View>
               </TouchableOpacity>

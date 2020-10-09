@@ -1,17 +1,15 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useRef, useState } from "react"
+import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
-import { Image, ImageStyle, StyleSheet, TextStyle, View, ViewStyle } from "react-native"
-import { Button, Header, Icon, Screen, Text } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
-import { color, spacing } from "../../theme"
-import Swiper from "react-native-swiper"
-import { useStores } from "../../models"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { useIsFocused } from "@react-navigation/native"
+
+import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import { useIsFocused } from "@react-navigation/native"
-import { async } from "validate.js"
+
+import { Header, Icon, Screen, Text } from "../../components"
+import { color, spacing } from "../../theme"
+import { useStores } from "../../models"
 
 // Screen style
 const ROOT: ViewStyle = {
@@ -19,14 +17,14 @@ const ROOT: ViewStyle = {
 }
 const CONTAINER: ViewStyle = {
   flex: 1,
-  paddingHorizontal: spacing[6]
 }
 
 // nav Buttons Style
 const NavButtonView: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'space-between',
-  marginVertical: 10
+  marginVertical: 10,
+  paddingHorizontal: spacing[6]
 }
 const NavButtonStyle: ViewStyle = {
   borderWidth: 1,
@@ -68,15 +66,14 @@ const NavNextText: TextStyle = {
 
 // Swiper Render View Style
 const SwipeImageView: ViewStyle = {
-  flex: 5,
-  paddingHorizontal: 10,
+  flex: 8,
   paddingVertical: 20
 }
-const SwipeImageStyle: ImageStyle = {
+const SwipeImageStyle = {
   flex: 1
 }
 const SwipeTextView: ViewStyle = {
-  flex: 4,
+  flex: 5,
   paddingVertical: 10,
   alignItems: 'center'
 }
@@ -94,13 +91,17 @@ const SwiperWrapper: ViewStyle = {
 const SwiperSlide: ViewStyle = {
   flex: 1,
 }
-const DotStyle: ViewStyle = {
-  height: 13.3,
-  width: 13.3,
-  borderRadius: 13.3,
-  marginLeft: 8,
-  marginRight: 8
+const PaginationContainer = {
+  backgroundColor: color.transparent
 }
+const DotStyle = {
+  width: 13.3,
+  height: 13.3,
+  borderRadius: 6.5,
+  marginHorizontal: 8,
+  backgroundColor: color.palette.white
+}
+
 
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) {
   // Return true on Screen Focus
@@ -140,12 +141,33 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
     );
   }
 
-  // Swiper item render View
-  const swiperItems = subCategories.subCategoryMedia.map((item, key) => {
+  // Carousel Renderitem and Pagination
+  const carousel = useRef()
+  const [activeSlide, setActiveSlide] = useState<number>(0);
+  const SLIDER_WIDTH = Dimensions.get('window').width;
+  const ITEM_WIDTH = SLIDER_WIDTH - 72;
+
+  function pagination() {
     return (
-      <View key={key} style={SwiperSlide} >
+      <Pagination
+        dotsLength={subCategories.subCategoryMedia.length}
+        activeDotIndex={activeSlide}
+        containerStyle={PaginationContainer}
+        dotStyle={DotStyle}
+        dotColor={color.palette.golden}
+        inactiveDotColor={color.palette.white}
+        inactiveDotOpacity={1}
+        inactiveDotScale={1}
+      />
+    );
+  }
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <View key={index} style={SwiperSlide} >
         <View style={SwipeImageView}>
-          <Image source={{ uri: item.url }} resizeMode='contain' style={SwipeImageStyle} />
+          <FastImage source={{ uri: item.url, priority: FastImage.priority.normal, }} style={SwipeImageStyle} resizeMode={FastImage.resizeMode.contain} />
+
         </View>
         <View style={SwipeTextView} >
           <Text text={item.caption} style={ItemCaption} />
@@ -162,7 +184,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
         </View>
       </View>
     )
-  });
+  }
 
   return (
     <Screen style={ROOT} preset="fixed">
@@ -193,16 +215,19 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
         </View>
         {/* Swiper component */}
         <View style={SwiperWrapper}>
-          <Swiper
-            showsPagination={true}
-            dotStyle={DotStyle}
-            activeDotStyle={DotStyle}
-            dotColor={color.palette.white}
-            activeDotColor={color.palette.golden}
+          <Carousel
+            ref={carousel}
+            layout={"default"}
+            data={subCategories.subCategoryMedia}
+            renderItem={renderItem}
+            sliderWidth={SLIDER_WIDTH}
+            itemWidth={ITEM_WIDTH}
+            inactiveSlideOpacity={0}
+            inactiveSlideShift={0}
             loop={false}
-          >
-            {swiperItems}
-          </Swiper>
+            onSnapToItem={(index) => setActiveSlide(index)}
+          />
+          {pagination()}
         </View>
       </View>
     </Screen>
