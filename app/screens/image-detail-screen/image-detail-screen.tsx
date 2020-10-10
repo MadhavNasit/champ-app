@@ -7,7 +7,7 @@ import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
-import { Header, Icon, Screen, Text } from "../../components"
+import { Header, Icon, NavButton, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
 
@@ -17,51 +17,6 @@ const ROOT: ViewStyle = {
 }
 const CONTAINER: ViewStyle = {
   flex: 1,
-}
-
-// nav Buttons Style
-const NavButtonView: ViewStyle = {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  marginVertical: 10,
-  paddingHorizontal: spacing[6]
-}
-const NavButtonStyle: ViewStyle = {
-  borderWidth: 1,
-  alignItems: 'center',
-  paddingHorizontal: 8,
-  paddingVertical: 6
-}
-const NavButtonPrev: ViewStyle = {
-  ...NavButtonStyle,
-  flexDirection: 'row',
-  borderColor: color.palette.white,
-}
-const NavButtonNext: ViewStyle = {
-  ...NavButtonStyle,
-  flexDirection: 'row-reverse',
-  borderColor: color.palette.golden,
-  backgroundColor: color.palette.golden,
-}
-const NavIconStyle: ImageStyle = {
-  height: 10,
-  width: 8,
-}
-const NavIconPrev: ImageStyle = {
-  ...NavIconStyle,
-  marginRight: 5,
-  tintColor: color.palette.white
-}
-const NavIconNext: ImageStyle = {
-  ...NavIconStyle,
-  marginLeft: 5,
-  tintColor: color.palette.black
-}
-const NavPrevText: TextStyle = {
-  color: color.palette.white
-}
-const NavNextText: TextStyle = {
-  color: color.palette.black
 }
 
 // Swiper Render View Style
@@ -126,19 +81,8 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
-  }
+    await subCategories.setSubCategoryVisited(parentId, subCategoryId);
 
-  // Prev and Next button component
-  const NavButton = (props) => {
-    const { buttonStyle, icon, iconStyle, buttonText, textStyle } = props;
-    return (
-      <TouchableOpacity
-        style={buttonStyle}
-      >
-        <Icon icon={icon} style={iconStyle} />
-        <Text text={buttonText} style={textStyle} />
-      </TouchableOpacity>
-    );
   }
 
   // Carousel Renderitem and Pagination
@@ -197,22 +141,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
       {/* Main contetnt View  */}
       <View style={CONTAINER}>
         {/* Nav Buttons */}
-        <View style={NavButtonView}>
-          <NavButton
-            buttonStyle={NavButtonPrev}
-            icon='back'
-            iconStyle={NavIconPrev}
-            buttonText='PREV'
-            textStyle={NavPrevText}
-          />
-          <NavButton
-            buttonStyle={NavButtonNext}
-            icon='next'
-            iconStyle={NavIconNext}
-            buttonText='NEXT'
-            textStyle={NavNextText}
-          />
-        </View>
+        <NavButton />
         {/* Swiper component */}
         <View style={SwiperWrapper}>
           <Carousel

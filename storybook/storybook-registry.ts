@@ -1,4 +1,4 @@
-require("../app/components/nav-buttons/nav-buttons.story")
+require("../app/components/nav-button/nav-button.story")
 require("../app/components/tab-bar/tab-bar.story")
 require("../app/components/text/text.story")
 require("../app/components/button/button.story")

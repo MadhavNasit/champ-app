@@ -8,7 +8,7 @@ import { mergeAll, flatten } from "ramda"
 
 // the base styling for the container
 const CONTAINER: ViewStyle = {
-  paddingVertical: spacing[3],
+  // paddingVertical: spacing[3],
 }
 
 // Style for Label

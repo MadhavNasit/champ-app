@@ -1,4 +1,6 @@
+import { setLogLevel } from "firebase";
 import { flow, Instance, SnapshotOut, types } from "mobx-state-tree"
+import { type } from "ramda";
 import { Api } from "../../services/api";
 
 const api = new Api();
@@ -11,7 +13,8 @@ export const SubCategoriesModel = types
   .props({
     subCategoryData: types.optional(types.array(types.frozen()), []),
     currentSubCategories: types.optional(types.frozen(), []),
-    subCategoryMedia: types.optional(types.frozen(), [])
+    subCategoryMedia: types.optional(types.frozen(), []),
+    visitedSubCategoryIds: types.optional(types.array(types.frozen()), [])
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
@@ -21,7 +24,9 @@ export const SubCategoriesModel = types
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
             let indexOfCategory = findWithAttr(self.subCategoryData, parentId);
-            // let objectarray = Object.assign({}, res.data.data.data);
+            res.data.data.data.forEach(element => {
+              element.visited = false;
+            });
             if (indexOfCategory == -1) {
               self.subCategoryData.push({ parentId: parentId, data: res.data.data.data });
               console.tron.log(self.subCategoryData);
@@ -58,6 +63,12 @@ export const SubCategoriesModel = types
       console.tron.log(self.subCategoryMedia);
     },
 
+    setSubCategoryVisited(parentId: number, subCategoryId: number) {
+      if (self.visitedSubCategoryIds.indexOf(subCategoryId) === -1) {
+        self.visitedSubCategoryIds.push(subCategoryId);
+      }
+    },
+
     clearSubCategoryMedia() {
       self.subCategoryMedia = [];
     }
@@ -76,9 +87,6 @@ function findWithAttr(array, parentId) {
     if (array[i].parentId == parentId) {
       return i;
     }
-    // if (array[i][attr] === value) {
-    //   return i;
-    // }
   }
   return -1;
 }

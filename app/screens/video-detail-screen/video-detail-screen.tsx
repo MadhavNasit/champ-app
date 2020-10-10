@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { Alert, FlatList, View, ViewStyle } from "react-native"
 import HTML from 'react-native-render-html';
-import { Header, Screen, Text } from "../../components"
+import { Header, NavButton, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { spacing } from "../../theme"
@@ -17,7 +17,7 @@ const ROOT: ViewStyle = {
 
 const CONTAINER: ViewStyle = {
   flex: 1,
-  paddingHorizontal: spacing[6],
+
 }
 
 const BackgroundVideo: ViewStyle = {
@@ -68,6 +68,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getCurrentSubCategories(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
+    await subCategories.setSubCategoryVisited(parentId, subCategoryId);
   }
 
   const initialParams: InitialPlayerParams = {
@@ -113,9 +114,10 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
         leftIcon='back'
       />
       <View style={CONTAINER}>
+        <NavButton />
         <FlatList
           data={subCategories.subCategoryMedia}
-          style={{ paddingVertical: 25, marginBottom: 15 }}
+          style={{ paddingBottom: 25, marginBottom: 15, paddingHorizontal: spacing[6], }}
           keyExtractor={(index) => index.toString()}
           renderItem={renderMedia}
         />

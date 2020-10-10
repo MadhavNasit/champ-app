@@ -1,5 +1,6 @@
 export const palette = {
-  black: "#1d1d1d",
+  black: "#000000",
+  blackBackground: "rgba(0, 0, 0, 0.5)",
   white: "#ffffff",
   offWhite: "#e6e6e6",
   orange: "#FBA928",
