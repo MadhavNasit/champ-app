@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions } from "react-native"
+import { Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle, FlatList, Animated, Platform, Dimensions } from "react-native"
 import { Header, Icon, Screen, Text, TextField } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+// timport { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
 
@@ -11,30 +11,29 @@ import Accordion from 'react-native-collapsible/Accordion';
 import { useStores } from "../../models"
 import { useIsFocused } from "@react-navigation/native"
 import FastImage from "react-native-fast-image"
-import * as Animatable from 'react-native-animatable';
 // import Animated from "react-native-reanimated"
 
 const ROOT: ViewStyle = {
   flex: 1,
 }
-// const HEADER_MAX_HEIGHT = 200;
-// const HEADER_MIN_HEIGHT = 150;
-// const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-const ProfileDetails: ViewStyle = {
-  // position: 'absolute',
-  // top: 100,
-  // right: 0,
-  // left: 0,
-  // bottom: 0,
-  flexDirection: 'column',
-  paddingVertical: spacing[5],
-  paddingHorizontal: spacing[6],
-  alignItems: 'center',
-  justifyContent: 'center',
+const HEADER_MAX_HEIGHT = 230;
+const HEADER_MIN_HEIGHT = 130;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const DEVICE_WIDTH = Math.round(Dimensions.get('window').width);
+const DEVICE_HEIGHT = Math.round(Dimensions.get('window').height);
+
+const ProfileDetailsLarge: ViewStyle = {
+  position: 'absolute',
+  // top: Platform.OS == 'ios' ? 80 : 55,
+  top: 0,
+  right: 0,
+  left: 0,
+  bottom: 0,
 }
-const ProfileImageView: ViewStyle = {
-  marginBottom: 8,
-}
+
+// const ProfileImageView: ViewStyle = {
+//   marginBottom: 8,
+// }
 const ProfileImage: ImageStyle = {
   height: 100,
   width: 100,
@@ -61,9 +60,11 @@ const BirthDate: TextStyle = {
   ...TEXT,
   fontSize: 18
 }
-
+const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - DEVICE_HEIGHT * 0.1 - 75;
 const ContentView: ViewStyle = {
-  // marginTop: HEADER_MAX_HEIGHT,
+  marginTop: HEADER_SCROLL_DISTANCE,
+  // flexGrow: 1,
+  minHeight: CONTENTVIEWHEIGHT,
   backgroundColor: color.palette.blackBackground,
   paddingHorizontal: spacing[6],
   paddingVertical: spacing[5],
@@ -137,7 +138,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [sections, setSections] = useState([]);
   const { apiData, subCategories } = useStores();
   const isFocused = useIsFocused();
-  const [scrollY, setScrollY] = useState(new Animated.Value(0))
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   console.tron.log(scrollY);
 
@@ -164,7 +165,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     console.tron.log('SECTION', SECTIONS);
   }
 
-  const _renderHeader = (item, index, isExpanded, isActive) => {
+  const _renderHeader = (item, index, isExpanded) => {
     return (
       <View style={isExpanded ? HeaderActive : HeaderInActive}>
         <Text style={isExpanded ? ActiveHeaderText : InActiveHeaderText}>{item.title}</Text>
@@ -206,43 +207,84 @@ export const ProfileScreen = observer(function ProfileScreen() {
     );
   };
 
-  // const headerHeight = scrollY.interpolate({
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    extrapolate: 'clamp',
+  });
+  const ImageTop = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [20, 15],
+    extrapolate: 'clamp',
+  })
+  const ImageLeft = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [DEVICE_WIDTH / 2 - 50, 32],
+    extrapolate: 'clamp',
+  })
+  const UserDetailsTop = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [130, 100, 20],
+    extrapolate: 'clamp',
+  })
+  const UserDetailsLeft = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 120, 150],
+    extrapolate: 'clamp',
+  })
+  const UserDetailsPadding = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [DEVICE_WIDTH / 6, 10],
+    extrapolate: 'clamp',
+  })
+  // const headerFlexReverse = scrollY.interpolate({
   //   inputRange: [0, HEADER_SCROLL_DISTANCE],
-  //   outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+  //   outputRange: [0, 1],
   //   extrapolate: 'clamp',
-  // });
+  // })
+  console.tron.log(headerHeight);
   return (
 
     <Screen style={ROOT} preset="fixed">
       <Header headerText='Profile' />
+      <View>
+        <Animated.View
+          style={[ProfileDetailsLarge, { maxHeight: headerHeight }]}
+          onLayout={(event) => {
+            var { x, y, width, height } = event.nativeEvent.layout;
+            console.tron.log(x);
+          }}
+        >
 
-      <Animatable.View
-        // duration={300}
-        // transition='flexDirection'
-        style={[ProfileDetails]}
+          <Animated.View style={{ position: 'absolute', top: ImageTop, bottom: 0, left: ImageLeft }}>
+            <Image source={icons.profile_placeholder} style={ProfileImage} />
+          </Animated.View>
+          <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, right: 0, paddingHorizontal: UserDetailsPadding }}>
+            <Text text='Luke Johnson' style={NameText} numberOfLines={1} />
+            <Text text='test@email.com' style={Emailaddress} numberOfLines={1} />
+            <Text text='29th March, 1999' style={BirthDate} numberOfLines={1} />
+          </Animated.View>
+        </Animated.View>
+      </View>
+      <View style={{ flex: 1, marginTop: HEADER_MIN_HEIGHT }} >
+        <Animated.ScrollView
+          style={{ flex: 1 }}
 
-      >
-        <View style={ProfileImageView}>
-          <Image source={icons.profile_placeholder} style={ProfileImage} />
-        </View>
-        <View>
-          <Text text='Luke Johnson' style={NameText} />
-          <Text text='test@email.com' style={Emailaddress} />
-          <Text text='29th March, 1999' style={BirthDate} />
-        </View>
-      </Animatable.View>
-      <View style={{ flex: 1 }}>
-        <ScrollView style={{ flex: 1 }}
+          // contentContainerStyle={{ paddingTop: 230 }}
           scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }]
-          )}
+          overScrollMode='never'
+          bounces={false}
+          onScrollEndDrag={event => {
+            console.tron.log(event.nativeEvent.contentOffset.y)
+          }}
+          onScroll={Animated.event([
+            { nativeEvent: { contentOffset: { y: scrollY } } }
+          ], { useNativeDriver: false })}
         >
           <View style={ContentView}>
             <View>
               <Text text='Saved Category' style={SavedCategoryHeading} />
-              {/* </View>
-          <View> */}
+
               <TextField
                 placeholder="Search categories"
                 // value={password}
@@ -262,8 +304,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
               />
             </View>
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
-    </Screen>
+    </Screen >
   )
 })
