@@ -75,14 +75,13 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
       subCategories.clearSubCategoryMedia();
       console.tron.log('Clean Data');
     };
-  }, [isFocused]);
+  }, [isFocused, route.params.subCategoryId]);
 
   // Load data from Api and store in subcategories model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
     await subCategories.setSubCategoryVisited(parentId, subCategoryId);
-
   }
 
   // Carousel Renderitem and Pagination

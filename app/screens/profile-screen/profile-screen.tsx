@@ -6,18 +6,20 @@ import { Header, Icon, Screen, Text, TextField } from "../../components"
 // timport { useStores } from "../../models"
 import { color, spacing } from "../../theme"
 import { icons } from "../../components/icon/icons"
+import SearchInput, { createFilter } from 'react-native-search-filter';
 
 import Accordion from 'react-native-collapsible/Accordion';
 import { useStores } from "../../models"
-import { useIsFocused } from "@react-navigation/native"
+import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native"
 import FastImage from "react-native-fast-image"
+import { TouchableOpacity } from "react-native-gesture-handler"
 // import Animated from "react-native-reanimated"
 
 const ROOT: ViewStyle = {
   flex: 1,
 }
 const HEADER_MAX_HEIGHT = 230;
-const HEADER_MIN_HEIGHT = 130;
+const HEADER_MIN_HEIGHT = 150;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 const DEVICE_WIDTH = Math.round(Dimensions.get('window').width);
 const DEVICE_HEIGHT = Math.round(Dimensions.get('window').height);
@@ -44,8 +46,10 @@ const ProfileImage: ImageStyle = {
 
 const TEXT: TextStyle = {
   color: color.palette.white,
-  textAlign: 'center'
+  textAlign: 'center',
+  alignSelf: 'flex-start'
 }
+
 const NameText: TextStyle = {
   ...TEXT,
   fontSize: 24,
@@ -76,7 +80,9 @@ const SavedCategoryHeading: TextStyle = {
 const TextFieldView: ViewStyle = {
   borderBottomWidth: 1,
   borderBottomColor: color.palette.white,
-  paddingBottom: spacing[0],
+  height: 40,
+  paddingTop: Platform.OS == 'ios' ? 10 : 0,
+  // paddingVertical: 10
 }
 
 const ListOfCategory: ViewStyle = {
@@ -126,6 +132,7 @@ const InActiveHeaderIcon: ImageStyle = {
 }
 
 
+const KEYS_TO_FILTERS = ['title', 'content'];
 export const ProfileScreen = observer(function ProfileScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
@@ -133,14 +140,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
   // const rootStore = useStores()
 
   // Pull in navigation via hook
-  // const navigation = useNavigation()
+  const navigation = useNavigation()
   const [activeSections, setActiveSections] = useState([0]);
   const [sections, setSections] = useState([]);
   const { apiData, subCategories } = useStores();
   const isFocused = useIsFocused();
   const scrollY = useRef(new Animated.Value(0)).current;
-
-  console.tron.log(scrollY);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     if (isFocused) {
@@ -174,10 +180,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
     );
   };
 
-  const _renderContent = (item, index) => {
+  const filteredArray = sections.filter(createFilter(searchTerm, KEYS_TO_FILTERS))
+
+  const _renderContent = (itemm, index) => {
     return (
       <View key={index}>
-        {item.content.map((element, key) => {
+        {itemm.content.map((element, key) => {
+          console.tron.log('element ', element);
           return (
             <View key={key} style={{ marginBottom: spacing[2] }}>
               <Text style={{ marginBottom: spacing[2] }}>{element.name}</Text>
@@ -194,9 +203,22 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 }}
                 renderItem={({ item, index }: any) => {
                   return (
-                    <View key={index} style={{ marginRight: spacing[3], marginBottom: spacing[2] }}>
+                    <TouchableOpacity
+                      key={index} style={{ marginRight: spacing[3], marginBottom: spacing[2] }}
+                      onPress={() => navigation.dispatch(CommonActions.navigate(
+                        'Dashboard', {
+                        screen: item.type == 'Image' ? 'imagedetail' : 'videodetail',
+                        params: {
+                          categoryId: element.parent_id,
+                          subCategoryId: element.id,
+                          subCategoryName: element.name,
+                          activeId: item.id
+                        },
+                        initial: false,
+                      }))}
+                    >
                       <FastImage source={{ uri: item.type == 'Image' ? item.url : item.video_cover, priority: FastImage.priority.normal }} style={{ height: 60, width: 60, borderWidth: 2, borderColor: color.palette.golden, borderRadius: 300, backgroundColor: color.palette.white }} resizeMode={FastImage.resizeMode.contain} />
-                    </View>
+                    </TouchableOpacity>
                   )
                 }}
               />
@@ -214,35 +236,31 @@ export const ProfileScreen = observer(function ProfileScreen() {
   });
   const ImageTop = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [20, 15],
+    outputRange: [20, 25],
     extrapolate: 'clamp',
   })
   const ImageLeft = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [DEVICE_WIDTH / 2 - 50, 32],
+    inputRange: [0, 50, HEADER_SCROLL_DISTANCE],
+    outputRange: [DEVICE_WIDTH / 2 - 50, 42, 32],
     extrapolate: 'clamp',
   })
   const UserDetailsTop = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [130, 100, 20],
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [130, 25],
     extrapolate: 'clamp',
   })
   const UserDetailsLeft = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 120, 150],
+    inputRange: [0, 30, 50, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 160, 160, 160],
     extrapolate: 'clamp',
   })
-  const UserDetailsPadding = scrollY.interpolate({
+  const minWidth = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [DEVICE_WIDTH / 6, 10],
+    outputRange: ['100%', '0%'],
     extrapolate: 'clamp',
-  })
-  // const headerFlexReverse = scrollY.interpolate({
-  //   inputRange: [0, HEADER_SCROLL_DISTANCE],
-  //   outputRange: [0, 1],
-  //   extrapolate: 'clamp',
-  // })
-  console.tron.log(headerHeight);
+
+  });
+
   return (
 
     <Screen style={ROOT} preset="fixed">
@@ -250,23 +268,18 @@ export const ProfileScreen = observer(function ProfileScreen() {
       <View>
         <Animated.View
           style={[ProfileDetailsLarge, { maxHeight: headerHeight }]}
-          onLayout={(event) => {
-            var { x, y, width, height } = event.nativeEvent.layout;
-            console.tron.log(x);
-          }}
         >
-
           <Animated.View style={{ position: 'absolute', top: ImageTop, bottom: 0, left: ImageLeft }}>
             <Image source={icons.profile_placeholder} style={ProfileImage} />
           </Animated.View>
-          <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, right: 0, paddingHorizontal: UserDetailsPadding }}>
-            <Text text='Luke Johnson' style={NameText} numberOfLines={1} />
-            <Text text='test@email.com' style={Emailaddress} numberOfLines={1} />
-            <Text text='29th March, 1999' style={BirthDate} numberOfLines={1} />
+          <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, height: 100, justifyContent: 'center' }}>
+            <Animated.Text style={[NameText, { minWidth }]} numberOfLines={1} >{'Luke Johnson'}</Animated.Text>
+            <Animated.Text style={[Emailaddress, { minWidth }]} numberOfLines={1} >{'test@email.com'}</Animated.Text>
+            <Animated.Text style={[BirthDate, { minWidth }]} numberOfLines={1} >{'29th March, 1999'}</Animated.Text>
           </Animated.View>
         </Animated.View>
       </View>
-      <View style={{ flex: 1, marginTop: HEADER_MIN_HEIGHT }} >
+      <View style={{ flexGrow: 1, marginTop: HEADER_MIN_HEIGHT }} >
         <Animated.ScrollView
           style={{ flex: 1 }}
 
@@ -274,9 +287,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
           scrollEventThrottle={16}
           overScrollMode='never'
           bounces={false}
-          onScrollEndDrag={event => {
-            console.tron.log(event.nativeEvent.contentOffset.y)
-          }}
           onScroll={Animated.event([
             { nativeEvent: { contentOffset: { y: scrollY } } }
           ], { useNativeDriver: false })}
@@ -284,20 +294,22 @@ export const ProfileScreen = observer(function ProfileScreen() {
           <View style={ContentView}>
             <View>
               <Text text='Saved Category' style={SavedCategoryHeading} />
-
-              <TextField
-                placeholder="Search categories"
-                // value={password}
-                // onChangeText={(password) => handlePassword(password)}
-                style={TextFieldView}
-                returnKeyType="done"
-              />
+              <View style={{ marginTop: spacing[1] }}>
+                <Icon icon='search' style={{ height: 16, width: 16, position: 'absolute', right: 10, top: 12 }} />
+                <SearchInput
+                  onChangeText={(term) => { setSearchTerm(term) }}
+                  placeholderTextColor={color.palette.offWhite}
+                  style={TEXT}
+                  inputViewStyles={TextFieldView}
+                  placeholder="Search categories"
+                  fuzzy={true}
+                />
+              </View>
             </View>
             <View style={ListOfCategory}>
               <Accordion
-                sections={sections}
+                sections={filteredArray}
                 activeSections={activeSections}
-                // renderSectionTitle={_renderSectionTitle}
                 renderHeader={_renderHeader}
                 renderContent={_renderContent}
                 onChange={(activeSections) => setActiveSections(activeSections)}

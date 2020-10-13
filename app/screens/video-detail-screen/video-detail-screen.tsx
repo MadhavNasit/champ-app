@@ -40,21 +40,18 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
 
   const [playing, setPlaying] = useState(false);
   const onStateChange = useCallback((state) => {
+    // if(state == "unstarted"){
+
+    // }
     if (state === "ended") {
       setPlaying(false);
       Alert.alert("video has finished playing!");
     }
-
-
   }, []);
 
-  const togglePlaying = useCallback(() => {
-    setPlaying((prev) => !prev);
-  }, []);
 
   useEffect(() => {
     if (isFocused) {
-      console.tron.log('In useEffect Video');
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
     }
 
@@ -62,7 +59,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
       subCategories.clearSubCategoryMedia();
       console.tron.log('Clean Data');
     };
-  }, [isFocused]);
+  }, [isFocused, route.params.subCategoryId]);
 
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
