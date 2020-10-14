@@ -35,7 +35,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
   // const navigation = useNavigation()
 
   const isFocused = useIsFocused();
-  const { subCategories } = useStores();
+  const { apiData, subCategories } = useStores();
   const player = useRef()
 
   const [playing, setPlaying] = useState(false);
@@ -57,12 +57,12 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
 
     return function cleanup() {
       subCategories.clearSubCategoryMedia();
-      console.tron.log('Clean Data');
     };
-  }, [isFocused, route.params.subCategoryId]);
+  }, [route.params.subCategoryId]);
 
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
+    await apiData.setSubCategoryIndex(parentId);
     await subCategories.getCurrentSubCategories(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
     await subCategories.setSubCategoryVisited(parentId, subCategoryId);
@@ -77,9 +77,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
 
   const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
-    console.tron.log('Item', item);
     let videoId = item.url.match(urlReg)[7];
-    console.tron.log(item, videoId);
     return (
       <View key={index}>
         <YoutubePlayer
@@ -111,7 +109,11 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
         leftIcon='back'
       />
       <View style={CONTAINER}>
-        <NavButton />
+        {/* Nav Buttons */}
+        <NavButton
+          parentId={route.params.categoryId}
+          subCategoryId={route.params.subCategoryId}
+        />
         <FlatList
           data={subCategories.subCategoryMedia}
           style={{ paddingBottom: 25, marginBottom: 15, paddingHorizontal: spacing[6], }}

@@ -75,7 +75,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
       subCategories.clearSubCategoryMedia();
       console.tron.log('Clean Data');
     };
-  }, [isFocused, route.params.subCategoryId]);
+  }, [route.params.subCategoryId]);
 
   // Load data from Api and store in subcategories model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
@@ -140,7 +140,10 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
       {/* Main contetnt View  */}
       <View style={CONTAINER}>
         {/* Nav Buttons */}
-        <NavButton />
+        <NavButton
+          parentId={route.params.categoryId}
+          subCategoryId={route.params.subCategoryId}
+        />
         {/* Swiper component */}
         <View style={SwiperWrapper}>
           <Carousel

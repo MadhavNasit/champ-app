@@ -258,7 +258,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: ['100%', '0%'],
     extrapolate: 'clamp',
-
   });
 
   return (
@@ -299,7 +298,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 <SearchInput
                   onChangeText={(term) => { setSearchTerm(term) }}
                   placeholderTextColor={color.palette.offWhite}
-                  style={TEXT}
+                  style={{ color: color.palette.white }}
                   inputViewStyles={TextFieldView}
                   placeholder="Search categories"
                   fuzzy={true}

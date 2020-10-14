@@ -24,9 +24,7 @@ export const SubCategoriesModel = types
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
             let indexOfCategory = findWithAttr(self.subCategoryData, parentId);
-            res.data.data.data.forEach(element => {
-              element.visited = false;
-            });
+            console.tron.log('called with id', parentId, indexOfCategory)
             if (indexOfCategory == -1) {
               self.subCategoryData.push({ parentId: parentId, data: res.data.data.data });
               console.tron.log(self.subCategoryData);
