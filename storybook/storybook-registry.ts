@@ -1,3 +1,5 @@
+require("../app/components/google-signin/google-signin.story")
+require("../app/components/facebook-signin/facebook-signin.story")
 require("../app/components/nav-button/nav-button.story")
 require("../app/components/tab-bar/tab-bar.story")
 require("../app/components/text/text.story")
