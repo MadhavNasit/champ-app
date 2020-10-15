@@ -6,8 +6,6 @@ import { WallpaperProps } from "./wallpaper.props"
 
 const defaultImage = icons.background;
 
-
-
 /**
  * For your text displaying needs.
  *
@@ -15,7 +13,7 @@ const defaultImage = icons.background;
  */
 export function Wallpaper(props: WallpaperProps) {
   // grab the props
-  const { preset = "stretch", style: styleOverride, backgroundImage } = props
+  const { preset = "stretch", backgroundImage } = props
   const imageStyle: ImageStyle = {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,

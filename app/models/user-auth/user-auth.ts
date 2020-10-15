@@ -8,17 +8,18 @@ export const UserAuthModel = types
   .props({
     isTokenAvaible: types.optional(types.boolean, false),
     userObj: types.optional(types.frozen(), []),
-    loginType: types.optional(types.string, '')
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
     // Set Boolean true if Token Avaible
-    setTokenAvaible() {
+    userAuthenticate(UserData) {
       self.isTokenAvaible = true;
+      self.userObj = UserData;
     },
     // Set token false if user Logged out
-    removeTokenAvaible() {
+    removeAccess() {
       self.isTokenAvaible = false;
+      self.userObj = [];
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 

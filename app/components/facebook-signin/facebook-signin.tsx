@@ -1,5 +1,5 @@
 import * as React from "react"
-import { TextStyle, ViewStyle } from "react-native"
+import { Alert, TextStyle, ViewStyle } from "react-native"
 import { Button } from "../button/button";
 import { useStores } from "../../models";
 
@@ -70,10 +70,15 @@ export function FacebookSignin(props: FacebookSigninProps) {
   // Facebook responce
   const responseInfoCallback = async (error, result) => {
     if (error) {
-      console.tron.log(error)
+      Alert.alert('Something Wrong..!!')
     } else {
-      console.log(result)
-      await userAuth.setTokenAvaible();
+      console.tron.log(result);
+      let userObj = {
+        userName: result.name,
+        profileUrl: result.picture.data.url,
+        userEmail: result.email
+      }
+      await userAuth.userAuthenticate(userObj);
     }
   }
 

@@ -12,8 +12,7 @@ import { createNativeStackNavigator } from "react-native-screens/native-stack"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../models"
 import { AuthNavigator } from "./auth-navigator"
-import { DashBoardNavigator } from "./dashboard-navigator"
-import { TabNavigator } from "./primary-navigator"
+import { DrawerNavigator } from "./drawer-navigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -47,7 +46,7 @@ const RootStack = observer(() => {
         (
           <Stack.Screen
             name="primaryStack"
-            component={DashBoardNavigator}
+            component={DrawerNavigator}
             options={{
               headerShown: false,
             }}

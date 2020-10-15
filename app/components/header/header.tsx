@@ -52,6 +52,7 @@ export function Header(props: HeaderProps) {
 
   return (
     <View style={{ ...ROOT, ...style }}>
+      {/* Back Button for Previous screen navigation */}
       {leftIcon ? (
         <Button preset="link" style={LEFT} onPress={() => navigation.goBack()}>
           <Icon icon={leftIcon} style={IconStyle} />
@@ -59,9 +60,11 @@ export function Header(props: HeaderProps) {
       ) : (
           <View style={LEFT} />
         )}
+      {/* Screen Title */}
       <View style={TITLE_MIDDLE}>
         <Text style={{ ...TITLE, ...titleStyle }} text={header} />
       </View>
+      {/* Drawer opne Icon */}
       {rightIcon ? (
         <Button preset="link" style={RIGHT} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
           <Icon icon={rightIcon} style={IconStyle} />

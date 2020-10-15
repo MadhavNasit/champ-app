@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
-import { useIsFocused } from "@react-navigation/native"
+import { BaseRouter, useIsFocused } from "@react-navigation/native"
 
 import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
@@ -10,6 +10,10 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { Header, Icon, NavButton, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
+
+interface ImageDetailsProps {
+  route,
+}
 
 // Screen style
 const ROOT: ViewStyle = {
@@ -57,8 +61,7 @@ const DotStyle = {
   backgroundColor: color.palette.white
 }
 
-
-export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) {
+export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: ImageDetailsProps) {
   // Return true on Screen Focus
   const isFocused = useIsFocused();
 
@@ -82,6 +85,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }) 
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
     await subCategories.setSubCategoryVisited(parentId, subCategoryId);
+    await subCategories.setCurrentSubCategoryIndex(parentId);
   }
 
   // Carousel Renderitem and Pagination

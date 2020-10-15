@@ -41,22 +41,21 @@ export const DashboardScreen = observer(function DashboardScreen() {
   // contains navigation props and method
   const navigation = useNavigation();
   // Category data mobx store
-  const { apiData } = useStores();
+  const { categoryData, subCategories } = useStores();
   // return true if screen is focused
   const isFocused = useIsFocused()
 
   // Call api function if screen is focused
   useEffect(() => {
     if (isFocused) {
-      apiData.setSubCategoryIndex(0);
+      subCategories.setCurrentSubCategoryIndex(0);
       LoadDataFromApi();
     }
   }, [isFocused]);
 
   // Call APi and store in model
   const LoadDataFromApi = async () => {
-    await apiData.getCategoryData();
-    await apiData.getCategories();
+    await categoryData.getCategoryData();
   }
 
   // Render function for Categories
@@ -84,7 +83,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
       {/* Return Categories View */}
       <View style={CONTAINER}>
         <FlatList
-          data={apiData.categoryData}
+          data={categoryData.categoryData}
           contentContainerStyle={FlatListview}
           renderItem={RenderCategories}
           keyExtractor={(item, index) => index.toString()}

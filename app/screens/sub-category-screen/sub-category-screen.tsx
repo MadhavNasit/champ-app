@@ -9,6 +9,11 @@ import { Header, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
 
+interface SubCategoryProps {
+  route,
+  navigation
+}
+
 const ROOT: ViewStyle = {
   flex: 1,
 }
@@ -46,32 +51,25 @@ const CategoryText: TextStyle = {
   paddingLeft: spacing[3]
 }
 
-export const SubCategoryScreen = observer(function SubCategoryScreen({ route }) {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-  // OR
-  // const rootStore = useStores()
-
-  // Pull in navigation via hook
-  const navigation = useNavigation()
+export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }: SubCategoryProps) {
 
   const isFocused = useIsFocused()
-  const { apiData, subCategories } = useStores();
-
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     LoadStoreData(route.params.parentId);
-  //   }
-  // }, [isFocused]);
+  const { subCategories } = useStores();
 
   useEffect(() => {
-    LoadStoreData(route.params.parentId);
+    if (isFocused) {
+      LoadStoreData(route.params.parentId);
+    }
+
+    return function cleanup() {
+      subCategories.clearCurrentSubCategory();
+    };
   }, [route.params.parentId]);
 
   const LoadStoreData = async (parentId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getCurrentSubCategories(parentId);
-    await apiData.setSubCategoryIndex(parentId);
+    await subCategories.setCurrentSubCategoryIndex(parentId);
   }
 
   return (

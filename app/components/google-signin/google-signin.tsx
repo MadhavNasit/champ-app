@@ -37,7 +37,12 @@ export function GoogleSignIn(props: GoogleSigninProps) {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      await userAuth.setTokenAvaible();
+      let userObj = {
+        userName: userInfo.user.name,
+        profileUrl: userInfo.user.photo,
+        userEmail: userInfo.user.email
+      }
+      await userAuth.userAuthenticate(userObj);
       console.log(userInfo);
       console.tron.log(userInfo);
     } catch (error) {

@@ -1,3 +1,5 @@
+require("../app/components/logout/logout.story")
+require("../app/components/drawer-component/drawer-component.story")
 require("../app/components/google-signin/google-signin.story")
 require("../app/components/facebook-signin/facebook-signin.story")
 require("../app/components/nav-button/nav-button.story")

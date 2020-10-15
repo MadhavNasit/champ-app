@@ -66,7 +66,7 @@ const NavNextText: TextStyle = {
 export const NavButton = observer(function NavButton(props: NavButtonProps) {
   // Defines Props, Store and Navigation
   const { parentId, subCategoryId } = props;
-  const { subCategories, apiData } = useStores()
+  const { subCategories, categoryData } = useStores()
   const navigation = useNavigation()
 
   // States for Disable ot Enable Buttons
@@ -89,7 +89,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
   }
 
   // Length of categories
-  const lengthOfCategory = apiData.categoryData.length;
+  const lengthOfCategory = categoryData.categoryData.length;
 
   // Onpress function for Next Button
   // Navigates to next Screen
@@ -177,6 +177,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
 
   return (
     <View style={NavButtonView}>
+      {/* Prev button */}
       <NavButton
         buttonStyle={[NavButtonPrev, { opacity: prevDisabled ? 0.5 : 1 }]}
         icon='back'
@@ -186,6 +187,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
         textStyle={NavPrevText}
         onPress={() => PrevPress()}
       />
+      {/* Next Button */}
       <NavButton
         buttonStyle={[NavButtonNext, { opacity: nextDisabled ? 0.5 : 1 }]}
         icon='next'

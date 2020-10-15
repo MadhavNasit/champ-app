@@ -131,8 +131,8 @@ const InActiveHeaderIcon: ImageStyle = {
   transform: [{ rotate: '270deg' }]
 }
 
+const KEYS_TO_FILTERS = ['title'];
 
-const KEYS_TO_FILTERS = ['title', 'content'];
 export const ProfileScreen = observer(function ProfileScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
@@ -143,7 +143,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const navigation = useNavigation()
   const [activeSections, setActiveSections] = useState([0]);
   const [sections, setSections] = useState([]);
-  const { apiData, subCategories } = useStores();
+  const { userAuth, categoryData, subCategories } = useStores();
   const isFocused = useIsFocused();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -156,7 +156,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const getVisitedCategories = () => {
     let SECTIONS = [];
-    apiData.categoryData.forEach(element => {
+    categoryData.categoryData.forEach(element => {
       subCategories.subCategoryData.forEach(subData => {
         if (subData.parentId == element.id) {
           var VisitedData = subData.data.filter(function (itm) {
@@ -269,11 +269,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
           style={[ProfileDetailsLarge, { maxHeight: headerHeight }]}
         >
           <Animated.View style={{ position: 'absolute', top: ImageTop, bottom: 0, left: ImageLeft }}>
-            <Image source={icons.profile_placeholder} style={ProfileImage} />
+            <Image
+              source={userAuth.userObj.profileUrl != '' ? { uri: userAuth.userObj.profileUrl } : icons.profile_placeholder}
+              style={ProfileImage} />
           </Animated.View>
           <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, height: 100, justifyContent: 'center' }}>
-            <Animated.Text style={[NameText, { minWidth }]} numberOfLines={1} >{'Luke Johnson'}</Animated.Text>
-            <Animated.Text style={[Emailaddress, { minWidth }]} numberOfLines={1} >{'test@email.com'}</Animated.Text>
+            <Animated.Text style={[NameText, { minWidth }]} numberOfLines={1} >{userAuth.userObj.userName != '' ? userAuth.userObj.userName : 'Test User'}</Animated.Text>
+            <Animated.Text style={[Emailaddress, { minWidth }]} numberOfLines={1} >{userAuth.userObj.userEmail}</Animated.Text>
             <Animated.Text style={[BirthDate, { minWidth }]} numberOfLines={1} >{'29th March, 1999'}</Animated.Text>
           </Animated.View>
         </Animated.View>
@@ -281,8 +283,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
       <View style={{ flexGrow: 1, marginTop: HEADER_MIN_HEIGHT }} >
         <Animated.ScrollView
           style={{ flex: 1 }}
-
-          // contentContainerStyle={{ paddingTop: 230 }}
           scrollEventThrottle={16}
           overScrollMode='never'
           bounces={false}

@@ -1,48 +1,37 @@
-import React, { useCallback, useEffect, useRef, useState } from "react"
-import { observer } from "mobx-react-lite"
-import { Alert, FlatList, View, ViewStyle } from "react-native"
-import HTML from 'react-native-render-html';
-import { Header, NavButton, Screen, Text } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
-import { spacing } from "../../theme"
+import React, { useCallback, useEffect, useState } from "react"
+import { Alert, FlatList, Route, View, ViewStyle } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
+
+import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
+import { Header, NavButton, Screen, Text } from "../../components"
+import { spacing } from "../../theme"
+
+import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
+
+interface VideoDetailsProps {
+  route
+}
 
 const ROOT: ViewStyle = {
   flex: 1,
 }
-
 const CONTAINER: ViewStyle = {
   flex: 1,
-
 }
 
-const BackgroundVideo: ViewStyle = {
-  height: 200,
-  width: 200
-}
-
-export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-  // OR
-  // const rootStore = useStores()
-
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
+export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {
 
   const isFocused = useIsFocused();
-  const { apiData, subCategories } = useStores();
-  const player = useRef()
+  const { subCategories } = useStores();
 
   const [playing, setPlaying] = useState(false);
   const onStateChange = useCallback((state) => {
-    // if(state == "unstarted"){
-
-    // }
+    if (state === "unstarted") {
+      Alert.alert("video has ready for playing!");
+    }
     if (state === "ended") {
       setPlaying(false);
       Alert.alert("video has finished playing!");
@@ -62,7 +51,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
 
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
-    await apiData.setSubCategoryIndex(parentId);
+    await subCategories.setCurrentSubCategoryIndex(parentId);
     await subCategories.getCurrentSubCategories(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
     await subCategories.setSubCategoryVisited(parentId, subCategoryId);
@@ -86,6 +75,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }) 
           play={playing}
           videoId={videoId}
           onChangeState={onStateChange}
+          onReady={() => { Alert.alert('Loaded') }}
         />
         <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16 }, h2: { color: 'white' } }}
           listsPrefixesRenderers={{

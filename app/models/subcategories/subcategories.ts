@@ -1,6 +1,4 @@
-import { setLogLevel } from "firebase";
 import { flow, Instance, SnapshotOut, types } from "mobx-state-tree"
-import { type } from "ramda";
 import { Api } from "../../services/api";
 
 const api = new Api();
@@ -13,6 +11,7 @@ export const SubCategoriesModel = types
   .props({
     subCategoryData: types.optional(types.array(types.frozen()), []),
     currentSubCategories: types.optional(types.frozen(), []),
+    currentSubCategoryIndex: types.optional(types.number, 0),
     subCategoryMedia: types.optional(types.frozen(), []),
     visitedSubCategoryIds: types.optional(types.array(types.frozen()), [])
   })
@@ -49,6 +48,10 @@ export const SubCategoriesModel = types
       self.currentSubCategories = self.subCategoryData[indexOfObject].data;
     },
 
+    setCurrentSubCategoryIndex(index: number) {
+      self.currentSubCategoryIndex = index;
+    },
+
     getSubCategoryMedia(subCategoryId: number) {
       const indexOfsubCategory = self.currentSubCategories.findIndex(x => x.id == subCategoryId);
       console.tron.log(self.currentSubCategories[indexOfsubCategory].type);
@@ -65,6 +68,10 @@ export const SubCategoriesModel = types
       if (self.visitedSubCategoryIds.indexOf(subCategoryId) === -1) {
         self.visitedSubCategoryIds.push(subCategoryId);
       }
+    },
+
+    clearCurrentSubCategory() {
+      self.currentSubCategories = [];
     },
 
     clearSubCategoryMedia() {

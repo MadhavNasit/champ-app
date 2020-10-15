@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react"
-import { ImageStyle, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, TextStyle, View, ViewStyle } from "react-native"
+import { ImageStyle, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, TextStyle, View, ViewStyle } from "react-native"
 
 import { useStores } from "../../models"
 import { observer } from "mobx-react-lite"
@@ -128,12 +128,18 @@ export const SigninScreen = observer(function SigninScreen() {
 
   // Submit form handler
   const SubmitForm = () => {
+    Keyboard.dismiss();
     let emailValidated = EmailValidation(email);
     let passwordValidated = PasswordValidation(password);
 
     if (emailValidated && passwordValidated) {
       console.tron.log('Sucess');
-      userAuth.setTokenAvaible();
+      let userObj = {
+        userName: '',
+        profileUrl: '',
+        userEmail: email
+      }
+      userAuth.userAuthenticate(userObj);
     }
     else {
       setAftersubmitErrorCheck(true);
@@ -214,6 +220,7 @@ export const SigninScreen = observer(function SigninScreen() {
                   <TextField
                     labelTx="signinScreen.emailLabel"
                     value={email}
+                    autoCapitalize='none'
                     onChangeText={(email) => handleEmail(email)}
                     placeholderTx="signinScreen.emailPlaceholder"
                     style={TextFieldView}
