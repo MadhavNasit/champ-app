@@ -10,6 +10,7 @@ import { spacing } from "../../theme"
 
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
+import { LinesLoader } from 'react-native-indicator';
 
 interface VideoDetailsProps {
   route
@@ -21,6 +22,15 @@ const ROOT: ViewStyle = {
 const CONTAINER: ViewStyle = {
   flex: 1,
 }
+const VideoActivityLoader: ViewStyle = {
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  justifyContent: 'center',
+  alignItems: 'center'
+}
 
 export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {
 
@@ -28,10 +38,8 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   const { subCategories } = useStores();
 
   const [playing, setPlaying] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const onStateChange = useCallback((state) => {
-    if (state === "unstarted") {
-      Alert.alert("video has ready for playing!");
-    }
     if (state === "ended") {
       setPlaying(false);
       Alert.alert("video has finished playing!");
@@ -69,14 +77,28 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     let videoId = item.url.match(urlReg)[7];
     return (
       <View key={index}>
-        <YoutubePlayer
-          height={200}
-          initialPlayerParams={initialParams}
-          play={playing}
-          videoId={videoId}
-          onChangeState={onStateChange}
-          onReady={() => { Alert.alert('Loaded') }}
-        />
+        <View>
+          <YoutubePlayer
+            height={200}
+            initialPlayerParams={initialParams}
+            play={playing}
+            videoId={videoId}
+            onChangeState={onStateChange}
+            onReady={() => { setVideoReady(true) }}
+          />
+          {!videoReady ?
+            (
+              <View style={VideoActivityLoader}>
+                <LinesLoader />
+              </View>
+            )
+            :
+            (
+              null
+            )
+          }
+
+        </View>
         <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16 }, h2: { color: 'white' } }}
           listsPrefixesRenderers={{
             ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {

@@ -1,11 +1,10 @@
 import React, { useEffect } from "react"
 import { Alert, TextStyle, ViewStyle } from "react-native"
 import { Button } from "../button/button"
+import { useStores } from "../../models";
 
 // Google and Facebook Signin imports
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
-import { useStores } from "../../models";
-
 
 export interface GoogleSigninProps {
   ButtonStyle?: ViewStyle,
@@ -43,8 +42,6 @@ export function GoogleSignIn(props: GoogleSigninProps) {
         userEmail: userInfo.user.email
       }
       await userAuth.userAuthenticate(userObj);
-      console.log(userInfo);
-      console.tron.log(userInfo);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         Alert.alert("user cancelled the login flow");
