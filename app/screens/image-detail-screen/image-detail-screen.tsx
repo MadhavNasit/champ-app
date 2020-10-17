@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Dimensions, ImageStyle, TextStyle, View, ViewStyle, TouchableOpacity } from "react-native"
+import { Dimensions, TextStyle, View, ViewStyle } from "react-native"
+import { useIsFocused } from "@react-navigation/native"
+
 import { observer } from "mobx-react-lite"
-import { BaseRouter, useIsFocused } from "@react-navigation/native"
+import { useStores } from "../../models"
 
 import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
-import { Header, Icon, NavButton, Screen, Text } from "../../components"
-import { color, spacing } from "../../theme"
-import { useStores } from "../../models"
+import { Header, NavButton, Screen, Text } from "../../components"
+import { color } from "../../theme"
 
 interface ImageDetailsProps {
   route,
@@ -66,30 +67,31 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   const isFocused = useIsFocused();
 
   // Store for Subcategory Data
-  const { subCategories } = useStores();
+  const { subCategories, activityLoader } = useStores();
 
   // Data fetch on screen focus
   useEffect(() => {
     if (isFocused) {
+      activityLoader.setLoading(true);
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+      activityLoader.setLoading(false);
     }
 
     return function cleanup() {
       subCategories.clearSubCategoryMedia();
-      console.tron.log('Clean Data');
     };
   }, [route.params.subCategoryId]);
 
+  const carousel = useRef()
   // Load data from Api and store in subcategories model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
-    await subCategories.setSubCategoryVisited(parentId, subCategoryId);
+    await subCategories.setSubCategoryVisited(1);
     await subCategories.setCurrentSubCategoryIndex(parentId);
   }
 
   // Carousel Renderitem and Pagination
-  const carousel = useRef()
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const SLIDER_WIDTH = Dimensions.get('window').width;
   const ITEM_WIDTH = SLIDER_WIDTH - 72;
@@ -109,12 +111,15 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     );
   }
 
+  // Render Swiper view
   const renderItem = ({ item, index }) => {
     return (
       <View key={index} style={SwiperSlide} >
         <View style={SwipeImageView}>
-          <FastImage source={{ uri: item.url, priority: FastImage.priority.normal, }} style={SwipeImageStyle} resizeMode={FastImage.resizeMode.contain} />
-
+          <FastImage
+            source={{ uri: item.url, priority: FastImage.priority.normal, }}
+            style={SwipeImageStyle} resizeMode={FastImage.resizeMode.contain}
+          />
         </View>
         <View style={SwipeTextView} >
           <Text text={item.caption} style={ItemCaption} />
@@ -160,7 +165,11 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
             inactiveSlideOpacity={0}
             inactiveSlideShift={0}
             loop={false}
-            onSnapToItem={(index) => setActiveSlide(index)}
+            onSnapToItem={(index) => {
+              setActiveSlide(index)
+              // subCategories.setSubCategoryVisited(activeSlide + 1)
+            }
+            }
           />
           {pagination()}
         </View>

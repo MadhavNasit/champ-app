@@ -1,41 +1,46 @@
-import React, { useEffect, useRef, useState } from "react"
-import { observer } from "mobx-react-lite"
-import { Image, ImageStyle, ScrollView, TextStyle, View, ViewStyle, FlatList, Animated, Platform, Dimensions } from "react-native"
-import { Header, Icon, Screen, Text, TextField } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
-// timport { useStores } from "../../models"
-import { color, spacing } from "../../theme"
-import { icons } from "../../components/icon/icons"
-import SearchInput, { createFilter } from 'react-native-search-filter';
+// *
+// ** My Profile Screen - Display User Details and Recently Viwed Categories
+// *
+import React, { useEffect, useRef, useState } from "react";
+import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Platform, Dimensions, TouchableOpacity } from "react-native";
+
+import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
+
+import { observer } from "mobx-react-lite";
+import { useStores } from "../../models";
+
+import { Header, Icon, Screen, Text } from "../../components";
+import { color, spacing } from "../../theme";
+import { icons } from "../../components/icon/icons";
 
 import Accordion from 'react-native-collapsible/Accordion';
-import { useStores } from "../../models"
-import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native"
-import FastImage from "react-native-fast-image"
-import { TouchableOpacity } from "react-native-gesture-handler"
-// import Animated from "react-native-reanimated"
+import FastImage from "react-native-fast-image";
+import SearchInput, { createFilter } from 'react-native-search-filter';
+import { async } from "validate.js";
 
+// Main Cintainer stle
 const ROOT: ViewStyle = {
   flex: 1,
 }
+
+// Height for user detail view animations
 const HEADER_MAX_HEIGHT = 230;
 const HEADER_MIN_HEIGHT = 150;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+// Device Width and Height
 const DEVICE_WIDTH = Math.round(Dimensions.get('window').width);
 const DEVICE_HEIGHT = Math.round(Dimensions.get('window').height);
 
+// -- User Details View Starts -- //
 const ProfileDetailsLarge: ViewStyle = {
   position: 'absolute',
-  // top: Platform.OS == 'ios' ? 80 : 55,
   top: 0,
   right: 0,
   left: 0,
   bottom: 0,
 }
-
-// const ProfileImageView: ViewStyle = {
-//   marginBottom: 8,
-// }
+// Profile Photo style
 const ProfileImage: ImageStyle = {
   height: 100,
   width: 100,
@@ -43,13 +48,12 @@ const ProfileImage: ImageStyle = {
   borderWidth: 3,
   borderColor: color.palette.golden
 }
-
+// Text styles for user details
 const TEXT: TextStyle = {
   color: color.palette.white,
   textAlign: 'center',
   alignSelf: 'flex-start'
 }
-
 const NameText: TextStyle = {
   ...TEXT,
   fontSize: 24,
@@ -64,10 +68,13 @@ const BirthDate: TextStyle = {
   ...TEXT,
   fontSize: 18
 }
+// -- User Details View Ends -- //
+
+// -- Saved categories view Starts -- //
+// Content view
 const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - DEVICE_HEIGHT * 0.1 - 75;
 const ContentView: ViewStyle = {
   marginTop: HEADER_SCROLL_DISTANCE,
-  // flexGrow: 1,
   minHeight: CONTENTVIEWHEIGHT,
   backgroundColor: color.palette.blackBackground,
   paddingHorizontal: spacing[6],
@@ -82,9 +89,8 @@ const TextFieldView: ViewStyle = {
   borderBottomColor: color.palette.white,
   height: 40,
   paddingTop: Platform.OS == 'ios' ? 10 : 0,
-  // paddingVertical: 10
 }
-
+// Accordion style
 const ListOfCategory: ViewStyle = {
   marginTop: spacing[4],
 }
@@ -131,44 +137,56 @@ const InActiveHeaderIcon: ImageStyle = {
   transform: [{ rotate: '270deg' }]
 }
 
-const KEYS_TO_FILTERS = ['title'];
-
 export const ProfileScreen = observer(function ProfileScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-  // OR
-  // const rootStore = useStores()
 
-  // Pull in navigation via hook
   const navigation = useNavigation()
   const [activeSections, setActiveSections] = useState([0]);
   const [sections, setSections] = useState([]);
-  const { userAuth, categoryData, subCategories } = useStores();
+  const { userAuth, categoryData, subCategories, activityLoader } = useStores();
   const isFocused = useIsFocused();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     if (isFocused) {
+      activityLoader.setLoading(true);
       getVisitedCategories();
+      activityLoader.setLoading(false);
     }
+
   }, [isFocused]);
 
+  useEffect(() => {
+    activityLoader.setLoading(true);
+    getVisitedCategories();
+    activityLoader.setLoading(false);
+  }, [refresh])
+
   const getVisitedCategories = () => {
-    let SECTIONS = [];
+    const SECTIONS = [];
     categoryData.categoryData.forEach(element => {
       subCategories.subCategoryData.forEach(subData => {
         if (subData.parentId == element.id) {
-          var VisitedData = subData.data.filter(function (itm) {
-            return subCategories.visitedSubCategoryIds.indexOf(itm.id) > -1;
+          let VisitedMedia = [];
+          subData.data.forEach(dataElement => {
+            let tempElement = dataElement;
+            if (dataElement.type != 'None') {
+              let temp = dataElement.media.filter((item) => {
+                console.tron.log(item, subCategories.visitedSubCategoryIds.indexOf(item.id) > -1)
+                return subCategories.visitedSubCategoryIds.indexOf(item.id) > -1;
+              })
+              if (temp.length != 0) {
+                tempElement.media = temp;
+                VisitedMedia.push(tempElement);
+              }
+            }
           });
-          console.tron.log('VisitedData', VisitedData);
-          SECTIONS.push({ title: element.name, content: VisitedData });
+          SECTIONS.push({ title: element.name, content: VisitedMedia });
         }
       });
     });
     setSections(SECTIONS);
-    console.tron.log('SECTION', SECTIONS);
   }
 
   const _renderHeader = (item, index, isExpanded) => {
@@ -180,13 +198,17 @@ export const ProfileScreen = observer(function ProfileScreen() {
     );
   };
 
-  const filteredArray = sections.filter(createFilter(searchTerm, KEYS_TO_FILTERS))
 
-  const _renderContent = (itemm, index) => {
+
+  const _renderContent = (data, index) => {
+    if (data.content.length == 0) {
+      return (
+        <Text text='Nothing Here.!' style={{ textAlign: 'left' }} />
+      )
+    }
     return (
       <View key={index}>
-        {itemm.content.map((element, key) => {
-          console.tron.log('element ', element);
+        {data.content.map((element, key) => {
           return (
             <View key={key} style={{ marginBottom: spacing[2] }}>
               <Text style={{ marginBottom: spacing[2] }}>{element.name}</Text>
@@ -203,22 +225,24 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 }}
                 renderItem={({ item, index }: any) => {
                   return (
-                    <TouchableOpacity
-                      key={index} style={{ marginRight: spacing[3], marginBottom: spacing[2] }}
-                      onPress={() => navigation.dispatch(CommonActions.navigate(
-                        'Dashboard', {
-                        screen: item.type == 'Image' ? 'imagedetail' : 'videodetail',
-                        params: {
-                          categoryId: element.parent_id,
-                          subCategoryId: element.id,
-                          subCategoryName: element.name,
-                          activeId: item.id
-                        },
-                        initial: false,
-                      }))}
+                    <View
+                      key={index}
+                      style={{ marginRight: spacing[3], marginBottom: spacing[2] }}
                     >
-                      <FastImage source={{ uri: item.type == 'Image' ? item.url : item.video_cover, priority: FastImage.priority.normal }} style={{ height: 60, width: 60, borderWidth: 2, borderColor: color.palette.golden, borderRadius: 300, backgroundColor: color.palette.white }} resizeMode={FastImage.resizeMode.contain} />
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        style={{ position: 'absolute', right: 0, top: 0, zIndex: 1, borderRadius: 10, backgroundColor: 'red', padding: 5 }}
+                        onPress={() => {
+                          subCategories.removeSubCategoryVisited(item.id)
+                          setRefresh(!refresh);
+                        }}
+                      >
+                        <Icon icon='delete' style={{ height: 10, width: 10 }} />
+                      </TouchableOpacity>
+                      <View>
+
+                        <FastImage source={{ uri: item.type == 'Image' ? item.url : item.video_cover, priority: FastImage.priority.normal }} style={{ height: 60, width: 60, borderWidth: 2, zIndex: 0, borderColor: color.palette.golden, borderRadius: 300, backgroundColor: color.palette.white }} resizeMode={FastImage.resizeMode.contain} />
+                      </View>
+                    </View>
                   )
                 }}
               />
@@ -254,11 +278,22 @@ export const ProfileScreen = observer(function ProfileScreen() {
     outputRange: [0, 160, 160, 160],
     extrapolate: 'clamp',
   })
+  const UserDetailsRight = scrollY.interpolate({
+    inputRange: [0, HEADER_SCROLL_DISTANCE],
+    outputRange: [0, 10],
+    extrapolate: 'clamp',
+  })
   const minWidth = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: ['100%', '0%'],
     extrapolate: 'clamp',
   });
+
+  const searchCategories = (term) => {
+    setSearchTerm(term)
+    let filteredArray = sections.filter(createFilter(searchTerm, ['title']))
+    setSections(filteredArray);
+  }
 
   return (
 
@@ -273,7 +308,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
               source={userAuth.userObj.profileUrl != '' ? { uri: userAuth.userObj.profileUrl } : icons.profile_placeholder}
               style={ProfileImage} />
           </Animated.View>
-          <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, height: 100, justifyContent: 'center' }}>
+          <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, right: UserDetailsRight, height: 100, justifyContent: 'center' }}>
             <Animated.Text style={[NameText, { minWidth }]} numberOfLines={1} >{userAuth.userObj.userName != '' ? userAuth.userObj.userName : 'Test User'}</Animated.Text>
             <Animated.Text style={[Emailaddress, { minWidth }]} numberOfLines={1} >{userAuth.userObj.userEmail}</Animated.Text>
             <Animated.Text style={[BirthDate, { minWidth }]} numberOfLines={1} >{'29th March, 1999'}</Animated.Text>
@@ -296,7 +331,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
               <View style={{ marginTop: spacing[1] }}>
                 <Icon icon='search' style={{ height: 16, width: 16, position: 'absolute', right: 10, top: 12 }} />
                 <SearchInput
-                  onChangeText={(term) => { setSearchTerm(term) }}
+                  // onChangeText={(term) => { setSearchTerm(term) }}
+                  onChangeText={(term) => searchCategories(term)}
                   placeholderTextColor={color.palette.offWhite}
                   style={{ color: color.palette.white }}
                   inputViewStyles={TextFieldView}
@@ -307,7 +343,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
             </View>
             <View style={ListOfCategory}>
               <Accordion
-                sections={filteredArray}
+                sections={sections}
                 activeSections={activeSections}
                 renderHeader={_renderHeader}
                 renderContent={_renderContent}

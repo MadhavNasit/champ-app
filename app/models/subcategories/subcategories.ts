@@ -6,6 +6,7 @@ api.setup();
 /**
  * Model description here for TypeScript hints.
  */
+
 export const SubCategoriesModel = types
   .model("SubCategories")
   .props({
@@ -23,14 +24,11 @@ export const SubCategoriesModel = types
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
             let indexOfCategory = findWithAttr(self.subCategoryData, parentId);
-            console.tron.log('called with id', parentId, indexOfCategory)
             if (indexOfCategory == -1) {
               self.subCategoryData.push({ parentId: parentId, data: res.data.data.data });
-              console.tron.log(self.subCategoryData);
             }
             else {
               self.subCategoryData[indexOfCategory] = { parentId: parentId, data: res.data.data.data };
-              console.tron.log(self.subCategoryData);
             }
           }
         }
@@ -54,20 +52,25 @@ export const SubCategoriesModel = types
 
     getSubCategoryMedia(subCategoryId: number) {
       const indexOfsubCategory = self.currentSubCategories.findIndex(x => x.id == subCategoryId);
-      console.tron.log(self.currentSubCategories[indexOfsubCategory].type);
       if (self.currentSubCategories[indexOfsubCategory].type != 'None') {
         self.subCategoryMedia = self.currentSubCategories[indexOfsubCategory].media;
       }
       else {
         self.subCategoryMedia = [];
       }
-      console.tron.log(self.subCategoryMedia);
     },
 
-    setSubCategoryVisited(parentId: number, subCategoryId: number) {
-      if (self.visitedSubCategoryIds.indexOf(subCategoryId) === -1) {
-        self.visitedSubCategoryIds.push(subCategoryId);
+    setSubCategoryVisited(mediaId: number) {
+      if (self.visitedSubCategoryIds.indexOf(mediaId) === -1) {
+        self.visitedSubCategoryIds.push(mediaId);
+        console.tron.log('set', self.visitedSubCategoryIds)
       }
+    },
+
+    removeSubCategoryVisited(mediaId: number) {
+      let index = self.visitedSubCategoryIds.indexOf(mediaId);
+      self.visitedSubCategoryIds.splice(index, 1);
+      console.tron.log('remove', self.visitedSubCategoryIds)
     },
 
     clearCurrentSubCategory() {
