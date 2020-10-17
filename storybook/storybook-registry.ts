@@ -1,3 +1,4 @@
+require("../app/components/activity-loader/activity-loader.story")
 require("../app/components/logout/logout.story")
 require("../app/components/drawer-component/drawer-component.story")
 require("../app/components/google-signin/google-signin.story")

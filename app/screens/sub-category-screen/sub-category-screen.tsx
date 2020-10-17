@@ -54,14 +54,16 @@ const CategoryText: TextStyle = {
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }: SubCategoryProps) {
 
   const isFocused = useIsFocused()
-  const { subCategories } = useStores();
+  const { subCategories, activityLoader } = useStores();
 
   useEffect(() => {
     if (isFocused) {
       LoadStoreData(route.params.parentId);
+      activityLoader.setLoading(false);
     }
 
     return function cleanup() {
+      activityLoader.setLoading(true);
       subCategories.clearCurrentSubCategory();
     };
   }, [route.params.parentId]);

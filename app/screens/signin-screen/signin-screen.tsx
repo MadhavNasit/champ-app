@@ -9,6 +9,7 @@ import { Button, FacebookSignin, GoogleSignIn, Icon, Text, TextField, Wallpaper 
 import { color, spacing, typography } from "../../theme"
 import { validateEmail, validatePassword } from '../../utils/validation'
 import { offsets } from "../../components/screen/screen.presets"
+import { ActivityLoader } from "../../components/activity-loader/activity-loader"
 
 // Style form Screen
 const FULL: ViewStyle = {
@@ -124,10 +125,11 @@ export const SigninScreen = observer(function SigninScreen() {
   // Refenrece for password TextInput
   const passwordRef = useRef(null);
   // Define UserAuth Store
-  const { userAuth } = useStores();
+  const { userAuth, activityLoader } = useStores();
 
   // Submit form handler
   const SubmitForm = () => {
+    activityLoader.setLoading(true);
     Keyboard.dismiss();
     let emailValidated = EmailValidation(email);
     let passwordValidated = PasswordValidation(password);
@@ -144,6 +146,7 @@ export const SigninScreen = observer(function SigninScreen() {
     else {
       setAftersubmitErrorCheck(true);
     }
+    activityLoader.setLoading(false);
   }
 
   // Email Validator
@@ -188,10 +191,12 @@ export const SigninScreen = observer(function SigninScreen() {
     }
   }
 
+
   return (
     <View style={FULL}>
       {/* // Background Image set */}
       <Wallpaper />
+      <ActivityLoader />
       <SafeAreaView style={{ flex: 1 }}>
         <View style={CONTAINER}>
           <KeyboardAvoidingView

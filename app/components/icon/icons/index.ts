@@ -10,6 +10,7 @@ export const icons = {
   tab_inactive: require("./tab_inactive.png"),
   hamburger: require("./hamburger.png"),
   search: require("./search.png"),
+  delete: require("./delete.png"),
   profile_placeholder: require("./profile-placeholder.png"),
 }
 

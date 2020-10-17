@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle } from "react-native";
+
 import { observer } from "mobx-react-lite";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
@@ -7,6 +8,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, Screen, Text } from "../../components";
 import { color, spacing } from "../../theme";
 import { useStores } from "../../models";
+import { ActivityLoader } from "../../components/activity-loader/activity-loader";
 
 // Screen Styles
 const ROOT: ViewStyle = {
@@ -41,16 +43,19 @@ export const DashboardScreen = observer(function DashboardScreen() {
   // contains navigation props and method
   const navigation = useNavigation();
   // Category data mobx store
-  const { categoryData, subCategories } = useStores();
+  const { categoryData, subCategories, activityLoader } = useStores();
   // return true if screen is focused
   const isFocused = useIsFocused()
 
   // Call api function if screen is focused
   useEffect(() => {
     if (isFocused) {
+      activityLoader.setLoading(true);
       subCategories.setCurrentSubCategoryIndex(0);
       LoadDataFromApi();
+      activityLoader.setLoading(false);
     }
+
   }, [isFocused]);
 
   // Call APi and store in model
@@ -75,6 +80,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
 
   return (
     <Screen style={ROOT} preset="fixed">
+      <ActivityLoader />
       {/* Header Component */}
       <Header
         headerText='Dashboard'

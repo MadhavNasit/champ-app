@@ -1,4 +1,5 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { ActivityLoaderModel } from "../activity-loader/activity-loader"
 import { CategoryDataModel } from "../category-data/category-data"
 import { SubCategoriesModel } from "../subcategories/subcategories"
 import { UserAuthModel } from "../user-auth/user-auth"
@@ -10,7 +11,8 @@ import { UserAuthModel } from "../user-auth/user-auth"
 export const RootStoreModel = types.model("RootStore").props({
   userAuth: types.optional(UserAuthModel, {}),
   categoryData: types.optional(CategoryDataModel, {}),
-  subCategories: types.optional(SubCategoriesModel, {})
+  subCategories: types.optional(SubCategoriesModel, {}),
+  activityLoader: types.optional(ActivityLoaderModel, {})
 })
 
 /**

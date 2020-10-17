@@ -17,7 +17,7 @@ export interface GoogleSigninProps {
 export function GoogleSignIn(props: GoogleSigninProps) {
   const { ButtonStyle, TextStyle } = props
 
-  const { userAuth } = useStores()
+  const { userAuth, activityLoader } = useStores()
 
   useEffect(() => {
     GoogleConfigure();
@@ -33,6 +33,7 @@ export function GoogleSignIn(props: GoogleSigninProps) {
 
   // Sign Function for Google Signin
   const GoogleSignIn = async () => {
+    activityLoader.setLoading(true);
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -53,6 +54,7 @@ export function GoogleSignIn(props: GoogleSigninProps) {
         console.log(error);
       }
     }
+    activityLoader.setLoading(false);
   };
 
   return (

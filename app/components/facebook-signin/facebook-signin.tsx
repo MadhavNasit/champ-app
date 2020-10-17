@@ -25,10 +25,11 @@ export interface FacebookSigninProps {
 export function FacebookSignin(props: FacebookSigninProps) {
   const { ButtonStyle, TextStyle } = props;
 
-  const { userAuth } = useStores();
+  const { userAuth, activityLoader } = useStores();
 
   // Signin function for Facebook Signin
   const FacebookSignIn = () => {
+    activityLoader.setLoading(true);
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
@@ -72,7 +73,6 @@ export function FacebookSignin(props: FacebookSigninProps) {
     if (error) {
       Alert.alert('Something Wrong..!!')
     } else {
-      console.tron.log(result);
       let userObj = {
         userName: result.name,
         profileUrl: result.picture.data.url,
@@ -80,6 +80,7 @@ export function FacebookSignin(props: FacebookSigninProps) {
       }
       await userAuth.userAuthenticate(userObj);
     }
+    activityLoader.setLoading(false);
   }
 
   return (

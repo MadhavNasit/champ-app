@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { Alert, FlatList, Route, View, ViewStyle } from "react-native"
+import { Alert, FlatList, View, ViewStyle } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
 import { Header, NavButton, Screen, Text } from "../../components"
-import { spacing } from "../../theme"
+import { color, spacing } from "../../theme"
 
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
@@ -62,7 +62,6 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     await subCategories.setCurrentSubCategoryIndex(parentId);
     await subCategories.getCurrentSubCategories(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
-    await subCategories.setSubCategoryVisited(parentId, subCategoryId);
   }
 
   const initialParams: InitialPlayerParams = {
@@ -75,6 +74,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
     let videoId = item.url.match(urlReg)[7];
+    subCategories.setSubCategoryVisited(item.id);
     return (
       <View key={index}>
         <View>
@@ -86,15 +86,13 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
             onChangeState={onStateChange}
             onReady={() => { setVideoReady(true) }}
           />
-          {!videoReady ?
+          {/* Show indicator while video loading */}
+          {!videoReady &&
             (
               <View style={VideoActivityLoader}>
-                <LinesLoader />
+                <Text text='Loading Video...' style={{ color: color.palette.golden }} />
+                <LinesLoader color={color.palette.golden} />
               </View>
-            )
-            :
-            (
-              null
             )
           }
 
