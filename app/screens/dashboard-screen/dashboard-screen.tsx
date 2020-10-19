@@ -43,7 +43,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
   // contains navigation props and method
   const navigation = useNavigation();
   // Category data mobx store
-  const { categoryData, subCategories, activityLoader } = useStores();
+  const { categoryData, activityLoader, visitedSubcategories } = useStores();
   // return true if screen is focused
   const isFocused = useIsFocused()
 
@@ -51,7 +51,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
   useEffect(() => {
     if (isFocused) {
       activityLoader.setLoading(true);
-      subCategories.setCurrentSubCategoryIndex(0);
+      visitedSubcategories.setCurrentSubCategoryIndex(0);
       LoadDataFromApi();
       activityLoader.setLoading(false);
     }
@@ -89,7 +89,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
       {/* Return Categories View */}
       <View style={CONTAINER}>
         <FlatList
-          data={categoryData.categoryData}
+          data={categoryData.mainCategoryData}
           contentContainerStyle={FlatListview}
           renderItem={RenderCategories}
           keyExtractor={(item, index) => index.toString()}

@@ -62,7 +62,7 @@ export interface DrawerComponentProps {
  * Describe your component here
  */
 export const DrawerComponent = observer(function DrawerComponent({ navigation }: DrawerComponentProps) {
-  const { subCategories, categoryData } = useStores();
+  const { categoryData, visitedSubcategories } = useStores();
 
   return (
     <SafeAreaView style={SafeAreaViewStyle} >
@@ -82,10 +82,10 @@ export const DrawerComponent = observer(function DrawerComponent({ navigation }:
               activeTintColor={color.palette.golden}
               inactiveTintColor={color.palette.white}
               labelStyle={DrawerItemLabel}
-              focused={subCategories.currentSubCategoryIndex == 0 ? true : false}
+              focused={visitedSubcategories.currentSubCategoryIndex == 0 ? true : false}
               activeBackgroundColor={color.transparent}
             />
-            {categoryData.categoryData.map((item, key) => (
+            {categoryData.mainCategoryData.map((item, key) => (
               <DrawerItem
                 key={key}
                 label={item.name}
@@ -96,7 +96,7 @@ export const DrawerComponent = observer(function DrawerComponent({ navigation }:
                 activeTintColor={color.palette.golden}
                 inactiveTintColor={color.palette.white}
                 labelStyle={DrawerItemLabel}
-                focused={subCategories.currentSubCategoryIndex == item.id ? true : false}
+                focused={visitedSubcategories.currentSubCategoryIndex == item.id ? true : false}
                 activeBackgroundColor={color.transparent}
               />
             ))}

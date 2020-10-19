@@ -54,7 +54,7 @@ const CategoryText: TextStyle = {
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }: SubCategoryProps) {
 
   const isFocused = useIsFocused()
-  const { subCategories, activityLoader } = useStores();
+  const { subCategories, activityLoader, visitedSubcategories } = useStores();
 
   useEffect(() => {
     if (isFocused) {
@@ -71,7 +71,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route, na
   const LoadStoreData = async (parentId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getCurrentSubCategories(parentId);
-    await subCategories.setCurrentSubCategoryIndex(parentId);
+    await visitedSubcategories.setCurrentSubCategoryIndex(parentId);
   }
 
   return (

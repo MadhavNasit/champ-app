@@ -3,6 +3,7 @@ import { ActivityLoaderModel } from "../activity-loader/activity-loader"
 import { CategoryDataModel } from "../category-data/category-data"
 import { SubCategoriesModel } from "../subcategories/subcategories"
 import { UserAuthModel } from "../user-auth/user-auth"
+import { VisitedSubcategoriesModel } from "../visited-subcategories/visited-subcategories"
 
 /**
  * A RootStore model.
@@ -12,7 +13,8 @@ export const RootStoreModel = types.model("RootStore").props({
   userAuth: types.optional(UserAuthModel, {}),
   categoryData: types.optional(CategoryDataModel, {}),
   subCategories: types.optional(SubCategoriesModel, {}),
-  activityLoader: types.optional(ActivityLoaderModel, {})
+  activityLoader: types.optional(ActivityLoaderModel, {}),
+  visitedSubcategories: types.optional(VisitedSubcategoriesModel, {})
 })
 
 /**

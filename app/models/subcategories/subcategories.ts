@@ -12,13 +12,12 @@ export const SubCategoriesModel = types
   .props({
     subCategoryData: types.optional(types.array(types.frozen()), []),
     currentSubCategories: types.optional(types.frozen(), []),
-    currentSubCategoryIndex: types.optional(types.number, 0),
     subCategoryMedia: types.optional(types.frozen(), []),
-    visitedSubCategoryIds: types.optional(types.array(types.frozen()), [])
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
     getSubCategoryData: flow(function* getSubCategoryData(parentId: number) {
+      console.tron.log('in fn with id', parentId)
       try {
         const res = yield api.getSubCategories(parentId);
         if (res.kind === "ok" && res.data.status == 200) {
@@ -46,10 +45,6 @@ export const SubCategoriesModel = types
       self.currentSubCategories = self.subCategoryData[indexOfObject].data;
     },
 
-    setCurrentSubCategoryIndex(index: number) {
-      self.currentSubCategoryIndex = index;
-    },
-
     getSubCategoryMedia(subCategoryId: number) {
       const indexOfsubCategory = self.currentSubCategories.findIndex(x => x.id == subCategoryId);
       if (self.currentSubCategories[indexOfsubCategory].type != 'None') {
@@ -58,19 +53,6 @@ export const SubCategoriesModel = types
       else {
         self.subCategoryMedia = [];
       }
-    },
-
-    setSubCategoryVisited(mediaId: number) {
-      if (self.visitedSubCategoryIds.indexOf(mediaId) === -1) {
-        self.visitedSubCategoryIds.push(mediaId);
-        console.tron.log('set', self.visitedSubCategoryIds)
-      }
-    },
-
-    removeSubCategoryVisited(mediaId: number) {
-      let index = self.visitedSubCategoryIds.indexOf(mediaId);
-      self.visitedSubCategoryIds.splice(index, 1);
-      console.tron.log('remove', self.visitedSubCategoryIds)
     },
 
     clearCurrentSubCategory() {

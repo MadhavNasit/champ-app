@@ -139,14 +139,12 @@ const InActiveHeaderIcon: ImageStyle = {
 
 export const ProfileScreen = observer(function ProfileScreen() {
 
-  const navigation = useNavigation()
   const [activeSections, setActiveSections] = useState([0]);
   const [sections, setSections] = useState([]);
-  const { userAuth, categoryData, subCategories, activityLoader } = useStores();
+  const { userAuth, categoryData, subCategories, activityLoader, visitedSubcategories } = useStores();
   const isFocused = useIsFocused();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     if (isFocused) {
@@ -155,34 +153,38 @@ export const ProfileScreen = observer(function ProfileScreen() {
       activityLoader.setLoading(false);
     }
 
+    return function cleanup() {
+      subCategories.clearSubCategoryMedia();
+    };
   }, [isFocused]);
-
-  useEffect(() => {
-    activityLoader.setLoading(true);
-    getVisitedCategories();
-    activityLoader.setLoading(false);
-  }, [refresh])
 
   const getVisitedCategories = () => {
     const SECTIONS = [];
-    categoryData.categoryData.forEach(element => {
-      subCategories.subCategoryData.forEach(subData => {
-        if (subData.parentId == element.id) {
+    categoryData.mainCategoryData.forEach(mainCategoryElement => {
+      subCategories.subCategoryData.forEach(subCategoriesElement => {
+
+        if (subCategoriesElement.parentId == mainCategoryElement.id) {
           let VisitedMedia = [];
-          subData.data.forEach(dataElement => {
+          subCategoriesElement.data.forEach(dataElement => {
             let tempElement = dataElement;
             if (dataElement.type != 'None') {
-              let temp = dataElement.media.filter((item) => {
-                console.tron.log(item, subCategories.visitedSubCategoryIds.indexOf(item.id) > -1)
-                return subCategories.visitedSubCategoryIds.indexOf(item.id) > -1;
-              })
+              let temp = [];
+              dataElement.media.forEach(item => {
+                let index = visitedSubcategories.visitedSubCategoryIds.indexOf(item.id);
+                if (index != -1) {
+                  temp.push(item);
+                }
+              });
+              // let temp = dataElement.media.filter((item) => {
+              //   return subCategories.visitedSubCategoryIds.indexOf(item.id) > -1;
+              // })
               if (temp.length != 0) {
                 tempElement.media = temp;
                 VisitedMedia.push(tempElement);
               }
             }
           });
-          SECTIONS.push({ title: element.name, content: VisitedMedia });
+          SECTIONS.push({ title: mainCategoryElement.name, content: VisitedMedia });
         }
       });
     });
@@ -232,8 +234,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
                       <TouchableOpacity
                         style={{ position: 'absolute', right: 0, top: 0, zIndex: 1, borderRadius: 10, backgroundColor: 'red', padding: 5 }}
                         onPress={() => {
-                          subCategories.removeSubCategoryVisited(item.id)
-                          setRefresh(!refresh);
+                          visitedSubcategories.removeSubCategoryVisited(item.id)
+                          getVisitedCategories();
                         }}
                       >
                         <Icon icon='delete' style={{ height: 10, width: 10 }} />
@@ -289,9 +291,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
     extrapolate: 'clamp',
   });
 
+  const filteredArray = sections.filter(createFilter(searchTerm, ['title']))
   const searchCategories = (term) => {
     setSearchTerm(term)
-    let filteredArray = sections.filter(createFilter(searchTerm, ['title']))
     setSections(filteredArray);
   }
 
@@ -331,8 +333,8 @@ export const ProfileScreen = observer(function ProfileScreen() {
               <View style={{ marginTop: spacing[1] }}>
                 <Icon icon='search' style={{ height: 16, width: 16, position: 'absolute', right: 10, top: 12 }} />
                 <SearchInput
-                  // onChangeText={(term) => { setSearchTerm(term) }}
-                  onChangeText={(term) => searchCategories(term)}
+                  onChangeText={(term) => { setSearchTerm(term) }}
+                  // onChangeText={(term) => searchCategories(term)}
                   placeholderTextColor={color.palette.offWhite}
                   style={{ color: color.palette.white }}
                   inputViewStyles={TextFieldView}

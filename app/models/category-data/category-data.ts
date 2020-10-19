@@ -10,7 +10,7 @@ api.setup();
 export const CategoryDataModel = types
   .model("CategoryData")
   .props({
-    categoryData: types.optional(types.frozen(), []),
+    mainCategoryData: types.optional(types.frozen(), []),
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
@@ -19,7 +19,7 @@ export const CategoryDataModel = types
         const res = yield api.getCategories();
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
-            self.categoryData = res.data.data.data;
+            self.mainCategoryData = res.data.data.data;
           }
         }
         else {

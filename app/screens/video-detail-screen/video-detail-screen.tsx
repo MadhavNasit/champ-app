@@ -35,7 +35,7 @@ const VideoActivityLoader: ViewStyle = {
 export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {
 
   const isFocused = useIsFocused();
-  const { subCategories } = useStores();
+  const { subCategories, activityLoader, visitedSubcategories } = useStores();
 
   const [playing, setPlaying] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
@@ -46,10 +46,11 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     }
   }, []);
 
-
   useEffect(() => {
     if (isFocused) {
+      activityLoader.setLoading(true);
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+      activityLoader.setLoading(false);
     }
 
     return function cleanup() {
@@ -59,7 +60,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
 
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
-    await subCategories.setCurrentSubCategoryIndex(parentId);
+    await visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     await subCategories.getCurrentSubCategories(parentId);
     await subCategories.getSubCategoryMedia(subCategoryId);
   }
@@ -74,7 +75,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
     let videoId = item.url.match(urlReg)[7];
-    subCategories.setSubCategoryVisited(item.id);
+    visitedSubcategories.setSubCategoryVisited(item.id);
     return (
       <View key={index}>
         <View>
@@ -126,9 +127,16 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
         />
         <FlatList
           data={subCategories.subCategoryMedia}
-          style={{ paddingBottom: 25, marginBottom: 15, paddingHorizontal: spacing[6], }}
+          style={{ flexGrow: 1, paddingBottom: 25, marginBottom: 15, paddingHorizontal: spacing[6] }}
           keyExtractor={(index) => index.toString()}
           renderItem={renderMedia}
+          ListEmptyComponent={() => {
+            return (
+              <View style={{ flex: 1, alignItems: 'center', marginTop: '50%' }}>
+                <Text style={{ fontSize: 18 }} text='No Data Found..!!' />
+              </View>
+            )
+          }}
         />
       </View>
     </Screen >

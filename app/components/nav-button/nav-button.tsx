@@ -66,7 +66,7 @@ const NavNextText: TextStyle = {
 export const NavButton = observer(function NavButton(props: NavButtonProps) {
   // Defines Props, Store and Navigation
   const { parentId, subCategoryId } = props;
-  const { subCategories, categoryData } = useStores()
+  const { subCategories, categoryData, activityLoader } = useStores()
   const navigation = useNavigation()
 
   // States for Disable ot Enable Buttons
@@ -89,7 +89,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
   }
 
   // Length of categories
-  const lengthOfCategory = categoryData.categoryData.length;
+  const lengthOfCategory = categoryData.mainCategoryData.length;
 
   // Onpress function for Next Button
   // Navigates to next Screen
@@ -144,7 +144,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
     if (indexOfSubCategory > 0) {
       subCategories.clearSubCategoryMedia();
       let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory - 1];
-
       navigation.dispatch(StackActions.replace(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
         categoryId: dataOfMedia.parent_id,
         subCategoryId: dataOfMedia.id,
@@ -159,6 +158,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
         subCategories.clearSubCategoryMedia();
         let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
         let lengthOfNextSubCategory = subCategories.subCategoryData[indexOfNewParent].data.length;
+
         let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[lengthOfNextSubCategory - 1];
         navigation.dispatch(StackActions.replace(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
           categoryId: dataOfMedia.parent_id,

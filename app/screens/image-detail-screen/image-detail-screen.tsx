@@ -11,6 +11,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { Header, NavButton, Screen, Text } from "../../components"
 import { color } from "../../theme"
+import { async } from "validate.js"
 
 interface ImageDetailsProps {
   route,
@@ -67,11 +68,12 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   const isFocused = useIsFocused();
 
   // Store for Subcategory Data
-  const { subCategories, activityLoader } = useStores();
-
+  const { subCategories, activityLoader, visitedSubcategories } = useStores();
+  const [activeSlide, setActiveSlide] = useState<number>(0);
   // Data fetch on screen focus
   useEffect(() => {
     if (isFocused) {
+      console.tron.log('called');
       activityLoader.setLoading(true);
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
       activityLoader.setLoading(false);
@@ -80,19 +82,23 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     return function cleanup() {
       subCategories.clearSubCategoryMedia();
     };
-  }, [route.params.subCategoryId]);
+  }, [isFocused, route.params.subCategoryId]);
+
+  const setVisitedMedia = (index: number) => {
+    visitedSubcategories.setSubCategoryVisited(subCategories.subCategoryMedia[index].id);
+  }
 
   const carousel = useRef()
   // Load data from Api and store in subcategories model
-  const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
-    await subCategories.getSubCategoryData(parentId);
-    await subCategories.getSubCategoryMedia(subCategoryId);
-    await subCategories.setSubCategoryVisited(1);
-    await subCategories.setCurrentSubCategoryIndex(parentId);
+  const getSubCategoryData = (parentId: number, subCategoryId: number) => {
+    subCategories.getSubCategoryData(parentId);
+    subCategories.getSubCategoryMedia(subCategoryId);
+    visitedSubcategories.setSubCategoryVisited(activeSlide + 1);
+    visitedSubcategories.setCurrentSubCategoryIndex(parentId);
   }
 
   // Carousel Renderitem and Pagination
-  const [activeSlide, setActiveSlide] = useState<number>(0);
+
   const SLIDER_WIDTH = Dimensions.get('window').width;
   const ITEM_WIDTH = SLIDER_WIDTH - 72;
 
@@ -164,10 +170,11 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
             itemWidth={ITEM_WIDTH}
             inactiveSlideOpacity={0}
             inactiveSlideShift={0}
+            extraData={subCategories.subCategoryMedia.length}
             loop={false}
             onSnapToItem={(index) => {
-              setActiveSlide(index)
-              // subCategories.setSubCategoryVisited(activeSlide + 1)
+              setActiveSlide(index);
+              setVisitedMedia(index)
             }
             }
           />
