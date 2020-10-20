@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle } from "react-native";
+import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle, BackHandler, Alert } from "react-native";
 
 import { observer } from "mobx-react-lite";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -55,13 +55,28 @@ export const DashboardScreen = observer(function DashboardScreen() {
       LoadDataFromApi();
       activityLoader.setLoading(false);
     }
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
 
+    return () => backHandler.remove()
   }, [isFocused]);
 
   // Call APi and store in model
   const LoadDataFromApi = async () => {
     await categoryData.getCategoryData();
   }
+
+  const backAction = () => {
+    Alert.alert("Hold on!", "Are you sure you want to exit?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel",
+      },
+      { text: "YES", onPress: () => BackHandler.exitApp() },
+    ])
+    return true
+  }
+
 
   // Render function for Categories
   const RenderCategories = ({ item, index }) => {
