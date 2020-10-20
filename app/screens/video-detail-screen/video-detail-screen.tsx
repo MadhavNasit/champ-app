@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { Alert, FlatList, View, ViewStyle } from "react-native"
+import { Alert, FlatList, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
+// Component and theme import
 import { Header, NavButton, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 
+// node modules import
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
 import { LinesLoader } from 'react-native-indicator';
@@ -16,12 +18,55 @@ interface VideoDetailsProps {
   route
 }
 
+// screen container
 const ROOT: ViewStyle = {
   flex: 1,
 }
 const CONTAINER: ViewStyle = {
   flex: 1,
 }
+
+// Text style 
+const TEXT: TextStyle = {
+  color: color.palette.white
+}
+
+// Empty view for mediaType == None
+const EmptyDataView: ViewStyle = {
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: '10%'
+}
+const EmptyDataText: TextStyle = {
+  ...TEXT,
+  fontSize: 18,
+  fontWeight: 'bold'
+}
+
+// FlatList View Style for main content
+const FlatListContainer: ViewStyle = {
+  flexGrow: 1,
+}
+const FlatListStyle: ViewStyle = {
+  paddingBottom: 25,
+  marginBottom: 15,
+  paddingHorizontal: spacing[6]
+}
+const UnorderedListText: TextStyle = {
+  ...TEXT,
+  fontSize: 16
+}
+const ParagraphText: TextStyle = {
+  ...UnorderedListText
+}
+const BulletStyle: TextStyle = {
+  ...TEXT,
+  fontSize: 16,
+  marginRight: 5
+}
+
+// Activity loader style
 const VideoActivityLoader: ViewStyle = {
   position: 'absolute',
   top: 0,
@@ -35,10 +80,33 @@ const VideoActivityLoader: ViewStyle = {
 export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {
 
   const isFocused = useIsFocused();
-  const { subCategories, activityLoader, visitedSubcategories } = useStores();
+  const { subCategories, visitedSubcategories } = useStores();
 
+  // states for manage video playing
   const [playing, setPlaying] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    if (isFocused) {
+      // Load video and its details
+      getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+    }
+
+    // cleanup function for screen
+    return function cleanup() {
+      subCategories.clearSubCategoryMedia();
+    };
+  }, [isFocused, route.params.subCategoryId]);
+
+  // Api call and store data in mobx model
+  const getSubCategoryData = (parentId: number, subCategoryId: number) => {
+    subCategories.getSubCategoryData(parentId);
+    visitedSubcategories.setCurrentSubCategoryIndex(parentId);
+    subCategories.getCurrentSubCategories(parentId);
+    subCategories.getSubCategoryMedia(subCategoryId);
+  }
+
+  // Alert on video playing end
   const onStateChange = useCallback((state) => {
     if (state === "ended") {
       setPlaying(false);
@@ -46,25 +114,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     }
   }, []);
 
-  useEffect(() => {
-    if (isFocused) {
-      activityLoader.setLoading(true);
-      getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
-      activityLoader.setLoading(false);
-    }
-
-    return function cleanup() {
-      subCategories.clearSubCategoryMedia();
-    };
-  }, [route.params.subCategoryId]);
-
-  const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
-    await subCategories.getSubCategoryData(parentId);
-    await visitedSubcategories.setCurrentSubCategoryIndex(parentId);
-    await subCategories.getCurrentSubCategories(parentId);
-    await subCategories.getSubCategoryMedia(subCategoryId);
-  }
-
+  // Parameters for video player
   const initialParams: InitialPlayerParams = {
     loop: false,
     controls: true,
@@ -72,8 +122,10 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     rel: false
   }
 
+  // Render function for video details
   const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
+    // retrive youtube video id from Youtube URL 
     let videoId = item.url.match(urlReg)[7];
     visitedSubcategories.setSubCategoryVisited(item.id);
     return (
@@ -96,13 +148,12 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
               </View>
             )
           }
-
         </View>
-        <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16 }, h2: { color: 'white' } }}
+        <HTML tagsStyles={{ ul: { ...UnorderedListText }, p: { ...ParagraphText }, h2: { ...TEXT } }}
           listsPrefixesRenderers={{
-            ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {
+            ul: () => {
               return (
-                <Text style={{ color: 'white', fontSize: 16, marginRight: 5 }}>•</Text>
+                <Text style={BulletStyle}>•</Text>
               );
             }
           }}
@@ -125,19 +176,20 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
           parentId={route.params.categoryId}
           subCategoryId={route.params.subCategoryId}
         />
-        <FlatList
-          data={subCategories.subCategoryMedia}
-          style={{ flexGrow: 1, paddingBottom: 25, marginBottom: 15, paddingHorizontal: spacing[6] }}
-          keyExtractor={(index) => index.toString()}
-          renderItem={renderMedia}
-          ListEmptyComponent={() => {
-            return (
-              <View style={{ flex: 1, alignItems: 'center', marginTop: '50%' }}>
-                <Text style={{ fontSize: 18 }} text='No Data Found..!!' />
-              </View>
-            )
-          }}
-        />
+        {route.params.mediaType == 'None' ? (
+          <View style={EmptyDataView}>
+            <Text style={EmptyDataText} text='No Data Found..!!' />
+          </View>
+        ) : (
+            <FlatList
+              data={subCategories.subCategoryMedia}
+              style={FlatListStyle}
+              contentContainerStyle={FlatListContainer}
+              keyExtractor={(index) => index.toString()}
+              renderItem={renderMedia}
+            />
+          )}
+
       </View>
     </Screen >
   )

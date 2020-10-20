@@ -4,7 +4,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Platform, Dimensions, TouchableOpacity } from "react-native";
 
-import { CommonActions, useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 
 import { observer } from "mobx-react-lite";
 import { useStores } from "../../models";
@@ -14,12 +14,14 @@ import { color, spacing } from "../../theme";
 import { icons } from "../../components/icon/icons";
 
 import Accordion from 'react-native-collapsible/Accordion';
-import FastImage from "react-native-fast-image";
+import FastImage, { FastImageProps } from "react-native-fast-image";
 import SearchInput, { createFilter } from 'react-native-search-filter';
-import { async } from "validate.js";
 
 // Main Cintainer stle
 const ROOT: ViewStyle = {
+  flex: 1,
+}
+const FILL: ViewStyle = {
   flex: 1,
 }
 
@@ -84,13 +86,24 @@ const SavedCategoryHeading: TextStyle = {
   color: color.palette.golden,
   fontSize: 20,
 }
+const SearchInputView: ViewStyle = {
+  marginVertical: spacing[1],
+}
 const TextFieldView: ViewStyle = {
   borderBottomWidth: 1,
   borderBottomColor: color.palette.white,
   height: 40,
   paddingTop: Platform.OS == 'ios' ? 10 : 0,
 }
+const SearchIconStyle: ImageStyle = {
+  position: 'absolute',
+  right: 10,
+  top: 12,
+  height: 16,
+  width: 16,
+}
 // Accordion style
+// -- Accordion Header
 const ListOfCategory: ViewStyle = {
   marginTop: spacing[4],
 }
@@ -136,130 +149,101 @@ const InActiveHeaderIcon: ImageStyle = {
   tintColor: color.palette.white,
   transform: [{ rotate: '270deg' }]
 }
+// -- Accordion body
+const BodySpacing: ViewStyle = {
+  marginBottom: spacing[2],
+}
+const SubCategoryText: TextStyle = {
+  marginBottom: spacing[1],
+}
+const MediaIconView: ViewStyle = {
+  marginRight: spacing[3],
+  marginBottom: spacing[2]
+}
+const DeleteIconView: ViewStyle = {
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  zIndex: 1,
+  borderRadius: 10,
+  backgroundColor: color.palette.angry,
+  padding: 5
+}
+const DeleteIconStyle: ImageStyle = {
+  height: 10,
+  width: 10
+}
+const MediaIconStyle = {
+  height: 60,
+  width: 60,
+  borderWidth: 2,
+  zIndex: 0,
+  borderColor: color.palette.golden,
+  borderRadius: 30,
+  backgroundColor: color.palette.white
+}
 
 export const ProfileScreen = observer(function ProfileScreen() {
 
-  const [activeSections, setActiveSections] = useState([0]);
-  const [sections, setSections] = useState([]);
-  const { userAuth, categoryData, subCategories, activityLoader, visitedSubcategories } = useStores();
   const isFocused = useIsFocused();
+  const { userAuth, categoryData, subCategories, visitedSubcategories } = useStores();
+
+  // Store viewed categories
+  const [categoryDetails, setCategoryDetails] = useState([]);
+  // Reference for scroll
   const scrollY = useRef(new Animated.Value(0)).current;
+  // state for active accordion section
+  const [activeSections, setActiveSections] = useState([0]);
+  // filter term for search input
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  // called on every time screen focused
   useEffect(() => {
     if (isFocused) {
-      activityLoader.setLoading(true);
       getVisitedCategories();
-      activityLoader.setLoading(false);
     }
-
-    return function cleanup() {
-      subCategories.clearSubCategoryMedia();
-    };
   }, [isFocused]);
 
+  // Retrive recently viewed categories and media
   const getVisitedCategories = () => {
-    const SECTIONS = [];
+    let tempVisitedMedia = [];
     categoryData.mainCategoryData.forEach(mainCategoryElement => {
       subCategories.subCategoryData.forEach(subCategoriesElement => {
-
         if (subCategoriesElement.parentId == mainCategoryElement.id) {
           let VisitedMedia = [];
           subCategoriesElement.data.forEach(dataElement => {
-            let tempElement = dataElement;
+            // object for filtered data
+            let tempObj = new Object;
+            tempObj['name'] = dataElement.name;
             if (dataElement.type != 'None') {
-              let temp = [];
-              dataElement.media.forEach(item => {
-                let index = visitedSubcategories.visitedSubCategoryIds.indexOf(item.id);
-                if (index != -1) {
-                  temp.push(item);
-                }
-              });
-              // let temp = dataElement.media.filter((item) => {
-              //   return subCategories.visitedSubCategoryIds.indexOf(item.id) > -1;
-              // })
+              // filter media using visited media Ids
+              let temp = dataElement.media.filter((item) => {
+                return visitedSubcategories.visitedSubCategoryIds.indexOf(item.id) > -1;
+              })
               if (temp.length != 0) {
-                tempElement.media = temp;
-                VisitedMedia.push(tempElement);
+                tempObj['media'] = temp;
+                VisitedMedia.push(tempObj);
               }
             }
           });
-          SECTIONS.push({ title: mainCategoryElement.name, content: VisitedMedia });
+          if (VisitedMedia.length > 0) {
+            tempVisitedMedia.push({ title: mainCategoryElement.name, content: VisitedMedia });
+          }
         }
       });
     });
-    setSections(SECTIONS);
+    // set categories details to state
+    setCategoryDetails(tempVisitedMedia);
   }
 
-  const _renderHeader = (item, index, isExpanded) => {
-    return (
-      <View style={isExpanded ? HeaderActive : HeaderInActive}>
-        <Text style={isExpanded ? ActiveHeaderText : InActiveHeaderText}>{item.title}</Text>
-        <Icon icon='back' style={isExpanded ? ActiveHeaderIcon : InActiveHeaderIcon} />
-      </View>
-    );
-  };
-
-
-
-  const _renderContent = (data, index) => {
-    if (data.content.length == 0) {
-      return (
-        <Text text='Nothing Here.!' style={{ textAlign: 'left' }} />
-      )
-    }
-    return (
-      <View key={index}>
-        {data.content.map((element, key) => {
-          return (
-            <View key={key} style={{ marginBottom: spacing[2] }}>
-              <Text style={{ marginBottom: spacing[2] }}>{element.name}</Text>
-              <FlatList
-                data={element.media}
-                keyExtractor={(item, index) => index.toString()}
-                horizontal={true}
-                ListEmptyComponent={() => {
-                  return (
-                    <View style={{ marginRight: spacing[3], marginBottom: spacing[2] }}>
-                      <FastImage source={{ uri: null, priority: FastImage.priority.normal }} style={{ height: 60, width: 60, borderWidth: 2, borderColor: color.palette.golden, borderRadius: 300, backgroundColor: color.palette.white }} resizeMode={FastImage.resizeMode.contain} />
-                    </View>
-                  )
-                }}
-                renderItem={({ item, index }: any) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{ marginRight: spacing[3], marginBottom: spacing[2] }}
-                    >
-                      <TouchableOpacity
-                        style={{ position: 'absolute', right: 0, top: 0, zIndex: 1, borderRadius: 10, backgroundColor: 'red', padding: 5 }}
-                        onPress={() => {
-                          visitedSubcategories.removeSubCategoryVisited(item.id)
-                          getVisitedCategories();
-                        }}
-                      >
-                        <Icon icon='delete' style={{ height: 10, width: 10 }} />
-                      </TouchableOpacity>
-                      <View>
-
-                        <FastImage source={{ uri: item.type == 'Image' ? item.url : item.video_cover, priority: FastImage.priority.normal }} style={{ height: 60, width: 60, borderWidth: 2, zIndex: 0, borderColor: color.palette.golden, borderRadius: 300, backgroundColor: color.palette.white }} resizeMode={FastImage.resizeMode.contain} />
-                      </View>
-                    </View>
-                  )
-                }}
-              />
-            </View>
-          )
-        })}
-      </View>
-    );
-  };
-
+  // -- Interpolate on Vertical Scroll -- //
+  // Chnage height of user profile section
   const headerHeight = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
     extrapolate: 'clamp',
   });
+  // Image animations
   const ImageTop = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [20, 25],
@@ -270,6 +254,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     outputRange: [DEVICE_WIDTH / 2 - 50, 42, 32],
     extrapolate: 'clamp',
   })
+  // Text animations
   const UserDetailsTop = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
     outputRange: [130, 25],
@@ -291,35 +276,147 @@ export const ProfileScreen = observer(function ProfileScreen() {
     extrapolate: 'clamp',
   });
 
-  const filteredArray = sections.filter(createFilter(searchTerm, ['title']))
-  const searchCategories = (term) => {
-    setSearchTerm(term)
-    setSections(filteredArray);
+  // render fn for Accordion Header
+  const _renderHeader = (item, index, isExpanded) => {
+    return (
+      <View key={index} style={isExpanded ? HeaderActive : HeaderInActive}>
+        <Text style={isExpanded ? ActiveHeaderText : InActiveHeaderText}>{item.title}</Text>
+        <Icon icon='back' style={isExpanded ? ActiveHeaderIcon : InActiveHeaderIcon} />
+      </View>
+    );
+  };
+
+  // render fn for Accordion Body
+  const _renderContent = (data, index) => {
+    // Check if data of body is null
+    if (data.content.length == 0) {
+      return (
+        <View style={BodySpacing}>
+          <Text text='Nothing Here.!' style={{ textAlign: 'left' }} />
+        </View>
+      )
+    }
+    return (
+      <View key={index}>
+        {data.content.map((element, key) => {
+          return (
+            <View key={key} style={BodySpacing}>
+              <Text style={SubCategoryText}>{element.name}</Text>
+              <FlatList
+                data={element.media}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal={true}
+                renderItem={renderMediaIcon}
+              />
+            </View>
+          )
+        })}
+      </View>
+    );
+  };
+
+  // Called on press of delete icon
+  const removeRecentViewedMedia = (mediaId: number) => {
+    visitedSubcategories.removeSubCategoryVisited(mediaId);
+    getVisitedCategories();
   }
 
-  return (
+  // render fn for media icon
+  const renderMediaIcon = ({ item, index }) => {
+    return (
+      <View
+        key={index}
+        style={MediaIconView}
+      >
+        {/* Absolute delete view */}
+        <TouchableOpacity
+          style={DeleteIconView}
+          onPress={() => removeRecentViewedMedia(item.id)}
+        >
+          <Icon icon='delete' style={DeleteIconStyle} />
+        </TouchableOpacity>
+        {/* Media Icon View */}
+        <View>
+          <FastImage
+            source={{
+              uri: item.type == 'Image' ? item.url : item.video_cover,
+              priority: FastImage.priority.normal
+            }}
+            style={MediaIconStyle}
+            resizeMode={FastImage.resizeMode.contain} />
+        </View>
+      </View>
+    )
+  }
 
+  // const filteredArray = categoryDetails.filter(createFilter(searchTerm, ['title']))
+  // const searchCategories = (term) => {
+  //   setSearchTerm(term)
+  //   setSections(filteredArray);
+  // }
+
+  return (
     <Screen style={ROOT} preset="fixed">
+      {/* Header Component */}
       <Header headerText='Profile' />
+
+      {/* User Details View */}
       <View>
         <Animated.View
           style={[ProfileDetailsLarge, { maxHeight: headerHeight }]}
         >
-          <Animated.View style={{ position: 'absolute', top: ImageTop, bottom: 0, left: ImageLeft }}>
+          {/* Profile Image */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              top: ImageTop,
+              bottom: 0,
+              left: ImageLeft
+            }}>
             <Image
-              source={userAuth.userObj.profileUrl != '' ? { uri: userAuth.userObj.profileUrl } : icons.profile_placeholder}
+              source={
+                userAuth.userObj.profileUrl != ''
+                  ?
+                  { uri: userAuth.userObj.profileUrl }
+                  :
+                  icons.profile_placeholder}
               style={ProfileImage} />
           </Animated.View>
-          <Animated.View style={{ position: 'absolute', top: UserDetailsTop, left: UserDetailsLeft, right: UserDetailsRight, height: 100, justifyContent: 'center' }}>
-            <Animated.Text style={[NameText, { minWidth }]} numberOfLines={1} >{userAuth.userObj.userName != '' ? userAuth.userObj.userName : 'Test User'}</Animated.Text>
-            <Animated.Text style={[Emailaddress, { minWidth }]} numberOfLines={1} >{userAuth.userObj.userEmail}</Animated.Text>
-            <Animated.Text style={[BirthDate, { minWidth }]} numberOfLines={1} >{'29th March, 1999'}</Animated.Text>
+          {/* User Details */}
+          <Animated.View
+            style={{
+              position: 'absolute',
+              top: UserDetailsTop,
+              left: UserDetailsLeft,
+              right: UserDetailsRight,
+              height: 100,
+              justifyContent: 'center'
+            }}>
+            <Animated.Text
+              style={[NameText, { minWidth }]}
+              numberOfLines={1}
+            >
+              {userAuth.userObj.userName != '' ? userAuth.userObj.userName : 'Test User'}
+            </Animated.Text>
+            <Animated.Text
+              style={[Emailaddress, { minWidth }]}
+              numberOfLines={1}
+            >{userAuth.userObj.userEmail}
+            </Animated.Text>
+            <Animated.Text
+              style={[BirthDate, { minWidth }]}
+              numberOfLines={1}
+            >
+              {'29th March, 1999'}
+            </Animated.Text>
           </Animated.View>
         </Animated.View>
       </View>
+
+      {/* Saved Category View */}
       <View style={{ flexGrow: 1, marginTop: HEADER_MIN_HEIGHT }} >
         <Animated.ScrollView
-          style={{ flex: 1 }}
+          style={FILL}
           scrollEventThrottle={16}
           overScrollMode='never'
           bounces={false}
@@ -330,11 +427,14 @@ export const ProfileScreen = observer(function ProfileScreen() {
           <View style={ContentView}>
             <View>
               <Text text='Saved Category' style={SavedCategoryHeading} />
-              <View style={{ marginTop: spacing[1] }}>
-                <Icon icon='search' style={{ height: 16, width: 16, position: 'absolute', right: 10, top: 12 }} />
+              {/* Search Categories */}
+              <View style={SearchInputView}>
+                <Icon
+                  icon='search'
+                  style={SearchIconStyle}
+                />
                 <SearchInput
                   onChangeText={(term) => { setSearchTerm(term) }}
-                  // onChangeText={(term) => searchCategories(term)}
                   placeholderTextColor={color.palette.offWhite}
                   style={{ color: color.palette.white }}
                   inputViewStyles={TextFieldView}
@@ -343,9 +443,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
                 />
               </View>
             </View>
+            {/* Accordion for recently viewed categories and media */}
             <View style={ListOfCategory}>
               <Accordion
-                sections={sections}
+                sections={categoryDetails}
                 activeSections={activeSections}
                 renderHeader={_renderHeader}
                 renderContent={_renderContent}

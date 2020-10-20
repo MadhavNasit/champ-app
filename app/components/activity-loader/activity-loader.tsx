@@ -1,7 +1,7 @@
 import * as React from "react"
-import { TextStyle, View, ViewStyle } from "react-native"
+import { View, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { color, typography } from "../../theme"
+import { color } from "../../theme"
 import { LinesLoader } from 'react-native-indicator';
 import { useStores } from "../../models";
 

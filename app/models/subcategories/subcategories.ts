@@ -17,7 +17,6 @@ export const SubCategoriesModel = types
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
     getSubCategoryData: flow(function* getSubCategoryData(parentId: number) {
-      console.tron.log('in fn with id', parentId)
       try {
         const res = yield api.getSubCategories(parentId);
         if (res.kind === "ok" && res.data.status == 200) {

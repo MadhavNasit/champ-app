@@ -66,7 +66,7 @@ const NavNextText: TextStyle = {
 export const NavButton = observer(function NavButton(props: NavButtonProps) {
   // Defines Props, Store and Navigation
   const { parentId, subCategoryId } = props;
-  const { subCategories, categoryData, activityLoader } = useStores()
+  const { subCategories, categoryData } = useStores()
   const navigation = useNavigation()
 
   // States for Disable ot Enable Buttons
@@ -108,7 +108,8 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
       navigation.dispatch(StackActions.replace(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
         categoryId: dataOfMedia.parent_id,
         subCategoryId: dataOfMedia.id,
-        subCategoryName: dataOfMedia.name
+        subCategoryName: dataOfMedia.name,
+        mediaType: dataOfMedia.type
       }))
     }
     else {
@@ -121,7 +122,8 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
         navigation.dispatch(StackActions.replace(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
           categoryId: dataOfMedia.parent_id,
           subCategoryId: dataOfMedia.id,
-          subCategoryName: dataOfMedia.name
+          subCategoryName: dataOfMedia.name,
+          mediaType: dataOfMedia.type
         }))
       }
       else {
@@ -147,9 +149,9 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
       navigation.dispatch(StackActions.replace(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
         categoryId: dataOfMedia.parent_id,
         subCategoryId: dataOfMedia.id,
-        subCategoryName: dataOfMedia.name
+        subCategoryName: dataOfMedia.name,
+        mediaType: dataOfMedia.type
       }))
-
     }
     else {
       let newParentId = parentId - 1;
@@ -157,13 +159,14 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
         await subCategories.getSubCategoryData(newParentId);
         subCategories.clearSubCategoryMedia();
         let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
-        let lengthOfNextSubCategory = subCategories.subCategoryData[indexOfNewParent].data.length;
+        let lengthOfNextSubCategory = subCategories.subCategoryData[indexOfNewParent].data.length - 1;
 
-        let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[lengthOfNextSubCategory - 1];
+        let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[lengthOfNextSubCategory];
         navigation.dispatch(StackActions.replace(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
           categoryId: dataOfMedia.parent_id,
           subCategoryId: dataOfMedia.id,
-          subCategoryName: dataOfMedia.name
+          subCategoryName: dataOfMedia.name,
+          mediaType: dataOfMedia.type
         }))
       }
       else {

@@ -9,9 +9,8 @@ import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
-import { Header, NavButton, Screen, Text } from "../../components"
+import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
 import { color } from "../../theme"
-import { async } from "validate.js"
 
 interface ImageDetailsProps {
   route,
@@ -68,15 +67,16 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   const isFocused = useIsFocused();
 
   // Store for Subcategory Data
-  const { subCategories, activityLoader, visitedSubcategories } = useStores();
+  const { subCategories, visitedSubcategories } = useStores();
   const [activeSlide, setActiveSlide] = useState<number>(0);
+  const carousel = useRef()
   // Data fetch on screen focus
   useEffect(() => {
     if (isFocused) {
       console.tron.log('called');
-      activityLoader.setLoading(true);
+      // activityLoader.setLoading(true);
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
-      activityLoader.setLoading(false);
+      // activityLoader.setLoading(false);
     }
 
     return function cleanup() {
@@ -88,13 +88,14 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     visitedSubcategories.setSubCategoryVisited(subCategories.subCategoryMedia[index].id);
   }
 
-  const carousel = useRef()
+
   // Load data from Api and store in subcategories model
   const getSubCategoryData = (parentId: number, subCategoryId: number) => {
     subCategories.getSubCategoryData(parentId);
+    subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
-    visitedSubcategories.setSubCategoryVisited(activeSlide + 1);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
+    visitedSubcategories.setSubCategoryVisited(activeSlide + 1);
   }
 
   // Carousel Renderitem and Pagination
@@ -146,6 +147,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
 
   return (
     <Screen style={ROOT} preset="fixed">
+      {/* <ActivityLoader /> */}
       {/* Header Compoennt */}
       <Header
         headerText={route.params.subCategoryName}
@@ -163,18 +165,16 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
         <View style={SwiperWrapper}>
           <Carousel
             ref={carousel}
-            layout={"default"}
             data={subCategories.subCategoryMedia}
             renderItem={renderItem}
             sliderWidth={SLIDER_WIDTH}
             itemWidth={ITEM_WIDTH}
             inactiveSlideOpacity={0}
             inactiveSlideShift={0}
-            extraData={subCategories.subCategoryMedia.length}
             loop={false}
             onSnapToItem={(index) => {
               setActiveSlide(index);
-              setVisitedMedia(index)
+              setVisitedMedia(index);
             }
             }
           />
