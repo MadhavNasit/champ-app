@@ -2,7 +2,7 @@
 // ** My Profile Screen - Display User Details and Recently Viwed Categories
 // *
 import React, { useEffect, useRef, useState } from "react";
-import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Platform, Dimensions, TouchableOpacity } from "react-native";
+import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity } from "react-native";
 
 import { useIsFocused } from "@react-navigation/native";
 
@@ -14,8 +14,8 @@ import { color, spacing } from "../../theme";
 import { icons } from "../../components/icon/icons";
 
 import Accordion from 'react-native-collapsible/Accordion';
-import FastImage, { FastImageProps } from "react-native-fast-image";
-import SearchInput, { createFilter } from 'react-native-search-filter';
+import FastImage from "react-native-fast-image";
+import { TextInput } from "react-native-gesture-handler";
 
 // Main Cintainer stle
 const ROOT: ViewStyle = {
@@ -85,20 +85,21 @@ const ContentView: ViewStyle = {
 const SavedCategoryHeading: TextStyle = {
   color: color.palette.golden,
   fontSize: 20,
+  marginBottom: spacing[2]
 }
 const SearchInputView: ViewStyle = {
-  marginVertical: spacing[1],
-}
-const TextFieldView: ViewStyle = {
+  marginBottom: spacing[1],
   borderBottomWidth: 1,
   borderBottomColor: color.palette.white,
   height: 40,
-  paddingTop: Platform.OS == 'ios' ? 10 : 0,
+  justifyContent: 'center'
 }
-const SearchIconStyle: ImageStyle = {
+const SearchIconView: ViewStyle = {
   position: 'absolute',
   right: 10,
-  top: 12,
+  bottom: 12,
+}
+const SearchIconStyle: ImageStyle = {
   height: 16,
   width: 16,
 }
@@ -190,6 +191,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   // Store viewed categories
   const [categoryDetails, setCategoryDetails] = useState([]);
+  const [filteredArray, setFilteredArray] = useState([]);
   // Reference for scroll
   const scrollY = useRef(new Animated.Value(0)).current;
   // state for active accordion section
@@ -234,6 +236,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
     });
     // set categories details to state
     setCategoryDetails(tempVisitedMedia);
+    setFilteredArray(tempVisitedMedia);
   }
 
   // -- Interpolate on Vertical Scroll -- //
@@ -288,14 +291,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   // render fn for Accordion Body
   const _renderContent = (data, index) => {
-    // Check if data of body is null
-    if (data.content.length == 0) {
-      return (
-        <View style={BodySpacing}>
-          <Text text='Nothing Here.!' style={{ textAlign: 'left' }} />
-        </View>
-      )
-    }
     return (
       <View key={index}>
         {data.content.map((element, key) => {
@@ -349,11 +344,34 @@ export const ProfileScreen = observer(function ProfileScreen() {
     )
   }
 
-  // const filteredArray = categoryDetails.filter(createFilter(searchTerm, ['title']))
-  // const searchCategories = (term) => {
-  //   setSearchTerm(term)
-  //   setSections(filteredArray);
-  // }
+  // Return media which maches with search string
+  const SearchCategories = (term) => {
+    setSearchTerm(term)
+    if (searchTerm == '') {
+      setFilteredArray(categoryDetails);
+      setActiveSections([]);
+    }
+    else {
+      let filteredArray = categoryDetails.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      if (filteredArray.length > 0) {
+        setFilteredArray(filteredArray);
+        setActiveSections([0]);
+      }
+      else {
+        let copiedArray = categoryDetails.slice();
+        let tempArray = copiedArray.map((element) => {
+          return {
+            ...element,
+            content: element.content.filter((subElement) =>
+              subElement.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          }
+        })
+        let filteredArray = tempArray.filter((item) => item.content.length > 0)
+        setFilteredArray(filteredArray);
+        setActiveSections([0]);
+      }
+    }
+  }
 
   return (
     <Screen style={ROOT} preset="fixed">
@@ -429,24 +447,32 @@ export const ProfileScreen = observer(function ProfileScreen() {
               <Text text='Saved Category' style={SavedCategoryHeading} />
               {/* Search Categories */}
               <View style={SearchInputView}>
+
+                {/* <TextField
+                  onChangeText={(term) => { SearchCategories(term) }}
+                  placeholderTextColor={color.palette.offWhite}
+                  style={TextFieldView}
+                  inputStyle={TEXT}
+                  placeholder="Search categories"
+                /> */}
+                <TextInput
+                  onChangeText={(term) => { SearchCategories(term) }}
+                  placeholderTextColor={color.palette.offWhite}
+                  // style={TextFieldView}
+                  style={TEXT}
+                  placeholder="Search categories"
+                />
                 <Icon
                   icon='search'
+                  containerStyle={SearchIconView}
                   style={SearchIconStyle}
-                />
-                <SearchInput
-                  onChangeText={(term) => { setSearchTerm(term) }}
-                  placeholderTextColor={color.palette.offWhite}
-                  style={{ color: color.palette.white }}
-                  inputViewStyles={TextFieldView}
-                  placeholder="Search categories"
-                  fuzzy={true}
                 />
               </View>
             </View>
             {/* Accordion for recently viewed categories and media */}
             <View style={ListOfCategory}>
               <Accordion
-                sections={categoryDetails}
+                sections={filteredArray}
                 activeSections={activeSections}
                 renderHeader={_renderHeader}
                 renderContent={_renderContent}

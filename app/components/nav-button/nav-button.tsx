@@ -7,7 +7,7 @@ import { StackActions } from '@react-navigation/native';
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
-import { color, spacing, typography } from "../../theme"
+import { color, spacing } from "../../theme"
 import { Icon } from "../icon/icon"
 import { Text } from "../text/text"
 

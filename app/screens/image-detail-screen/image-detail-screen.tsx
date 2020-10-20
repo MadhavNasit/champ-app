@@ -9,7 +9,7 @@ import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 
-import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
+import { Header, NavButton, Screen, Text } from "../../components"
 import { color } from "../../theme"
 
 interface ImageDetailsProps {

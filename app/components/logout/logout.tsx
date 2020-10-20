@@ -1,10 +1,8 @@
 import * as React from "react"
-import { Alert, TextStyle, View, ViewStyle } from "react-native"
+import { Alert, TextStyle, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { color, typography } from "../../theme"
 import { Text } from "../"
 import { useStores } from "../../models"
-import { async } from "validate.js"
 import { GoogleSignin } from "@react-native-community/google-signin"
 import { TouchableOpacity } from "react-native-gesture-handler"
 

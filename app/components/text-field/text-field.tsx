@@ -21,7 +21,7 @@ const LabelStyle: TextStyle = {
 const INPUT: TextStyle = {
   fontFamily: typography.primary,
   color: color.text,
-  minHeight: 42,
+  minHeight: 34,
   fontSize: 16,
   backgroundColor: color.transparent,
 }
