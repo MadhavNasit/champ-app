@@ -28,7 +28,6 @@ export function DrawerNavigator() {
       backBehavior="initialRoute"
       drawerPosition="right"
       overlayColor="transparent"
-      hideStatusBar={true}
       drawerType="slide"
       drawerStyle={DRAWERVIEW}
       drawerContent={(props) => <DrawerComponent {...props} />}

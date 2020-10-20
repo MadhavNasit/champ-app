@@ -1,6 +1,6 @@
 import React from "react"
-import { View, TextInput, TextStyle, ViewStyle, FlatList } from "react-native"
-import { color, spacing, typography } from "../../theme"
+import { View, TextInput, TextStyle, ViewStyle } from "react-native"
+import { color, typography } from "../../theme"
 import { translate } from "../../i18n"
 import { Text } from "../text/text"
 import { TextFieldProps } from "./text-field.props"

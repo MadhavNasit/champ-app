@@ -2,7 +2,7 @@
 // ** My Profile Screen - Display User Details and Recently Viwed Categories
 // *
 import React, { useEffect, useRef, useState } from "react";
-import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity } from "react-native";
+import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert } from "react-native";
 
 import { useIsFocused } from "@react-navigation/native";
 
@@ -312,8 +312,26 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   // Called on press of delete icon
   const removeRecentViewedMedia = (mediaId: number) => {
-    visitedSubcategories.removeSubCategoryVisited(mediaId);
-    getVisitedCategories();
+    Alert.alert(
+      "Are you sure",
+      "You want to delete this media",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            visitedSubcategories.removeSubCategoryVisited(mediaId);
+            getVisitedCategories();
+          },
+          style: "destructive"
+        }
+      ],
+      { cancelable: false }
+    );
+
   }
 
   // render fn for media icon
