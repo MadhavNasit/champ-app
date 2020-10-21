@@ -1,3 +1,8 @@
+//*
+//** Functions for validate input on sign in screen
+//*
+
+// Validate Email
 const validateEmail = (email) => {
   var regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+\.([a-zA-Z]{2,5}|[a-zA-z]{2,5}\.[a-zA-Z]{2,5})$/;
   if (email.length == 0) {
@@ -12,6 +17,7 @@ const validateEmail = (email) => {
 
 }
 
+// Validate Password
 const validatePassword = (password) => {
   var regAlphaNumeric = /\w+/;
   var regspecialCharacter = /[*@!#%&()^~{}]+/;

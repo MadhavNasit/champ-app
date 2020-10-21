@@ -1,3 +1,7 @@
+/**
+ * Video details screen display video and its details 
+ */
+
 import React, { useCallback, useEffect, useState } from "react"
 import { Alert, FlatList, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused } from "@react-navigation/native"

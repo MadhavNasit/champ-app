@@ -8,22 +8,12 @@ import React from "react"
 import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
-// import { PrimaryNavigator } from "./primary-navigator"
 import { observer } from "mobx-react-lite"
 import { useStores } from "../models"
 import { AuthNavigator } from "./auth-navigator"
 import { DrawerNavigator } from "./drawer-navigator"
 
-/**
- * This type allows TypeScript to know what routes are defined in this navigator
- * as well as what properties (if any) they might take when navigating to them.
- *
- * We recommend using MobX-State-Tree store(s) to handle state rather than navigation params.
- *
- * For more information, see this documentation:
- *   https://reactnavigation.org/docs/params/
- *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
- */
+
 export type RootParamList = {
   primaryStack: undefined,
   authStack: undefined
@@ -31,6 +21,7 @@ export type RootParamList = {
 
 const Stack = createNativeStackNavigator<RootParamList>()
 
+// Root navigator which checks for is user is loggedin or not
 const RootStack = observer(() => {
   const { userAuth } = useStores();
   return (

@@ -3,7 +3,6 @@ import { Alert, TextStyle, ViewStyle } from "react-native"
 import { Button } from "../button/button";
 import { useStores } from "../../models";
 
-
 // Facebook Signin imports
 import { AccessToken } from 'react-native-fbsdk';
 import { LoginManager } from "react-native-fbsdk";

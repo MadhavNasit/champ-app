@@ -17,6 +17,7 @@ export const SubCategoriesModel = types
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
+    // Api call for sub category and add it to array
     getSubCategoryData: flow(function* getSubCategoryData(parentId: number) {
       try {
         self.loading = true;
@@ -44,11 +45,13 @@ export const SubCategoriesModel = types
       return { response: false, message: "Something went wrong." };
     }),
 
+    // list of current sub categorie
     getCurrentSubCategories(parentId: number) {
       let indexOfObject = findWithAttr(self.subCategoryData, parentId);
       self.currentSubCategories = self.subCategoryData[indexOfObject].data;
     },
 
+    // set focused screen media
     getSubCategoryMedia(subCategoryId: number) {
       const indexOfsubCategory = self.currentSubCategories.findIndex(x => x.id == subCategoryId);
       if (self.currentSubCategories[indexOfsubCategory].type != 'None') {
@@ -59,6 +62,7 @@ export const SubCategoriesModel = types
       }
     },
 
+    // clear data on focused out
     clearCurrentSubCategory() {
       self.currentSubCategories = [];
     },

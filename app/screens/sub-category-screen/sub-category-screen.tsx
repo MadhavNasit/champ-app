@@ -1,9 +1,14 @@
+/**
+ * Display list of sub categories
+ */
+
 import React, { useEffect } from "react"
 import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity } from "react-native"
 
 import { observer } from "mobx-react-lite"
 import { useIsFocused } from "@react-navigation/native"
 
+// node modules import
 import FastImage from 'react-native-fast-image'
 
 // Component and theme import
@@ -11,12 +16,12 @@ import { ActivityLoader, Header, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
 
-
 interface SubCategoryProps {
   route,
   navigation
 }
 
+// main container style
 const ROOT: ViewStyle = {
   flex: 1,
 }
@@ -24,6 +29,8 @@ const CONTAINER: ViewStyle = {
   flex: 1,
   paddingHorizontal: spacing[6]
 }
+
+// sub category view
 const FlatListview: ViewStyle = {
   flexGrow: 1,
   justifyContent: 'center',
@@ -66,6 +73,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route, na
     };
   }, [isFocused, route.params.parentId]);
 
+  // load data from api
   const LoadStoreData = async (parentId: number) => {
     await subCategories.getSubCategoryData(parentId);
     await subCategories.getCurrentSubCategories(parentId);

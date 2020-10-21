@@ -1,3 +1,8 @@
+/**
+ * Image details screen for media type Image
+ * Dislay Details using carousel
+ */
+
 import React, { useEffect, useRef, useState } from "react"
 import { Dimensions, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused } from "@react-navigation/native"
@@ -86,10 +91,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   // Data fetch on screen focus
   useEffect(() => {
     if (isFocused) {
-      console.tron.log('called');
-      // activityLoader.setLoading(true);
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
-      // activityLoader.setLoading(false);
     }
 
     return function cleanup() {
@@ -101,7 +103,6 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     visitedSubcategories.setSubCategoryVisited(subCategories.subCategoryMedia[index].id);
   }
 
-
   // Load data from Api and store in subcategories model
   const getSubCategoryData = (parentId: number, subCategoryId: number) => {
     subCategories.getSubCategoryData(parentId);
@@ -112,7 +113,6 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   }
 
   // Carousel Renderitem and Pagination
-
   const SLIDER_WIDTH = Dimensions.get('window').width;
   const ITEM_WIDTH = SLIDER_WIDTH - 72;
 

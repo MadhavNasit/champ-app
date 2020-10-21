@@ -5,8 +5,6 @@ import { Text } from "../"
 import { useStores } from "../../models"
 import { GoogleSignin } from "@react-native-community/google-signin"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { async } from "validate.js"
-
 
 export interface LogoutProps {
   /**

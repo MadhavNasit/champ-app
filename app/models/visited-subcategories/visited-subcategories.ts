@@ -11,11 +11,12 @@ export const VisitedSubcategoriesModel = types
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
-
+    // set currently focused screen id
     setCurrentSubCategoryIndex(index: number) {
       self.currentSubCategoryIndex = index;
     },
 
+    // add vsited media id
     setSubCategoryVisited(mediaId: number) {
       if (self.visitedSubCategoryIds.indexOf(mediaId) === -1) {
         self.visitedSubCategoryIds.push(mediaId);
@@ -23,6 +24,7 @@ export const VisitedSubcategoriesModel = types
       }
     },
 
+    // remove visited media id
     removeSubCategoryVisited(mediaId: number) {
       let index = self.visitedSubCategoryIds.indexOf(mediaId);
       self.visitedSubCategoryIds.splice(index, 1);

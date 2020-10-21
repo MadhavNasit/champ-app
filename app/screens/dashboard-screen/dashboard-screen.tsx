@@ -1,3 +1,7 @@
+/**
+ * Dashboard screen which contains list of categories
+ */
+
 import React, { useEffect } from "react";
 import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle, BackHandler, Alert } from "react-native";
 
@@ -43,17 +47,15 @@ export const DashboardScreen = observer(function DashboardScreen() {
   // contains navigation props and method
   const navigation = useNavigation();
   // Category data mobx store
-  const { categoryData, activityLoader, visitedSubcategories } = useStores();
+  const { categoryData, visitedSubcategories } = useStores();
   // return true if screen is focused
   const isFocused = useIsFocused()
 
   // Call api function if screen is focused
   useEffect(() => {
     if (isFocused) {
-      activityLoader.setLoading(true);
-      visitedSubcategories.setCurrentSubCategoryIndex(0);
       LoadDataFromApi();
-      activityLoader.setLoading(false);
+      visitedSubcategories.setCurrentSubCategoryIndex(0);
     }
     const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
 

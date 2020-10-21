@@ -1,3 +1,6 @@
+/**
+* Bottom tab for dashboard and my profile
+*/
 import React from "react"
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

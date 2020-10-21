@@ -1,3 +1,7 @@
+/**
+ * Sign in screen with email, google and facebook sign
+ */
+
 import React, { useRef, useState } from "react"
 import { ImageStyle, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, TextStyle, View, ViewStyle } from "react-native"
 
@@ -229,7 +233,6 @@ export const SigninScreen = observer(function SigninScreen() {
                     onChangeText={(email) => handleEmail(email)}
                     placeholderTx="signinScreen.emailPlaceholder"
                     style={TextFieldView}
-                    minHeight={30}
                     returnKeyType="next"
                     onSubmitEditing={() => passwordRef.current.focus()}
                     blurOnSubmit={false}
@@ -242,7 +245,6 @@ export const SigninScreen = observer(function SigninScreen() {
                     value={password}
                     onChangeText={(password) => handlePassword(password)}
                     style={TextFieldView}
-                    minHeight={30}
                     secureTextEntry={true}
                     returnKeyType="done"
                     forwardedRef={passwordRef}

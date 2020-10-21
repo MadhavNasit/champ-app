@@ -15,6 +15,7 @@ export const CategoryDataModel = types
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
+    // get category data
     getCategoryData: flow(function* getCategoryData() {
       try {
         self.loading = true;

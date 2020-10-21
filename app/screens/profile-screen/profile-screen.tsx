@@ -1,6 +1,7 @@
-// *
-// ** My Profile Screen - Display User Details and Recently Viwed Categories
-// *
+/**
+* My Profile Screen - Display User Details and Recently Viwed Categories
+*/
+
 import React, { useEffect, useRef, useState } from "react";
 import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert } from "react-native";
 
@@ -9,10 +10,12 @@ import { useIsFocused } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../../models";
 
+// import component and theme
 import { Header, Icon, Screen, Text } from "../../components";
 import { color, spacing } from "../../theme";
 import { icons } from "../../components/icon/icons";
 
+// import node modules
 import Accordion from 'react-native-collapsible/Accordion';
 import FastImage from "react-native-fast-image";
 import { TextInput } from "react-native-gesture-handler";
@@ -336,7 +339,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
       ],
       { cancelable: false }
     );
-
   }
 
   // render fn for media icon
