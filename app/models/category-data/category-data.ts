@@ -11,23 +11,29 @@ export const CategoryDataModel = types
   .model("CategoryData")
   .props({
     mainCategoryData: types.optional(types.frozen(), []),
+    loading: types.optional(types.boolean, false)
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
     getCategoryData: flow(function* getCategoryData() {
       try {
+        self.loading = true;
         const res = yield api.getCategories();
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
             self.mainCategoryData = res.data.data.data;
           }
+          self.loading = false;
         }
         else {
+          self.loading = false;
           return { response: false, message: "Something went wrong." };
         }
       } catch (error) {
+        self.loading = false;
         return { response: false, message: "Something went wrong." };
       }
+      self.loading = false;
       return { response: false, message: "Something went wrong." };
     }),
   })) // eslint-disable-line @typescript-eslint/no-unused-vars

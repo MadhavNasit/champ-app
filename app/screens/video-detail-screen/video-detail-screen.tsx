@@ -6,13 +6,13 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
 // Component and theme import
-import { Header, NavButton, Screen, Text } from "../../components"
+import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 
 // node modules import
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
-import { LinesLoader } from 'react-native-indicator';
+import { CirclesRotationScaleLoader } from 'react-native-indicator';
 
 interface VideoDetailsProps {
   route
@@ -23,6 +23,9 @@ const ROOT: ViewStyle = {
   flex: 1,
 }
 const CONTAINER: ViewStyle = {
+  flex: 1,
+}
+const FILL: ViewStyle = {
   flex: 1,
 }
 
@@ -144,7 +147,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
             (
               <View style={VideoActivityLoader}>
                 <Text text='Loading Video...' style={{ color: color.palette.golden }} />
-                <LinesLoader color={color.palette.golden} />
+                <CirclesRotationScaleLoader color={color.palette.golden} />
               </View>
             )
           }
@@ -176,20 +179,24 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
           parentId={route.params.categoryId}
           subCategoryId={route.params.subCategoryId}
         />
-        {route.params.mediaType == 'None' ? (
-          <View style={EmptyDataView}>
-            <Text style={EmptyDataText} text='No Data Found..!!' />
-          </View>
-        ) : (
-            <FlatList
-              data={subCategories.subCategoryMedia}
-              style={FlatListStyle}
-              contentContainerStyle={FlatListContainer}
-              keyExtractor={(index) => index.toString()}
-              renderItem={renderMedia}
-            />
-          )}
-
+        <View style={FILL}>
+          <ActivityLoader />
+          {route.params.mediaType == 'None' ? (
+            <View style={EmptyDataView}>
+              <Text style={EmptyDataText} text='No Data Found..!!' />
+            </View>
+          ) : (
+              <View>
+                <FlatList
+                  data={subCategories.subCategoryMedia}
+                  style={FlatListStyle}
+                  contentContainerStyle={FlatListContainer}
+                  keyExtractor={(index) => index.toString()}
+                  renderItem={renderMedia}
+                />
+              </View>
+            )}
+        </View>
       </View>
     </Screen >
   )

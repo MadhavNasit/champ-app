@@ -13,11 +13,13 @@ export const SubCategoriesModel = types
     subCategoryData: types.optional(types.array(types.frozen()), []),
     currentSubCategories: types.optional(types.frozen(), []),
     subCategoryMedia: types.optional(types.frozen(), []),
+    loading: types.optional(types.boolean, false)
   })
   .views(self => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions(self => ({
     getSubCategoryData: flow(function* getSubCategoryData(parentId: number) {
       try {
+        self.loading = true;
         const res = yield api.getSubCategories(parentId);
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
@@ -33,9 +35,12 @@ export const SubCategoriesModel = types
         else {
           return { response: false, message: "Something went wrong." };
         }
+        self.loading = false;
       } catch (error) {
+        self.loading = false;
         return { response: false, message: "Something went wrong." };
       }
+      self.loading = false;
       return { response: false, message: "Something went wrong." };
     }),
 

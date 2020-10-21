@@ -65,6 +65,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
     await categoryData.getCategoryData();
   }
 
+  // Back on first screen for android
   const backAction = () => {
     Alert.alert("Hold on!", "Are you sure you want to exit?", [
       {

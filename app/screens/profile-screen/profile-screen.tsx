@@ -2,7 +2,7 @@
 // ** My Profile Screen - Display User Details and Recently Viwed Categories
 // *
 import React, { useEffect, useRef, useState } from "react";
-import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert } from "react-native";
+import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert } from "react-native";
 
 import { useIsFocused } from "@react-navigation/native";
 
@@ -43,7 +43,7 @@ const ProfileDetailsLarge: ViewStyle = {
   bottom: 0,
 }
 // Profile Photo style
-const ProfileImage: ImageStyle = {
+const ProfileImage = {
   height: 100,
   width: 100,
   borderRadius: 50,
@@ -184,6 +184,7 @@ const MediaIconStyle = {
   backgroundColor: color.palette.white
 }
 
+
 export const ProfileScreen = observer(function ProfileScreen() {
 
   const isFocused = useIsFocused();
@@ -203,6 +204,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     if (isFocused) {
       getVisitedCategories();
+    }
+
+    return function cleanup() {
+      setSearchTerm('');
     }
   }, [isFocused]);
 
@@ -409,14 +414,16 @@ export const ProfileScreen = observer(function ProfileScreen() {
               bottom: 0,
               left: ImageLeft
             }}>
-            <Image
+            <FastImage
               source={
                 userAuth.userObj.profileUrl != ''
                   ?
-                  { uri: userAuth.userObj.profileUrl }
+                  { uri: userAuth.userObj.profileUrl, priority: FastImage.priority.normal, }
                   :
                   icons.profile_placeholder}
-              style={ProfileImage} />
+              style={ProfileImage}
+              resizeMode={FastImage.resizeMode.contain}
+            />
           </Animated.View>
           {/* User Details */}
           <Animated.View
@@ -465,18 +472,10 @@ export const ProfileScreen = observer(function ProfileScreen() {
               <Text text='Saved Category' style={SavedCategoryHeading} />
               {/* Search Categories */}
               <View style={SearchInputView}>
-
-                {/* <TextField
-                  onChangeText={(term) => { SearchCategories(term) }}
-                  placeholderTextColor={color.palette.offWhite}
-                  style={TextFieldView}
-                  inputStyle={TEXT}
-                  placeholder="Search categories"
-                /> */}
                 <TextInput
+                  value={searchTerm}
                   onChangeText={(term) => { SearchCategories(term) }}
                   placeholderTextColor={color.palette.offWhite}
-                  // style={TextFieldView}
                   style={TEXT}
                   placeholder="Search categories"
                 />

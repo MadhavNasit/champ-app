@@ -8,8 +8,9 @@ import { useStores } from "../../models"
 import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { CirclesRotationScaleLoader } from 'react-native-indicator';
 
-import { Header, NavButton, Screen, Text } from "../../components"
+import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
 import { color } from "../../theme"
 
 interface ImageDetailsProps {
@@ -62,6 +63,17 @@ const DotStyle = {
   backgroundColor: color.palette.white
 }
 
+// Activity loader style
+const ActivityLoaderStyle: ViewStyle = {
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  justifyContent: 'center',
+  alignItems: 'center'
+}
+
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: ImageDetailsProps) {
   // Return true on Screen Focus
   const isFocused = useIsFocused();
@@ -69,6 +81,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   // Store for Subcategory Data
   const { subCategories, visitedSubcategories } = useStores();
   const [activeSlide, setActiveSlide] = useState<number>(0);
+  const [imageLoading, setImageLoading] = useState(false);
   const carousel = useRef()
   // Data fetch on screen focus
   useEffect(() => {
@@ -125,8 +138,17 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
         <View style={SwipeImageView}>
           <FastImage
             source={{ uri: item.url, priority: FastImage.priority.normal, }}
-            style={SwipeImageStyle} resizeMode={FastImage.resizeMode.contain}
+            style={SwipeImageStyle}
+            resizeMode={FastImage.resizeMode.contain}
+            onLoadStart={() => setImageLoading(true)}
+            onLoadEnd={() => setImageLoading(false)}
           />
+          {imageLoading && (
+            <View style={ActivityLoaderStyle}>
+              <CirclesRotationScaleLoader
+                color={color.palette.golden} />
+            </View>
+          )}
         </View>
         <View style={SwipeTextView} >
           <Text text={item.caption} style={ItemCaption} />
@@ -147,7 +169,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
 
   return (
     <Screen style={ROOT} preset="fixed">
-      {/* <ActivityLoader /> */}
+
       {/* Header Compoennt */}
       <Header
         headerText={route.params.subCategoryName}
@@ -163,6 +185,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
         />
         {/* Swiper component */}
         <View style={SwiperWrapper}>
+          <ActivityLoader />
           <Carousel
             ref={carousel}
             data={subCategories.subCategoryMedia}

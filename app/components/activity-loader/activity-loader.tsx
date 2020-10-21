@@ -17,11 +17,10 @@ export interface ActivityLoaderProps {
  * Describe your component here
  */
 export const ActivityLoader = observer(function ActivityLoader() {
-  // const { style } = props
 
-  const { activityLoader } = useStores()
+  const { activityLoader, subCategories, categoryData } = useStores()
 
-  if (activityLoader.loading) {
+  if (activityLoader.loading || subCategories.loading || categoryData.loading) {
     return (
       <View style={{
         position: 'absolute',

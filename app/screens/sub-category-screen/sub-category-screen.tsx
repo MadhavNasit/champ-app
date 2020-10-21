@@ -1,13 +1,16 @@
 import React, { useEffect } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle, FlatList, TouchableOpacity } from "react-native"
+import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity } from "react-native"
 
 import { observer } from "mobx-react-lite"
-import { useNavigation, useIsFocused } from "@react-navigation/native"
+import { useIsFocused } from "@react-navigation/native"
+
 import FastImage from 'react-native-fast-image'
 
-import { Header, Screen, Text } from "../../components"
+// Component and theme import
+import { ActivityLoader, Header, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
+
 
 interface SubCategoryProps {
   route,
@@ -26,9 +29,6 @@ const FlatListview: ViewStyle = {
   justifyContent: 'center',
 }
 const CategoryButton: ViewStyle = {
-  // borderColor: color.palette.white,
-  // borderWidth: 1,
-  // alignItems: 'center',
   marginVertical: spacing[2],
   paddingVertical: spacing[4]
 }
@@ -54,19 +54,17 @@ const CategoryText: TextStyle = {
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }: SubCategoryProps) {
 
   const isFocused = useIsFocused()
-  const { subCategories, activityLoader, visitedSubcategories } = useStores();
+  const { subCategories, visitedSubcategories } = useStores();
 
   useEffect(() => {
     if (isFocused) {
       LoadStoreData(route.params.parentId);
-      activityLoader.setLoading(false);
     }
 
     return function cleanup() {
-      activityLoader.setLoading(true);
       subCategories.clearCurrentSubCategory();
     };
-  }, [route.params.parentId]);
+  }, [isFocused, route.params.parentId]);
 
   const LoadStoreData = async (parentId: number) => {
     await subCategories.getSubCategoryData(parentId);
@@ -81,6 +79,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route, na
         rightIcon='hamburger'
         leftIcon='back'
       />
+      <ActivityLoader />
       <View style={CONTAINER}>
         <FlatList
           data={subCategories.currentSubCategories}
@@ -93,7 +92,8 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route, na
                 onPress={() => navigation.navigate(item.type == 'Image' ? 'imagedetail' : 'videodetail', {
                   categoryId: item.parent_id,
                   subCategoryId: item.id,
-                  subCategoryName: item.name
+                  subCategoryName: item.name,
+                  mediaType: item.type,
                 })}>
                 <View style={SubCategoryButton}>
                   <FastImage source={{ uri: item.icon, priority: FastImage.priority.normal, }} style={IconStyle} resizeMode={FastImage.resizeMode.contain} />
