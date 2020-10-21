@@ -5,6 +5,7 @@ import { Text } from "../"
 import { useStores } from "../../models"
 import { GoogleSignin } from "@react-native-community/google-signin"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { async } from "validate.js"
 
 
 export interface LogoutProps {
@@ -23,17 +24,35 @@ export const Logout = observer(function Logout(props: LogoutProps) {
 
   const { userAuth } = useStores();
 
-  const LogOut = async () => {
-    userAuth.removeAccess();
-    const isSignedIn = await GoogleSignin.isSignedIn();
-    if (isSignedIn) {
-      try {
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
-      } catch (error) {
-        Alert.alert("Something went wrong..!!")
-      }
-    }
+  const LogOut = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will be logged out from App",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Logout",
+          onPress: async () => {
+            userAuth.removeAccess();
+            const isSignedIn = await GoogleSignin.isSignedIn();
+            if (isSignedIn) {
+              try {
+                await GoogleSignin.revokeAccess();
+                await GoogleSignin.signOut();
+              } catch (error) {
+                Alert.alert("Something went wrong..!!")
+              }
+            }
+          },
+          style: "destructive"
+        }
+      ],
+      { cancelable: false }
+    );
+
   }
 
   return (
