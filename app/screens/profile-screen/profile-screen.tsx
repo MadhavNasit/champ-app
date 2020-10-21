@@ -372,12 +372,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
   // Return media which maches with search string
   const SearchCategories = (term) => {
     setSearchTerm(term)
-    if (searchTerm == '') {
+    if (term == '') {
       setFilteredArray(categoryDetails);
       setActiveSections([]);
     }
     else {
-      let filteredArray = categoryDetails.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+      let filteredArray = categoryDetails.filter((item) => item.title.toLowerCase().includes(term.toLowerCase()))
       if (filteredArray.length > 0) {
         setFilteredArray(filteredArray);
         setActiveSections([0]);
@@ -388,7 +388,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
           return {
             ...element,
             content: element.content.filter((subElement) =>
-              subElement.name.toLowerCase().includes(searchTerm.toLowerCase()))
+              subElement.name.toLowerCase().includes(term.toLowerCase()))
           }
         })
         let filteredArray = tempArray.filter((item) => item.content.length > 0)
@@ -478,7 +478,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                   value={searchTerm}
                   onChangeText={(term) => { SearchCategories(term) }}
                   placeholderTextColor={color.palette.offWhite}
-                  style={TEXT}
+                  style={[TEXT, { textAlign: 'left' }]}
                   placeholder="Search categories"
                 />
                 <Icon

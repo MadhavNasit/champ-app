@@ -139,7 +139,6 @@ export const SigninScreen = observer(function SigninScreen() {
     let passwordValidated = PasswordValidation(password);
 
     if (emailValidated && passwordValidated) {
-      console.tron.log('Sucess');
       let userObj = {
         userName: '',
         profileUrl: '',
@@ -169,7 +168,6 @@ export const SigninScreen = observer(function SigninScreen() {
   // Passsword Validator
   const PasswordValidation = (password) => {
     let passwordValidator = validatePassword(password);
-    console.tron.log(passwordValidator);
     setPasswordError(passwordValidator);
     if (passwordValidator.length != 0) {
       return false;

@@ -151,6 +151,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file('champ.keystore')
+            storePassword 'champ@1234'
+            keyAlias 'champ'
+            keyPassword 'champ@1234'
+        }
     }
     buildTypes {
         debug {
@@ -159,7 +165,8 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -185,6 +192,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.google.firebase:firebase-core:17.5.0'
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation 'com.google.android.gms:play-services-auth:18.1.0'

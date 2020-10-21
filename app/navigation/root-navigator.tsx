@@ -29,7 +29,6 @@ const RootStack = observer(() => {
       screenOptions={{
         headerShown: false,
         gestureEnabled: true,
-
         stackPresentation: "modal",
       }}
     >

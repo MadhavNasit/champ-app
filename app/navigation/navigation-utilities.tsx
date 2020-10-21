@@ -100,7 +100,7 @@ export function useNavigationPersistence(storage: any, persistenceKey: string) {
 
     if (previousRouteName !== currentRouteName) {
       // track screens.
-      __DEV__ && console.tron.log('Nav Utiities', currentRouteName)
+      __DEV__ && console.tron.log(currentRouteName)
     }
 
     // Save the current route name for later comparision

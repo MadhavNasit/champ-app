@@ -66,7 +66,6 @@ export function TabBar({ state, descriptors, navigation }) {
     <View style={TabBarView}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        console.tron.log(options);
         const label =
           options.tabBarLabel !== undefined
             ? options.tabBarLabel

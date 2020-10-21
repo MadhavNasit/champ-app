@@ -32,13 +32,9 @@ export function FacebookSignin(props: FacebookSigninProps) {
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
-          console.log("Login cancelled");
+          activityLoader.setLoading(false);
+          Alert.alert("Login cancelled");
         } else {
-          console.log(
-            "Login success with permissions: " +
-            result.grantedPermissions.toString()
-          );
-
           AccessToken.getCurrentAccessToken().then(
             (data) => {
               const infoRequest = new GraphRequest(
@@ -62,7 +58,8 @@ export function FacebookSignin(props: FacebookSigninProps) {
         }
       },
       function (error) {
-        console.log("Login fail with error: " + error);
+        activityLoader.setLoading(false);
+        Alert.alert("Something went wrong..!!", "Login fail");
       }
     );
   }
@@ -70,8 +67,10 @@ export function FacebookSignin(props: FacebookSigninProps) {
   // Facebook responce
   const responseInfoCallback = async (error, result) => {
     if (error) {
+      activityLoader.setLoading(false);
       Alert.alert('Something Wrong..!!')
     } else {
+      activityLoader.setLoading(false);
       let userObj = {
         userName: result.name,
         profileUrl: result.picture.data.url,
@@ -79,7 +78,6 @@ export function FacebookSignin(props: FacebookSigninProps) {
       }
       await userAuth.userAuthenticate(userObj);
     }
-    activityLoader.setLoading(false);
   }
 
   return (

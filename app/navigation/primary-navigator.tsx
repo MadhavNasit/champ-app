@@ -28,8 +28,5 @@ export function PrimaryNavigator() {
   )
 }
 
-
-
-
 const exitRoutes = ["dashboard"]
 export const canExit = (routeName: string) => exitRoutes.includes(routeName)

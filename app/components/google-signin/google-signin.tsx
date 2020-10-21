@@ -42,16 +42,21 @@ export function GoogleSignIn(props: GoogleSigninProps) {
         profileUrl: userInfo.user.photo,
         userEmail: userInfo.user.email
       }
+      activityLoader.setLoading(false);
       await userAuth.userAuthenticate(userObj);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        activityLoader.setLoading(false);
         Alert.alert("user cancelled the login flow");
       } else if (error.code === statusCodes.IN_PROGRESS) {
+        activityLoader.setLoading(false);
         Alert.alert("operation (e.g. sign in) is in progress already");
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        activityLoader.setLoading(false);
         Alert.alert("play services not available or outdated");
       } else {
-        console.log(error);
+        activityLoader.setLoading(false);
+        Alert.alert('Something went Wrong..!');
       }
     }
     activityLoader.setLoading(false);
