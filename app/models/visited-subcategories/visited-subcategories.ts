@@ -20,7 +20,6 @@ export const VisitedSubcategoriesModel = types
     setSubCategoryVisited(mediaId: number) {
       if (self.visitedSubCategoryIds.indexOf(mediaId) === -1) {
         self.visitedSubCategoryIds.push(mediaId);
-        console.tron.log('set', self.visitedSubCategoryIds)
       }
     },
 
@@ -28,7 +27,6 @@ export const VisitedSubcategoriesModel = types
     removeSubCategoryVisited(mediaId: number) {
       let index = self.visitedSubCategoryIds.indexOf(mediaId);
       self.visitedSubCategoryIds.splice(index, 1);
-      console.tron.log('remove', self.visitedSubCategoryIds)
     },
 
   })) // eslint-disable-line @typescript-eslint/no-unused-vars

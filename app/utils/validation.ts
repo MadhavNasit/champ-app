@@ -22,7 +22,6 @@ const validatePassword = (password) => {
   var regAlphaNumeric = /\w+/;
   var regspecialCharacter = /[*@!#%&()^~{}]+/;
   let passwordError = [];
-  console.tron.log('A', passwordError);
   if (password.length == 0) {
     passwordError.push("! Please Enter Password");
   }
@@ -35,7 +34,6 @@ const validatePassword = (password) => {
   if (!regAlphaNumeric.test(password)) {
     passwordError.push('! atleast one alpha numeric character');
   }
-  console.tron.log('B', passwordError);
   return passwordError;
 }
 
