@@ -4,7 +4,7 @@
 
 import React, { useCallback, useEffect, useState } from "react"
 import { Alert, FlatList, TextStyle, View, ViewStyle } from "react-native"
-import { useIsFocused } from "@react-navigation/native"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
@@ -17,6 +17,7 @@ import { color, spacing } from "../../theme"
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
 import { CirclesRotationScaleLoader } from 'react-native-indicator';
+import { async } from "validate.js"
 
 interface VideoDetailsProps {
   route
@@ -87,6 +88,7 @@ const VideoActivityLoader: ViewStyle = {
 export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {
 
   const isFocused = useIsFocused();
+  const navigation = useNavigation();
   const { subCategories, visitedSubcategories } = useStores();
 
   // states for manage video playing
@@ -106,8 +108,8 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   }, [isFocused, route.params.subCategoryId]);
 
   // Api call and store data in mobx model
-  const getSubCategoryData = (parentId: number, subCategoryId: number) => {
-    subCategories.getSubCategoryData(parentId);
+  const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
+    await subCategories.getSubCategoryData(parentId);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
@@ -176,6 +178,9 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
         headerText={route.params.subCategoryName}
         rightIcon='hamburger'
         leftIcon='back'
+        onLeftPress={() => navigation.navigate('subcategory', {
+          parentId: route.params.categoryId,
+        })}
       />
       <View style={CONTAINER}>
         {/* Nav Buttons */}

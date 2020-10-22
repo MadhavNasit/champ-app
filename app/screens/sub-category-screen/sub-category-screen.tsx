@@ -2,11 +2,11 @@
  * Display list of sub categories
  */
 
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity } from "react-native"
 
 import { observer } from "mobx-react-lite"
-import { useIsFocused } from "@react-navigation/native"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 // node modules import
 import FastImage from 'react-native-fast-image'
@@ -58,14 +58,18 @@ const CategoryText: TextStyle = {
   paddingLeft: spacing[3]
 }
 
-export const SubCategoryScreen = observer(function SubCategoryScreen({ route, navigation }: SubCategoryProps) {
+export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: SubCategoryProps) {
 
-  const isFocused = useIsFocused()
-  const { subCategories, visitedSubcategories } = useStores();
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
+  const { categoryData, subCategories, visitedSubcategories } = useStores();
+  const [categoryName, setCategoryName] = useState('');
+
 
   useEffect(() => {
     if (isFocused) {
       LoadStoreData(route.params.parentId);
+      GetCategoryName(route.params.parentId);
     }
 
     return function cleanup() {
@@ -80,12 +84,18 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route, na
     await visitedSubcategories.setCurrentSubCategoryIndex(parentId);
   }
 
+  const GetCategoryName = (parentId: number) => {
+    let index = categoryData.mainCategoryData.findIndex(x => x.id == parentId);
+    setCategoryName(categoryData.mainCategoryData[index].name);
+  }
+
   return (
     <Screen style={ROOT} preset="fixed">
       <Header
-        headerText={route.params.categoryName}
+        headerText={categoryName}
         rightIcon='hamburger'
         leftIcon='back'
+        onLeftPress={() => navigation.navigate('dashboard')}
       />
       <ActivityLoader />
       <View style={CONTAINER}>

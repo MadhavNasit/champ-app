@@ -45,6 +45,7 @@ export function Header(props: HeaderProps) {
     headerTx,
     style,
     titleStyle,
+    onLeftPress
   } = props
   const header = headerText || (headerTx && translate(headerTx)) || ""
 
@@ -54,7 +55,7 @@ export function Header(props: HeaderProps) {
     <View style={{ ...ROOT, ...style }}>
       {/* Back Button for Previous screen navigation */}
       {leftIcon ? (
-        <Button preset="link" style={LEFT} onPress={() => navigation.goBack()}>
+        <Button preset="link" style={LEFT} onPress={() => onLeftPress()}>
           <Icon icon={leftIcon} style={IconStyle} />
         </Button>
       ) : (

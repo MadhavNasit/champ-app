@@ -89,7 +89,6 @@ export const DashboardScreen = observer(function DashboardScreen() {
         key={index}
         onPress={() => navigation.navigate('subcategory', {
           parentId: item.id,
-          categoryName: item.name
         })}>
         <Text style={CategoryText} text={item.name} />
       </TouchableOpacity>

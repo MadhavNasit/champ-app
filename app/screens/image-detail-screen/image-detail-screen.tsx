@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import { Dimensions, TextStyle, View, ViewStyle } from "react-native"
-import { useIsFocused } from "@react-navigation/native"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
@@ -17,6 +17,7 @@ import { CirclesRotationScaleLoader } from 'react-native-indicator';
 
 import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
 import { color } from "../../theme"
+import { async } from "validate.js"
 
 interface ImageDetailsProps {
   route,
@@ -82,7 +83,7 @@ const ActivityLoaderStyle: ViewStyle = {
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: ImageDetailsProps) {
   // Return true on Screen Focus
   const isFocused = useIsFocused();
-
+  const navigation = useNavigation();
   // Store for Subcategory Data
   const { subCategories, visitedSubcategories } = useStores();
   const [activeSlide, setActiveSlide] = useState<number>(0);
@@ -104,8 +105,8 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   }
 
   // Load data from Api and store in subcategories model
-  const getSubCategoryData = (parentId: number, subCategoryId: number) => {
-    subCategories.getSubCategoryData(parentId);
+  const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
+    await subCategories.getSubCategoryData(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
@@ -175,6 +176,9 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
         headerText={route.params.subCategoryName}
         rightIcon='hamburger'
         leftIcon='back'
+        onLeftPress={() => navigation.navigate('subcategory', {
+          parentId: route.params.categoryId,
+        })}
       />
       {/* Main contetnt View  */}
       <View style={CONTAINER}>
