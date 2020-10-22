@@ -69,3 +69,4 @@ buck-out/
 app/config/env.*.js
 !env.js
 java_pid76883.hprof
+*.hprof
