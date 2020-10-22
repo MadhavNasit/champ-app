@@ -95,7 +95,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
       setPrevDisabled(true);
     }
 
-    if (subCategories.subCategoryData.length == parentId && lengthSubCategory == indexOfSubCategory + 1) {
+    if (categoryData.mainCategoryData.length == parentId && lengthSubCategory == indexOfSubCategory + 1) {
       setNextDisabled(true);
     }
   }
