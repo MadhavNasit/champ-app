@@ -121,13 +121,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
   // Onpress function for Next Button
   // Navigates to next Screen
   const NextPress = async () => {
-    // Find current parentId index in subcategory store
-    // let indexOfParent = subCategories.subCategoryData.findIndex(x => x.parentId == parentId);
-    // Find current subcategory index in subcategory sotre using parent index
-    // let indexOfSubCategory = subCategories.subCategoryData[indexOfParent].data.findIndex(y => y.id == subCategoryId);
-    // Length of sub category array
-    // let lengthSubCategory = subCategories.subCategoryData[indexOfParent].data.length;
-
     // Checks for navigation in same sub category or next sub category
     if (indexOfSubCategory < lengthSubCategory - 1) {
       subCategories.clearSubCategoryMedia();
@@ -164,10 +157,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
   // Onpress function for Prev Button
   // Navigates to prev Screen
   const PrevPress = async () => {
-    // Find current parentId index in subcategory store
-    // let indexOfParent = subCategories.subCategoryData.findIndex(x => x.parentId == parentId);
-    // Find current subcategory index in subcategory sotre using parent index
-    // let indexOfSubCategory = subCategories.subCategoryData[indexOfParent].data.findIndex(y => y.id == subCategoryId);
     // Checks for navigation in same sub category or previous sub category
     if (indexOfSubCategory > 0) {
       subCategories.clearSubCategoryMedia();
