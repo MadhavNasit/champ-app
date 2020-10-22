@@ -14,6 +14,7 @@ import { color, spacing, typography } from "../../theme"
 import { validateEmail, validatePassword } from '../../utils/validation'
 import { offsets } from "../../components/screen/screen.presets"
 import { ActivityLoader } from "../../components/activity-loader/activity-loader"
+import { ScrollView } from "react-native-gesture-handler"
 
 // Style form Screen
 const FULL: ViewStyle = {
@@ -34,7 +35,7 @@ const TEXT: TextStyle = {
 const BOLD: TextStyle = { fontWeight: "bold" }
 
 const BUTTON: ViewStyle = {
-  paddingVertical: spacing[4],
+  paddingVertical: '4%',
   borderRadius: 0,
   marginTop: spacing[1],
   marginBottom: spacing[2]
@@ -193,7 +194,6 @@ export const SigninScreen = observer(function SigninScreen() {
     }
   }
 
-
   return (
     <View style={FULL}>
       {/* // Background Image set */}
@@ -202,63 +202,65 @@ export const SigninScreen = observer(function SigninScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={CONTAINER}>
           <KeyboardAvoidingView
-            // style={{ flex: 1 }}
             behavior={Platform.OS == 'ios' ? "padding" : null}
             keyboardVerticalOffset={offsets["none"]}
           >
-            <StatusBar barStyle={"light-content"} backgroundColor={color.background} />
-            {/* Header View with Icon and Welcome message */}
-            <View style={{}}>
-              <View style={HeaderView}>
-                <Icon containerStyle={BoxingIconView} style={BoxingIcon} icon={'logo'} />
-                <View style={WelcomeTextView}>
-                  <Text
-                    tx="signinScreen.Welcome"
-                    style={WelcomeText} />
-                  <Text
-                    tx={"signinScreen.SignInToContinue"}
-                    style={SignInText}
+            <ScrollView
+              overScrollMode='never'>
+              <StatusBar barStyle={"light-content"} backgroundColor={color.background} />
+              {/* Header View with Icon and Welcome message */}
+              <View style={{}}>
+                <View style={HeaderView}>
+                  <Icon containerStyle={BoxingIconView} style={BoxingIcon} icon={'logo'} />
+                  <View style={WelcomeTextView}>
+                    <Text
+                      tx="signinScreen.Welcome"
+                      style={WelcomeText} />
+                    <Text
+                      tx={"signinScreen.SignInToContinue"}
+                      style={SignInText}
+                    />
+                  </View>
+                </View>
+                {/* SignIn Form View */}
+                <View style={SignInFormView}>
+                  <View style={FormFieldView}>
+                    <TextField
+                      labelTx="signinScreen.emailLabel"
+                      value={email}
+                      autoCapitalize='none'
+                      onChangeText={(email) => handleEmail(email)}
+                      placeholderTx="signinScreen.emailPlaceholder"
+                      style={TextFieldView}
+                      returnKeyType="next"
+                      onSubmitEditing={() => passwordRef.current.focus()}
+                      blurOnSubmit={false}
+                    />
+                    <Text text={emailError} style={errorText} />
+                  </View>
+                  <View style={FormFieldView}>
+                    <TextField labelTx="signinScreen.passwordLabel"
+                      placeholderTx="signinScreen.passwordPlaceholder"
+                      value={password}
+                      onChangeText={(password) => handlePassword(password)}
+                      style={TextFieldView}
+                      secureTextEntry={true}
+                      returnKeyType="done"
+                      forwardedRef={passwordRef}
+                    />
+                    {passwordError.map((item, key) => (
+                      <Text text={item} key={key} style={errorText} />
+                    ))}
+                  </View>
+                  <Button
+                    tx="signinScreen.signinButton"
+                    style={SignInButton}
+                    textStyle={TextSignInButton}
+                    onPress={() => SubmitForm()}
                   />
                 </View>
               </View>
-              {/* SignIn Form View */}
-              <View style={SignInFormView}>
-                <View style={FormFieldView}>
-                  <TextField
-                    labelTx="signinScreen.emailLabel"
-                    value={email}
-                    autoCapitalize='none'
-                    onChangeText={(email) => handleEmail(email)}
-                    placeholderTx="signinScreen.emailPlaceholder"
-                    style={TextFieldView}
-                    returnKeyType="next"
-                    onSubmitEditing={() => passwordRef.current.focus()}
-                    blurOnSubmit={false}
-                  />
-                  <Text text={emailError} style={errorText} />
-                </View>
-                <View style={FormFieldView}>
-                  <TextField labelTx="signinScreen.passwordLabel"
-                    placeholderTx="signinScreen.passwordPlaceholder"
-                    value={password}
-                    onChangeText={(password) => handlePassword(password)}
-                    style={TextFieldView}
-                    secureTextEntry={true}
-                    returnKeyType="done"
-                    forwardedRef={passwordRef}
-                  />
-                  {passwordError.map((item, key) => (
-                    <Text text={item} key={key} style={errorText} />
-                  ))}
-                </View>
-                <Button
-                  tx="signinScreen.signinButton"
-                  style={SignInButton}
-                  textStyle={TextSignInButton}
-                  onPress={() => SubmitForm()}
-                />
-              </View>
-            </View>
+            </ScrollView>
           </KeyboardAvoidingView>
           {/* Social Account SignIn View */}
           <View style={SocialButtonView}>
