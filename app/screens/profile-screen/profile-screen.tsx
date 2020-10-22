@@ -77,7 +77,7 @@ const BirthDate: TextStyle = {
 
 // -- Saved categories view Starts -- //
 // Content view
-const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - DEVICE_HEIGHT * 0.1 - 75;
+const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - DEVICE_HEIGHT * 0.1 - 65;
 const ContentView: ViewStyle = {
   marginTop: HEADER_SCROLL_DISTANCE,
   minHeight: CONTENTVIEWHEIGHT,
@@ -424,7 +424,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                   :
                   icons.profile_placeholder}
               style={ProfileImage}
-              resizeMode={FastImage.resizeMode.contain}
+              resizeMode={FastImage.resizeMode.cover}
             />
           </Animated.View>
           {/* User Details */}
