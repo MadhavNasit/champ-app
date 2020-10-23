@@ -2,14 +2,14 @@
  * Dashboard screen which contains list of categories
  */
 
-import React, { useEffect } from "react";
-import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle, BackHandler, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TextStyle, TouchableOpacity, View, FlatList, ViewStyle, BackHandler, Alert, ImageStyle } from "react-native";
 
 import { observer } from "mobx-react-lite";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 // Components and Screen imports
-import { Header, Screen, Text } from "../../components";
+import { Header, Icon, Screen, Text } from "../../components";
 import { color, spacing } from "../../theme";
 import { useStores } from "../../models";
 import { ActivityLoader } from "../../components/activity-loader/activity-loader";
@@ -43,6 +43,20 @@ const CategoryText: TextStyle = {
   letterSpacing: spacing[1]
 }
 
+const ErrorView: ViewStyle = {
+  alignItems: 'center',
+  paddingBottom: 50,
+}
+const ErrorIcon: ImageStyle = {
+  height: 30,
+  tintColor: color.palette.white
+}
+const ErrorText: TextStyle = {
+  textAlign: 'center',
+  fontSize: 18,
+  fontWeight: 'bold'
+}
+
 export const DashboardScreen = observer(function DashboardScreen() {
   // contains navigation props and method
   const navigation = useNavigation();
@@ -50,6 +64,8 @@ export const DashboardScreen = observer(function DashboardScreen() {
   const { categoryData, visitedSubcategories } = useStores();
   // return true if screen is focused
   const isFocused = useIsFocused()
+
+  const [response, setResponse] = useState<boolean>(false);
 
   // Call api function if screen is focused
   useEffect(() => {
@@ -59,12 +75,18 @@ export const DashboardScreen = observer(function DashboardScreen() {
     }
     const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
 
-    return () => backHandler.remove()
+    return () => {
+      setResponse(false);
+      if (isFocused) {
+        backHandler.remove()
+      }
+    }
   }, [isFocused]);
 
   // Call APi and store in model
   const LoadDataFromApi = async () => {
     await categoryData.getCategoryData();
+    setResponse(true);
   }
 
   // Back on first screen for android
@@ -83,6 +105,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
 
   // Render function for Categories
   const RenderCategories = ({ item, index }) => {
+    if (!response) return null;
     return (
       <TouchableOpacity
         style={CategoryButton}
@@ -92,6 +115,16 @@ export const DashboardScreen = observer(function DashboardScreen() {
         })}>
         <Text style={CategoryText} text={item.name} />
       </TouchableOpacity>
+    )
+  }
+
+  const EmptyCategories = () => {
+    if (!response) return null;
+    return (
+      <View style={ErrorView}>
+        <Icon icon='notFound' style={ErrorIcon} />
+        <Text text="Something went Wrong..!!" style={ErrorText} />
+      </View>
     )
   }
 
@@ -105,12 +138,15 @@ export const DashboardScreen = observer(function DashboardScreen() {
       />
       {/* Return Categories View */}
       <View style={CONTAINER}>
+        {/* {response && */}
         <FlatList
           data={categoryData.mainCategoryData}
           contentContainerStyle={FlatListview}
           renderItem={RenderCategories}
           keyExtractor={(item, index) => index.toString()}
+          ListEmptyComponent={EmptyCategories}
         />
+        {/* } */}
       </View>
     </Screen>
   )

@@ -11,6 +11,7 @@ export const icons = {
   hamburger: require("./hamburger.png"),
   search: require("./search.png"),
   delete: require("./delete.png"),
+  notFound: require("./error.png"),
   profile_placeholder: require("./profile-placeholder.png"),
 }
 

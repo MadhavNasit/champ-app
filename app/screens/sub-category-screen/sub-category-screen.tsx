@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useState } from "react"
-import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity } from "react-native"
+import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity, ImageStyle } from "react-native"
 
 import { observer } from "mobx-react-lite"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
@@ -12,7 +12,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native"
 import FastImage from 'react-native-fast-image'
 
 // Component and theme import
-import { ActivityLoader, Header, Screen, Text } from "../../components"
+import { ActivityLoader, Header, Icon, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 import { useStores } from "../../models"
 
@@ -58,13 +58,28 @@ const CategoryText: TextStyle = {
   paddingLeft: spacing[3]
 }
 
+// Empty List Container
+const ErrorView: ViewStyle = {
+  alignItems: 'center',
+  paddingBottom: 50,
+}
+const ErrorIcon: ImageStyle = {
+  height: 30,
+  tintColor: color.palette.white
+}
+const ErrorText: TextStyle = {
+  textAlign: 'center',
+  fontSize: 18,
+  fontWeight: 'bold'
+}
+
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: SubCategoryProps) {
 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const { categoryData, subCategories, visitedSubcategories } = useStores();
   const [categoryName, setCategoryName] = useState('');
-
+  const [response, setResponse] = useState<boolean>();
 
   useEffect(() => {
     if (isFocused) {
@@ -73,6 +88,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
     }
 
     return function cleanup() {
+      setResponse(false);
       subCategories.clearCurrentSubCategory();
     };
   }, [isFocused, route.params.parentId]);
@@ -80,6 +96,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
   // load data from api
   const LoadStoreData = async (parentId: number) => {
     await subCategories.getSubCategoryData(parentId);
+    setResponse(true);
     await subCategories.getCurrentSubCategories(parentId);
     await visitedSubcategories.setCurrentSubCategoryIndex(parentId);
   }
@@ -87,6 +104,36 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
   const GetCategoryName = (parentId: number) => {
     let index = categoryData.mainCategoryData.findIndex(x => x.id == parentId);
     setCategoryName(categoryData.mainCategoryData[index].name);
+  }
+
+  const EmptySubCategories = () => {
+    if (!response) return null;
+    return (
+      <View style={ErrorView}>
+        <Icon icon='notFound' style={ErrorIcon} />
+        <Text text="Something went Wrong..!!" style={ErrorText} />
+      </View>
+    )
+  }
+
+  const RenderSubCategory = ({ item, index }) => {
+    if (!response) return null;
+    return (
+      <TouchableOpacity
+        style={CategoryButton}
+        key={index}
+        onPress={() => navigation.navigate(item.type == 'Image' ? 'imagedetail' : 'videodetail', {
+          categoryId: item.parent_id,
+          subCategoryId: item.id,
+          subCategoryName: item.name,
+          mediaType: item.type,
+        })}>
+        <View style={SubCategoryButton}>
+          <FastImage source={{ uri: item.icon, priority: FastImage.priority.normal, }} style={IconStyle} resizeMode={FastImage.resizeMode.contain} />
+          <Text style={CategoryText} text={item.name} />
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   return (
@@ -102,24 +149,8 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
         <FlatList
           data={subCategories.currentSubCategories}
           contentContainerStyle={FlatListview}
-          renderItem={({ item, index }: any) => {
-            return (
-              <TouchableOpacity
-                style={CategoryButton}
-                key={index}
-                onPress={() => navigation.navigate(item.type == 'Image' ? 'imagedetail' : 'videodetail', {
-                  categoryId: item.parent_id,
-                  subCategoryId: item.id,
-                  subCategoryName: item.name,
-                  mediaType: item.type,
-                })}>
-                <View style={SubCategoryButton}>
-                  <FastImage source={{ uri: item.icon, priority: FastImage.priority.normal, }} style={IconStyle} resizeMode={FastImage.resizeMode.contain} />
-                  <Text style={CategoryText} text={item.name} />
-                </View>
-              </TouchableOpacity>
-            )
-          }}
+          renderItem={RenderSubCategory}
+          ListEmptyComponent={EmptySubCategories}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>

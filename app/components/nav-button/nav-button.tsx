@@ -78,6 +78,11 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
 
   useEffect(() => {
     ButtonDisable(parentId, subCategoryId);
+
+    return function clenup() {
+      setNextDisabled(false);
+      setPrevDisabled(false);
+    }
   }, []);
 
   const ButtonDisable = (parentId: number, subCategoryId: number) => {
@@ -123,28 +128,40 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
   const NextPress = async () => {
     // Checks for navigation in same sub category or next sub category
     if (indexOfSubCategory < lengthSubCategory - 1) {
-      subCategories.clearSubCategoryMedia();
-      let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory + 1];
-      navigation.dispatch(StackActions.push(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
-        categoryId: dataOfMedia.parent_id,
-        subCategoryId: dataOfMedia.id,
-        subCategoryName: dataOfMedia.name,
-        mediaType: dataOfMedia.type
-      }))
-    }
-    else {
-      let newParentId = parentId + 1;
-      if (newParentId <= lengthOfCategory) {
-        await subCategories.getSubCategoryData(newParentId);
+      if (indexOfParent != -1) {
         subCategories.clearSubCategoryMedia();
-        let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
-        let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[0];
+        let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory + 1];
         navigation.dispatch(StackActions.push(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
           categoryId: dataOfMedia.parent_id,
           subCategoryId: dataOfMedia.id,
           subCategoryName: dataOfMedia.name,
           mediaType: dataOfMedia.type
         }))
+      }
+      else {
+        Alert.alert('Someting went wrong..!!');
+        setNextDisabled(true)
+      }
+    }
+    else {
+      let newParentId = parentId + 1;
+      if (newParentId <= lengthOfCategory) {
+        await subCategories.getSubCategoryData(newParentId);
+        let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
+        if (indexOfNewParent != -1) {
+          subCategories.clearSubCategoryMedia();
+          let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[0];
+          navigation.dispatch(StackActions.push(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
+            categoryId: dataOfMedia.parent_id,
+            subCategoryId: dataOfMedia.id,
+            subCategoryName: dataOfMedia.name,
+            mediaType: dataOfMedia.type
+          }))
+        }
+        else {
+          Alert.alert('Someting went wrong..!!');
+          setNextDisabled(true)
+        }
       }
       else {
         // Alert and Disabled button at last Screen
@@ -159,28 +176,9 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
   const PrevPress = async () => {
     // Checks for navigation in same sub category or previous sub category
     if (indexOfSubCategory > 0) {
-      subCategories.clearSubCategoryMedia();
-      let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory - 1];
-      navigation.dispatch(StackActions.popToTop);
-      navigation.navigate(
-        dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail',
-        {
-          categoryId: dataOfMedia.parent_id,
-          subCategoryId: dataOfMedia.id,
-          subCategoryName: dataOfMedia.name,
-          mediaType: dataOfMedia.type
-        }
-      )
-
-    }
-    else {
-      let newParentId = parentId - 1;
-      if (newParentId > 0) {
-        await subCategories.getSubCategoryData(newParentId);
+      if (indexOfParent != -1) {
         subCategories.clearSubCategoryMedia();
-        let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
-        let lengthOfNextSubCategory = subCategories.subCategoryData[indexOfNewParent].data.length - 1;
-        let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[lengthOfNextSubCategory];
+        let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory - 1];
         navigation.dispatch(StackActions.popToTop);
         navigation.navigate(
           dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail',
@@ -191,6 +189,36 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
             mediaType: dataOfMedia.type
           }
         )
+      }
+      else {
+        Alert.alert('Someting went wrong..!!');
+        setPrevDisabled(true)
+      }
+    }
+    else {
+      let newParentId = parentId - 1;
+      if (newParentId > 0) {
+        await subCategories.getSubCategoryData(newParentId);
+        let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
+        if (indexOfNewParent != -1) {
+          subCategories.clearSubCategoryMedia();
+          let lengthOfNextSubCategory = subCategories.subCategoryData[indexOfNewParent].data.length - 1;
+          let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[lengthOfNextSubCategory];
+          navigation.dispatch(StackActions.popToTop);
+          navigation.navigate(
+            dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail',
+            {
+              categoryId: dataOfMedia.parent_id,
+              subCategoryId: dataOfMedia.id,
+              subCategoryName: dataOfMedia.name,
+              mediaType: dataOfMedia.type
+            }
+          )
+        }
+        else {
+          Alert.alert('Someting went wrong..!!');
+          setPrevDisabled(true)
+        }
       }
     }
 

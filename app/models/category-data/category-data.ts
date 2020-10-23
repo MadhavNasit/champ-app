@@ -17,14 +17,15 @@ export const CategoryDataModel = types
   .actions(self => ({
     // get category data
     getCategoryData: flow(function* getCategoryData() {
+      self.loading = true;
       try {
-        self.loading = true;
         const res = yield api.getCategories();
         if (res.kind === "ok" && res.data.status == 200) {
           if (res.data.ok) {
             self.mainCategoryData = res.data.data.data;
+            self.loading = false;
           }
-          self.loading = false;
+          return { response: true, message: "data Found" };
         }
         else {
           self.loading = false;
@@ -34,8 +35,6 @@ export const CategoryDataModel = types
         self.loading = false;
         return { response: false, message: "Something went wrong." };
       }
-      self.loading = false;
-      return { response: false, message: "Something went wrong." };
     }),
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 

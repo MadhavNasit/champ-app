@@ -3,21 +3,20 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react"
-import { Alert, FlatList, TextStyle, View, ViewStyle } from "react-native"
+import { Alert, FlatList, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
 // Component and theme import
-import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
+import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
 import { color, spacing } from "../../theme"
 
 // node modules import
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
 import { CirclesRotationScaleLoader } from 'react-native-indicator';
-import { async } from "validate.js"
 
 interface VideoDetailsProps {
   route
@@ -39,18 +38,6 @@ const TEXT: TextStyle = {
   color: color.palette.white
 }
 
-// Empty view for mediaType == None
-const EmptyDataView: ViewStyle = {
-  flex: 1,
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginBottom: '10%'
-}
-const EmptyDataText: TextStyle = {
-  ...TEXT,
-  fontSize: 18,
-  fontWeight: 'bold'
-}
 
 // FlatList View Style for main content
 const FlatListContainer: ViewStyle = {
@@ -85,11 +72,29 @@ const VideoActivityLoader: ViewStyle = {
   alignItems: 'center'
 }
 
+// Empty List Container
+const ErrorView: ViewStyle = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingBottom: 50,
+}
+const ErrorIcon: ImageStyle = {
+  height: 30,
+  tintColor: color.palette.white
+}
+const ErrorText: TextStyle = {
+  textAlign: 'center',
+  fontSize: 18,
+  fontWeight: 'bold'
+}
+
 export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {
 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const { subCategories, visitedSubcategories } = useStores();
+  const [response, setResponse] = useState<boolean>();
 
   // states for manage video playing
   const [playing, setPlaying] = useState(false);
@@ -103,6 +108,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
 
     // cleanup function for screen
     return function cleanup() {
+      setResponse(false);
       subCategories.clearSubCategoryMedia();
     };
   }, [isFocused, route.params.subCategoryId]);
@@ -110,6 +116,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   // Api call and store data in mobx model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
+    setResponse(true);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
@@ -134,7 +141,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   // Render function for video details
   const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
-    // retrive youtube video id from Youtube URL 
+    if (!response) return null;
     let videoId = item.url.match(urlReg)[7];
     visitedSubcategories.setSubCategoryVisited(item.id);
     return (
@@ -172,6 +179,17 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     )
   }
 
+  const EmptyMedia = () => {
+    if (!response) return null;
+    let errorText = (route.params.mediaType == 'None') ? 'No Data Found..!' : 'Something went Wrong..!!';
+    return (
+      <View style={ErrorView}>
+        <Icon icon='notFound' style={ErrorIcon} />
+        <Text text={errorText} style={ErrorText} />
+      </View>
+    )
+  }
+
   return (
     <Screen style={ROOT} preset="fixed">
       <Header
@@ -190,21 +208,14 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
         />
         <View style={FILL}>
           <ActivityLoader />
-          {route.params.mediaType == 'None' ? (
-            <View style={EmptyDataView}>
-              <Text style={EmptyDataText} text='No Data Found..!!' />
-            </View>
-          ) : (
-              <View>
-                <FlatList
-                  data={subCategories.subCategoryMedia}
-                  style={FlatListStyle}
-                  contentContainerStyle={FlatListContainer}
-                  keyExtractor={(index) => index.toString()}
-                  renderItem={renderMedia}
-                />
-              </View>
-            )}
+          <FlatList
+            data={subCategories.subCategoryMedia}
+            style={FlatListStyle}
+            contentContainerStyle={FlatListContainer}
+            keyExtractor={(index) => index.toString()}
+            renderItem={renderMedia}
+            ListEmptyComponent={EmptyMedia}
+          />
         </View>
       </View>
     </Screen >

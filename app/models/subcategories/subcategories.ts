@@ -26,36 +26,52 @@ export const SubCategoriesModel = types
           if (res.data.ok) {
             let indexOfCategory = findWithAttr(self.subCategoryData, parentId);
             if (indexOfCategory == -1) {
+              self.loading = false;
               self.subCategoryData.push({ parentId: parentId, data: res.data.data.data });
+
             }
             else {
+              self.loading = false;
               self.subCategoryData[indexOfCategory] = { parentId: parentId, data: res.data.data.data };
             }
+            return { response: true, message: "data Found" };
+          }
+          else {
+            self.loading = false;
+            return { response: false, message: "Something went wrong." };
           }
         }
         else {
+          self.loading = false;
           return { response: false, message: "Something went wrong." };
         }
-        self.loading = false;
       } catch (error) {
         self.loading = false;
         return { response: false, message: "Something went wrong." };
       }
-      self.loading = false;
-      return { response: false, message: "Something went wrong." };
     }),
 
     // list of current sub categorie
     getCurrentSubCategories(parentId: number) {
       let indexOfObject = findWithAttr(self.subCategoryData, parentId);
-      self.currentSubCategories = self.subCategoryData[indexOfObject].data;
+      if (indexOfObject != -1) {
+        self.currentSubCategories = self.subCategoryData[indexOfObject].data;
+      }
+      else {
+        self.currentSubCategories = [];
+      }
     },
 
     // set focused screen media
     getSubCategoryMedia(subCategoryId: number) {
       const indexOfsubCategory = self.currentSubCategories.findIndex(x => x.id == subCategoryId);
-      if (self.currentSubCategories[indexOfsubCategory].type != 'None') {
-        self.subCategoryMedia = self.currentSubCategories[indexOfsubCategory].media;
+      if (indexOfsubCategory != -1) {
+        if (self.currentSubCategories[indexOfsubCategory].type != 'None') {
+          self.subCategoryMedia = self.currentSubCategories[indexOfsubCategory].media;
+        }
+        else {
+          self.subCategoryMedia = [];
+        }
       }
       else {
         self.subCategoryMedia = [];

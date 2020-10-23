@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react"
-import { Dimensions, TextStyle, View, ViewStyle } from "react-native"
+import { Dimensions, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
@@ -15,9 +15,8 @@ import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { CirclesRotationScaleLoader } from 'react-native-indicator';
 
-import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
+import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
 import { color } from "../../theme"
-import { async } from "validate.js"
 
 interface ImageDetailsProps {
   route,
@@ -80,6 +79,21 @@ const ActivityLoaderStyle: ViewStyle = {
   alignItems: 'center'
 }
 
+// Empty List Container
+const ErrorView: ViewStyle = {
+  alignItems: 'center',
+  paddingBottom: 50,
+}
+const ErrorIcon: ImageStyle = {
+  height: 30,
+  tintColor: color.palette.white
+}
+const ErrorText: TextStyle = {
+  textAlign: 'center',
+  fontSize: 18,
+  fontWeight: 'bold'
+}
+
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: ImageDetailsProps) {
   // Return true on Screen Focus
   const isFocused = useIsFocused();
@@ -88,6 +102,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   const { subCategories, visitedSubcategories } = useStores();
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [imageLoading, setImageLoading] = useState(false);
+  const [response, setResponse] = useState<boolean>();
   const carousel = useRef()
   // Data fetch on screen focus
   useEffect(() => {
@@ -96,6 +111,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     }
 
     return function cleanup() {
+      setResponse(false)
       subCategories.clearSubCategoryMedia();
     };
   }, [isFocused, route.params.subCategoryId]);
@@ -107,6 +123,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   // Load data from Api and store in subcategories model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
+    setResponse(true);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
@@ -134,6 +151,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
 
   // Render Swiper view
   const renderItem = ({ item, index }) => {
+    if (!response) return null;
     return (
       <View key={index} style={SwiperSlide} >
         <View style={SwipeImageView}>
@@ -168,6 +186,17 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     )
   }
 
+  const EmptyMedia = () => {
+    if (!response) return null;
+    let errorText = (route.params.mediaType == 'None') ? 'No Data Found..!' : 'Something went Wrong..!!';
+    return (
+      <View style={ErrorView}>
+        <Icon icon='notFound' style={ErrorIcon} />
+        <Text text={errorText} style={ErrorText} />
+      </View>
+    )
+  }
+
   return (
     <Screen style={ROOT} preset="fixed">
 
@@ -193,6 +222,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
           <Carousel
             ref={carousel}
             data={subCategories.subCategoryMedia}
+            ListEmptyComponent={EmptyMedia}
             renderItem={renderItem}
             sliderWidth={SLIDER_WIDTH}
             itemWidth={ITEM_WIDTH}
