@@ -3,7 +3,7 @@
 */
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert } from "react-native";
+import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert, Platform, StatusBar } from "react-native";
 
 import { useIsFocused } from "@react-navigation/native";
 
@@ -77,7 +77,10 @@ const BirthDate: TextStyle = {
 
 // -- Saved categories view Starts -- //
 // Content view
-const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - DEVICE_HEIGHT * 0.1 - 65;
+console.tron.log(StatusBar.currentHeight)
+const STATUSBARHEIGHT = Platform.OS == 'ios' ? 40 : StatusBar.currentHeight;
+const TABBARHEIGHT = DEVICE_HEIGHT * 0.1;
+const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - 48;
 const ContentView: ViewStyle = {
   marginTop: HEADER_SCROLL_DISTANCE,
   minHeight: CONTENTVIEWHEIGHT,
