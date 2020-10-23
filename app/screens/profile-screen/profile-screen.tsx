@@ -211,6 +211,9 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
     return function cleanup() {
       setSearchTerm('');
+      setCategoryDetails([]);
+      setFilteredArray([]);
+      setActiveSections([0]);
     }
   }, [isFocused]);
 

@@ -2,8 +2,8 @@
  * Video details screen display video and its details 
  */
 
-import React, { useCallback, useEffect, useState } from "react"
-import { Alert, FlatList, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import React, { useEffect, useState } from "react"
+import { FlatList, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
@@ -31,6 +31,7 @@ const CONTAINER: ViewStyle = {
 }
 const FILL: ViewStyle = {
   flex: 1,
+  paddingHorizontal: spacing[6]
 }
 
 // Text style 
@@ -38,15 +39,12 @@ const TEXT: TextStyle = {
   color: color.palette.white
 }
 
-
 // FlatList View Style for main content
 const FlatListContainer: ViewStyle = {
   flexGrow: 1,
 }
 const FlatListStyle: ViewStyle = {
-  paddingBottom: 25,
-  marginBottom: 15,
-  paddingHorizontal: spacing[6]
+  paddingBottom: 15,
 }
 const UnorderedListText: TextStyle = {
   ...TEXT,
@@ -95,6 +93,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   const navigation = useNavigation();
   const { subCategories, visitedSubcategories } = useStores();
   const [response, setResponse] = useState<boolean>();
+  const [isOnline, setIsOnline] = useState<boolean>();
 
   // states for manage video playing
   const [playing, setPlaying] = useState(false);
@@ -109,26 +108,22 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     // cleanup function for screen
     return function cleanup() {
       setResponse(false);
+      setIsOnline(false);
+      setPlaying(false);
+      setVideoReady(false);
       subCategories.clearSubCategoryMedia();
     };
   }, [isFocused, route.params.subCategoryId]);
 
   // Api call and store data in mobx model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
-    await subCategories.getSubCategoryData(parentId);
+    let res = await subCategories.getSubCategoryData(parentId);
+    setIsOnline(res.response);
     setResponse(true);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
   }
-
-  // Alert on video playing end
-  const onStateChange = useCallback((state) => {
-    if (state === "ended") {
-      setPlaying(false);
-      Alert.alert("video has finished playing!");
-    }
-  }, []);
 
   // Parameters for video player
   const initialParams: InitialPlayerParams = {
@@ -139,32 +134,11 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   }
 
   // Render function for video details
-  const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
   const renderMedia = ({ item, index }) => {
     if (!response) return null;
-    let videoId = item.url.match(urlReg)[7];
     visitedSubcategories.setSubCategoryVisited(item.id);
     return (
       <View key={index}>
-        <View>
-          <YoutubePlayer
-            height={200}
-            initialPlayerParams={initialParams}
-            play={playing}
-            videoId={videoId}
-            onChangeState={onStateChange}
-            onReady={() => { setVideoReady(true) }}
-          />
-          {/* Show indicator while video loading */}
-          {!videoReady &&
-            (
-              <View style={VideoActivityLoader}>
-                <Text text='Loading Video...' style={{ color: color.palette.golden }} />
-                <CirclesRotationScaleLoader color={color.palette.golden} />
-              </View>
-            )
-          }
-        </View>
         <HTML tagsStyles={{ ul: { ...UnorderedListText }, p: { ...ParagraphText }, h2: { ...TEXT } }}
           listsPrefixesRenderers={{
             ul: () => {
@@ -179,6 +153,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     )
   }
 
+  // Render when media is null
   const EmptyMedia = () => {
     if (!response) return null;
     let errorText = (route.params.mediaType == 'None') ? 'No Data Found..!' : 'Something went Wrong..!!';
@@ -188,6 +163,42 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
         <Text text={errorText} style={ErrorText} />
       </View>
     )
+  }
+
+  // Render Video
+  const urlReg = /^(https?:\/\/)?((www\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)/i;
+  const RenderVideo = () => {
+    if (!response) return null;
+    return subCategories.subCategoryMedia.map((item, key) => {
+      let videoId = item.url.match(urlReg)[7];
+      return (
+        <View key={key}>
+          <YoutubePlayer
+            height={200}
+            initialPlayerParams={initialParams}
+            play={playing}
+            videoId={videoId}
+            onReady={() => { setVideoReady(true) }}
+          />
+          {/* Show indicator while video loading */}
+          {!videoReady && isOnline &&
+            (
+              <View style={VideoActivityLoader}>
+                <Text text='Loading Video...' style={{ color: color.palette.golden }} />
+                <CirclesRotationScaleLoader color={color.palette.golden} />
+              </View>
+            )
+          }
+          {!isOnline &&
+            (
+              <View style={[VideoActivityLoader, { borderWidth: 1, borderColor: color.palette.white }]}>
+                <Text text='No Internet Connection..!!' style={{ color: color.palette.white }} />
+              </View>
+            )
+          }
+        </View>
+      )
+    })
   }
 
   return (
@@ -208,6 +219,9 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
         />
         <View style={FILL}>
           <ActivityLoader />
+          <View style={{ marginBottom: spacing[2] }}>
+            {RenderVideo()}
+          </View>
           <FlatList
             data={subCategories.subCategoryMedia}
             style={FlatListStyle}
@@ -215,6 +229,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
             keyExtractor={(index) => index.toString()}
             renderItem={renderMedia}
             ListEmptyComponent={EmptyMedia}
+            overScrollMode='never'
           />
         </View>
       </View>

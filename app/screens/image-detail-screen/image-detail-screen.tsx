@@ -111,7 +111,8 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     }
 
     return function cleanup() {
-      setResponse(false)
+      setResponse(false);
+      setImageLoading(false);
       subCategories.clearSubCategoryMedia();
     };
   }, [isFocused, route.params.subCategoryId]);
