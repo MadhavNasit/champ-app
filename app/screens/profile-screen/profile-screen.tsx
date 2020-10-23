@@ -77,7 +77,6 @@ const BirthDate: TextStyle = {
 
 // -- Saved categories view Starts -- //
 // Content view
-console.tron.log(StatusBar.currentHeight)
 const STATUSBARHEIGHT = Platform.OS == 'ios' ? 40 : StatusBar.currentHeight;
 const TABBARHEIGHT = DEVICE_HEIGHT * 0.1;
 const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - 48;
