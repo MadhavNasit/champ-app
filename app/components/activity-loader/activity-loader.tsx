@@ -40,14 +40,5 @@ export const ActivityLoader = observer(function ActivityLoader() {
   else {
     return null;
   }
-  // return (
-  //   { (activityLoader.loading) ? (
 
-  //     )
-  //       :
-  //       (
-  //         null
-  //       )
-  //   }
-  // )
 })

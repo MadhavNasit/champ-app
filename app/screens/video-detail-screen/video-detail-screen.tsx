@@ -11,7 +11,7 @@ import { useStores } from "../../models"
 
 // Component and theme import
 import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
-import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
+import { color, fontSize, horizantalSpacing, spacing, typography } from "../../theme"
 
 // node modules import
 import HTML from 'react-native-render-html';

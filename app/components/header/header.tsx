@@ -8,9 +8,6 @@ import { color, fontSize, horizantalSpacing, typography, verticalSpacing } from 
 import { translate } from "../../i18n/"
 import { useNavigation } from "@react-navigation/native"
 import { DrawerActions } from '@react-navigation/native';
-import {
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen"
 
 // static styles
 const ROOT: ViewStyle = {

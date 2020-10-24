@@ -1,15 +1,14 @@
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen"
 
 export const verticalSpacing = [
-  hp('0%'),//0
-  hp('0.5%'),//1
-  hp('0.8%'),//2
-  hp('1.6%'),//3
-  hp('2.0%'),//4
-  hp('4%'),//5
-  hp('6.5%'),//6
-  hp('7%')//7
+  hp('0%'),
+  hp('0.5%'),
+  hp('0.8%'),
+  hp('1.6%'),
+  hp('2.0%'),
+  hp('4%'),
+  hp('6.5%'),
+  hp('7%')
 ];
