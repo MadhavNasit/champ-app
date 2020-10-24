@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useState } from "react"
-import { FlatList, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { BackHandler, FlatList, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
@@ -103,6 +103,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     if (isFocused) {
       // Load video and its details
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+      BackHandler.addEventListener("hardwareBackPress", backAction);
     }
 
     // cleanup function for screen
@@ -112,6 +113,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
       setPlaying(false);
       setVideoReady(false);
       subCategories.clearSubCategoryMedia();
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
     };
   }, [isFocused, route.params.subCategoryId]);
 
@@ -123,6 +125,14 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
+  }
+
+  // Back on first screen for android
+  const backAction = () => {
+    navigation.navigate('subcategory', {
+      parentId: route.params.categoryId,
+    })
+    return true;
   }
 
   // Parameters for video player

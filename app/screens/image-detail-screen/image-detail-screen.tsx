@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react"
-import { Dimensions, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { BackHandler, Dimensions, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
@@ -108,17 +108,27 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   useEffect(() => {
     if (isFocused) {
       getSubCategoryData(route.params.categoryId, route.params.subCategoryId);
+      BackHandler.addEventListener("hardwareBackPress", backAction);
     }
 
     return function cleanup() {
       setResponse(false);
       setImageLoading(false);
       subCategories.clearSubCategoryMedia();
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
     };
   }, [isFocused, route.params.subCategoryId]);
 
   const setVisitedMedia = (index: number) => {
     visitedSubcategories.setSubCategoryVisited(subCategories.subCategoryMedia[index].id);
+  }
+
+  // Back on first screen for android
+  const backAction = () => {
+    navigation.navigate('subcategory', {
+      parentId: route.params.categoryId,
+    })
+    return true;
   }
 
   // Load data from Api and store in subcategories model

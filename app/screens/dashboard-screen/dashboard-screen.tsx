@@ -72,14 +72,12 @@ export const DashboardScreen = observer(function DashboardScreen() {
     if (isFocused) {
       LoadDataFromApi();
       visitedSubcategories.setCurrentSubCategoryIndex(0);
+      BackHandler.addEventListener("hardwareBackPress", backAction)
     }
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction)
 
-    return () => {
+    return function cleanup() {
       setResponse(false);
-      if (isFocused) {
-        backHandler.remove()
-      }
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
     }
   }, [isFocused]);
 
@@ -99,7 +97,7 @@ export const DashboardScreen = observer(function DashboardScreen() {
       },
       { text: "YES", onPress: () => BackHandler.exitApp() },
     ])
-    return true
+    return true;
   }
 
 

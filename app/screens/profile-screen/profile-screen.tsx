@@ -3,9 +3,9 @@
 */
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert, Platform, StatusBar } from "react-native";
+import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert, Platform, StatusBar, BackHandler } from "react-native";
 
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 import { observer } from "mobx-react-lite";
 import { useStores } from "../../models";
@@ -193,6 +193,7 @@ const MediaIconStyle = {
 export const ProfileScreen = observer(function ProfileScreen() {
 
   const isFocused = useIsFocused();
+  const navigation = useNavigation();
   const { userAuth, categoryData, subCategories, visitedSubcategories } = useStores();
 
   // Store viewed categories
@@ -209,6 +210,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   useEffect(() => {
     if (isFocused) {
       getVisitedCategories();
+      BackHandler.addEventListener("hardwareBackPress", backAction)
     }
 
     return function cleanup() {
@@ -216,8 +218,15 @@ export const ProfileScreen = observer(function ProfileScreen() {
       setCategoryDetails([]);
       setFilteredArray([]);
       setActiveSections([0]);
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
     }
   }, [isFocused]);
+
+  // Back on first screen for android
+  const backAction = () => {
+    navigation.navigate('Dashboard');
+    return true;
+  }
 
   // Retrive recently viewed categories and media
   const getVisitedCategories = () => {

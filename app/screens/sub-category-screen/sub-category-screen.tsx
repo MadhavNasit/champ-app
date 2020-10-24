@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useState } from "react"
-import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity, ImageStyle } from "react-native"
+import { TextStyle, View, ViewStyle, FlatList, TouchableOpacity, ImageStyle, BackHandler } from "react-native"
 
 import { observer } from "mobx-react-lite"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
@@ -85,11 +85,13 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
     if (isFocused) {
       LoadStoreData(route.params.parentId);
       GetCategoryName(route.params.parentId);
+      BackHandler.addEventListener("hardwareBackPress", backAction);
     }
 
     return function cleanup() {
       setResponse(false);
       subCategories.clearCurrentSubCategory();
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
     };
   }, [isFocused, route.params.parentId]);
 
@@ -99,6 +101,12 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
     setResponse(true);
     await subCategories.getCurrentSubCategories(parentId);
     await visitedSubcategories.setCurrentSubCategoryIndex(parentId);
+  }
+
+  // Back on first screen for android
+  const backAction = () => {
+    navigation.navigate('dashboard')
+    return true;
   }
 
   const GetCategoryName = (parentId: number) => {
