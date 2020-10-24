@@ -12,13 +12,17 @@ import { useStores } from "../../models";
 
 // import component and theme
 import { Header, Icon, Screen, Text } from "../../components";
-import { color, spacing, typography } from "../../theme";
+import { color, fontSize, horizantalSpacing, typography, verticalSpacing } from "../../theme";
 import { icons } from "../../components/icon/icons";
 
 // import node modules
 import Accordion from 'react-native-collapsible/Accordion';
 import FastImage from "react-native-fast-image";
 import { TextInput } from "react-native-gesture-handler";
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from "react-native-responsive-screen"
 
 // Main Cintainer stle
 const ROOT: ViewStyle = {
@@ -29,7 +33,7 @@ const FILL: ViewStyle = {
 }
 
 // Height for user detail view animations
-const HEADER_MAX_HEIGHT = 230;
+const HEADER_MAX_HEIGHT = 240;
 const HEADER_MIN_HEIGHT = 150;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
@@ -62,55 +66,57 @@ const TEXT: TextStyle = {
 const NameText: TextStyle = {
   ...TEXT,
   fontFamily: typography.semiBold,
-  fontSize: 24,
+  fontSize: fontSize.FONT_24Px,
   marginBottom: 6,
 }
 const Emailaddress: TextStyle = {
   ...TEXT,
   fontFamily: typography.light,
-  fontSize: 18
+  fontSize: fontSize.FONT_18Px
 }
 const BirthDate: TextStyle = {
   ...TEXT,
   fontFamily: typography.light,
-  fontSize: 18
+  fontSize: fontSize.FONT_18Px
 }
 // -- User Details View Ends -- //
 
 // -- Saved categories view Starts -- //
 // Content view
 const STATUSBARHEIGHT = Platform.OS == 'ios' ? 40 : StatusBar.currentHeight;
-const TABBARHEIGHT = DEVICE_HEIGHT * 0.1;
+const TABBARHEIGHT = hp('10.5%');
 const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - 48;
 const ContentView: ViewStyle = {
   marginTop: HEADER_SCROLL_DISTANCE,
   minHeight: CONTENTVIEWHEIGHT,
   backgroundColor: color.palette.blackBackground,
-  paddingHorizontal: spacing[6],
-  paddingVertical: spacing[5],
+  paddingHorizontal: horizantalSpacing[7],
+  paddingVertical: verticalSpacing[5],
 }
 const SavedCategoryHeading: TextStyle = {
   color: color.palette.golden,
-  fontSize: 20,
-  marginBottom: spacing[2],
+  fontSize: fontSize.FONT_20Px,
+  marginBottom: verticalSpacing[2],
   fontFamily: typography.regular,
 }
 const SearchInputStyle: TextStyle = {
   ...TEXT,
   textAlign: 'left',
   fontFamily: typography.light,
+  fontSize: fontSize.FONT_15Px,
+  padding: 0,
 }
 const SearchInputView: ViewStyle = {
-  marginBottom: spacing[1],
+  marginBottom: verticalSpacing[1],
   borderBottomWidth: 1,
   borderBottomColor: color.palette.white,
-  height: 40,
-  justifyContent: 'center'
+  height: hp('4.5%'),
+  justifyContent: 'center',
 }
 const SearchIconView: ViewStyle = {
   position: 'absolute',
-  right: 10,
-  bottom: 12,
+  right: wp('2%'),
+  bottom: hp('1%'),
 }
 const SearchIconStyle: ImageStyle = {
   height: 16,
@@ -119,12 +125,12 @@ const SearchIconStyle: ImageStyle = {
 // Accordion style
 // -- Accordion Header
 const ListOfCategory: ViewStyle = {
-  marginTop: spacing[4],
+  marginTop: verticalSpacing[4],
 }
 const AccordionHeader: ViewStyle = {
-  paddingVertical: spacing[3],
-  paddingHorizontal: spacing[3],
-  marginBottom: spacing[2],
+  paddingVertical: verticalSpacing[3],
+  paddingHorizontal: horizantalSpacing[3],
+  marginBottom: verticalSpacing[2],
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center'
@@ -141,7 +147,8 @@ const HeaderInActive: ViewStyle = {
 }
 const AccordionHeaderText: TextStyle = {
   textTransform: 'uppercase',
-  fontFamily: typography.regular
+  fontFamily: typography.regular,
+  fontSize: fontSize.FONT_16Px
 }
 const ActiveHeaderText: TextStyle = {
   ...AccordionHeaderText,
@@ -166,36 +173,37 @@ const InActiveHeaderIcon: ImageStyle = {
 }
 // -- Accordion body
 const BodySpacing: ViewStyle = {
-  marginBottom: spacing[2],
+  marginBottom: verticalSpacing[2],
 }
 const SubCategoryText: TextStyle = {
-  marginBottom: spacing[1],
+  marginBottom: verticalSpacing[1],
   fontFamily: typography.regular,
+  fontSize: fontSize.FONT_16Px
 }
 const MediaIconView: ViewStyle = {
-  marginRight: spacing[3],
-  marginBottom: spacing[2]
+  marginRight: horizantalSpacing[3],
+  marginBottom: verticalSpacing[2]
 }
 const DeleteIconView: ViewStyle = {
   position: 'absolute',
   right: 0,
   top: 0,
   zIndex: 1,
-  borderRadius: 10,
+  borderRadius: hp('0.9%'),
   backgroundColor: color.palette.angry,
   padding: 5
 }
 const DeleteIconStyle: ImageStyle = {
-  height: 10,
-  width: 10
+  height: hp('0.9%'),
+  width: hp('0.9%')
 }
 const MediaIconStyle = {
-  height: 60,
-  width: 60,
+  height: hp('6.5%'),
+  width: hp('6.5%'),
   borderWidth: 2,
   zIndex: 0,
   borderColor: color.palette.golden,
-  borderRadius: 30,
+  borderRadius: hp('4%'),
   backgroundColor: color.palette.white
 }
 

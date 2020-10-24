@@ -78,6 +78,8 @@ const VideoActivityLoader: ViewStyle = {
 
 // Empty List Container
 const ErrorView: ViewStyle = {
+  flex: 1,
+  justifyContent: 'center',
   alignItems: 'center',
   paddingBottom: hp('4.5%'),
 }
