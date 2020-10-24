@@ -25,5 +25,6 @@ export const typography = {
   bold: Platform.select({ ios: "SFProText-Bold", android: "SFProText-Bold" }),
 
   semiBold: Platform.select({ ios: "SFProText-Semibold", android: "SFProText-Semibold" }),
+
   light: Platform.select({ ios: "SFProText-light", android: "SFProText-light" }),
 }

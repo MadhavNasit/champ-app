@@ -8,7 +8,7 @@ import {
 
 // Tab Bar style
 const TabBarView: ViewStyle = {
-  height: hp('10.5%'),
+  height: hp('9.5%'),
   flexDirection: 'row',
   backgroundColor: 'black',
   alignContent: 'center'
@@ -29,7 +29,7 @@ const TabItemview: ViewStyle = {
   alignItems: 'center',
 }
 const TabIcon: ImageStyle = {
-  height: hp('3.2%'),
+  height: hp('2.8%'),
   resizeMode: 'contain',
   marginVertical: 2,
 }

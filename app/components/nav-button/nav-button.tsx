@@ -135,7 +135,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
     // Checks for navigation in same sub category or next sub category
     if (indexOfSubCategory < lengthSubCategory - 1) {
       if (indexOfParent != -1) {
-        subCategories.clearSubCategoryMedia();
         let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory + 1];
         navigation.dispatch(StackActions.push(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
           categoryId: dataOfMedia.parent_id,
@@ -143,6 +142,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
           subCategoryName: dataOfMedia.name,
           mediaType: dataOfMedia.type
         }))
+        subCategories.clearSubCategoryMedia();
       }
       else {
         Alert.alert('Someting went wrong..!!');
@@ -155,7 +155,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
         await subCategories.getSubCategoryData(newParentId);
         let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
         if (indexOfNewParent != -1) {
-          subCategories.clearSubCategoryMedia();
           let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[0];
           navigation.dispatch(StackActions.push(dataOfMedia.type == 'Image' ? 'imagedetail' : 'videodetail', {
             categoryId: dataOfMedia.parent_id,
@@ -163,6 +162,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
             subCategoryName: dataOfMedia.name,
             mediaType: dataOfMedia.type
           }))
+          subCategories.clearSubCategoryMedia();
         }
         else {
           Alert.alert('Someting went wrong..!!');
@@ -183,7 +183,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
     // Checks for navigation in same sub category or previous sub category
     if (indexOfSubCategory > 0) {
       if (indexOfParent != -1) {
-        subCategories.clearSubCategoryMedia();
         let dataOfMedia = subCategories.subCategoryData[indexOfParent].data[indexOfSubCategory - 1];
         navigation.dispatch(StackActions.popToTop);
         navigation.navigate(
@@ -195,6 +194,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
             mediaType: dataOfMedia.type
           }
         )
+        subCategories.clearSubCategoryMedia();
       }
       else {
         Alert.alert('Someting went wrong..!!');
@@ -207,7 +207,6 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
         await subCategories.getSubCategoryData(newParentId);
         let indexOfNewParent = subCategories.subCategoryData.findIndex(x => x.parentId == newParentId);
         if (indexOfNewParent != -1) {
-          subCategories.clearSubCategoryMedia();
           let lengthOfNextSubCategory = subCategories.subCategoryData[indexOfNewParent].data.length - 1;
           let dataOfMedia = subCategories.subCategoryData[indexOfNewParent].data[lengthOfNextSubCategory];
           navigation.dispatch(StackActions.popToTop);
@@ -220,6 +219,7 @@ export const NavButton = observer(function NavButton(props: NavButtonProps) {
               mediaType: dataOfMedia.type
             }
           )
+          subCategories.clearSubCategoryMedia();
         }
         else {
           Alert.alert('Someting went wrong..!!');

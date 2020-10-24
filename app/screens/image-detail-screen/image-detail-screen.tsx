@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react"
-import { BackHandler, Dimensions, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { BackHandler, Dimensions, TextStyle, View, ViewStyle } from "react-native"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 import { observer } from "mobx-react-lite"
@@ -18,7 +18,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen"
 
-import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
+import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
 import { color, fontSize, horizantalSpacing, typography } from "../../theme"
 
 interface ImageDetailsProps {
@@ -82,20 +82,6 @@ const ActivityLoaderStyle: ViewStyle = {
   alignItems: 'center'
 }
 
-// Error View
-const ErrorView: ViewStyle = {
-  alignItems: 'center',
-  paddingBottom: hp('4.5%'),
-}
-const ErrorIcon: ImageStyle = {
-  height: hp('4%'),
-  tintColor: color.palette.white
-}
-const ErrorText: TextStyle = {
-  textAlign: 'center',
-  fontSize: fontSize.FONT_18Px,
-  fontFamily: typography.semiBold,
-}
 
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: ImageDetailsProps) {
   // Return true on Screen Focus
@@ -117,8 +103,8 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     return function cleanup() {
       setResponse(false);
       setImageLoading(false);
-      subCategories.clearSubCategoryMedia();
       BackHandler.removeEventListener("hardwareBackPress", backAction);
+      subCategories.clearSubCategoryMedia();
     };
   }, [isFocused, route.params.subCategoryId]);
 
@@ -137,11 +123,11 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   // Load data from Api and store in subcategories model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     await subCategories.getSubCategoryData(parentId);
-    setResponse(true);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     visitedSubcategories.setSubCategoryVisited(activeSlide + 1);
+    setResponse(true);
   }
 
   // Carousel Renderitem and Pagination
@@ -204,16 +190,6 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
     )
   }
 
-  const EmptyMedia = () => {
-    if (!response) return null;
-    let errorText = (route.params.mediaType == 'None') ? 'No Data Found..!' : 'Something went Wrong..!!';
-    return (
-      <View style={ErrorView}>
-        <Icon icon='notFound' style={ErrorIcon} />
-        <Text text={errorText} style={ErrorText} />
-      </View>
-    )
-  }
 
   return (
     <Screen style={ROOT} preset="fixed">
@@ -240,7 +216,6 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
           <Carousel
             ref={carousel}
             data={subCategories.subCategoryMedia}
-            ListEmptyComponent={EmptyMedia}
             renderItem={renderItem}
             sliderWidth={SLIDER_WIDTH}
             itemWidth={ITEM_WIDTH}

@@ -84,8 +84,8 @@ const BirthDate: TextStyle = {
 // -- Saved categories view Starts -- //
 // Content view
 const STATUSBARHEIGHT = Platform.OS == 'ios' ? 40 : StatusBar.currentHeight;
-const TABBARHEIGHT = hp('10.5%');
-const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - 48;
+const TABBARHEIGHT = hp('9.5%');
+const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - 40;
 const ContentView: ViewStyle = {
   marginTop: HEADER_SCROLL_DISTANCE,
   minHeight: CONTENTVIEWHEIGHT,

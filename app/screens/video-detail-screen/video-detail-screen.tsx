@@ -98,7 +98,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
   const { subCategories, visitedSubcategories } = useStores();
-  const [response, setResponse] = useState<boolean>();
+  const [response, setResponse] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>();
 
   // states for manage video playing
@@ -127,10 +127,10 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
     let res = await subCategories.getSubCategoryData(parentId);
     setIsOnline(res.response);
-    setResponse(true);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
+    setResponse(true);
   }
 
   // Back on first screen for android
@@ -172,11 +172,10 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
   // Render when media is null
   const EmptyMedia = () => {
     if (!response) return null;
-    let errorText = (route.params.mediaType == 'None') ? 'No Data Found..!' : 'Something went Wrong..!!';
     return (
       <View style={ErrorView}>
         <Icon icon='notFound' style={ErrorIcon} />
-        <Text text={errorText} style={ErrorText} />
+        <Text text='Nothing Here..!!' style={ErrorText} />
       </View>
     )
   }
