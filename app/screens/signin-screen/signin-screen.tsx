@@ -10,11 +10,14 @@ import { observer } from "mobx-react-lite"
 
 // Components and Utils Import
 import { Button, FacebookSignin, GoogleSignIn, Icon, Text, TextField, Wallpaper } from "../../components"
-import { color, spacing, typography } from "../../theme"
+import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
 import { validateEmail, validatePassword } from '../../utils/validation'
 import { offsets } from "../../components/screen/screen.presets"
 import { ActivityLoader } from "../../components/activity-loader/activity-loader"
 import { ScrollView } from "react-native-gesture-handler"
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 // Style form Screen
 const FULL: ViewStyle = {
@@ -24,7 +27,7 @@ const FULL: ViewStyle = {
 const CONTAINER: ViewStyle = {
   flex: 1,
   justifyContent: 'space-between',
-  paddingHorizontal: spacing[6],
+  paddingHorizontal: horizantalSpacing[7],
 }
 
 // Common Styles
@@ -35,55 +38,56 @@ const TEXT: TextStyle = {
 const BOLD: TextStyle = { fontWeight: "bold" }
 
 const BUTTON: ViewStyle = {
-  paddingVertical: '4%',
+  paddingVertical: verticalSpacing[4],
   borderRadius: 0,
-  marginTop: spacing[1],
-  marginBottom: spacing[2]
+  marginTop: verticalSpacing[1],
+  marginBottom: verticalSpacing[2]
 }
 const TEXTBUTTON: TextStyle = {
-  fontSize: 16,
+  fontSize: fontSize.FONT_16Px,
 }
 
 // <-- Heading View Start --> //
 const HeaderView: ViewStyle = {
-  marginBottom: spacing[4],
-  paddingTop: spacing[7]
+  marginBottom: verticalSpacing[4],
+  paddingTop: verticalSpacing[6]
 }
 // Boxing Icon Style
 const BoxingIconView: ViewStyle = {
-  marginBottom: spacing[2],
+  marginBottom: verticalSpacing[1],
 }
 const BoxingIcon: ImageStyle = {
-  height: 80,
-  width: 80,
+  height: hp('8'),
+  width: hp('8%'),
 }
 // Welcome Back Heading
 const WelcomeTextView: ViewStyle = {
-  marginBottom: spacing[1],
+  marginBottom: verticalSpacing[1],
 }
 const WelcomeText: TextStyle = {
   ...TEXT,
   ...BOLD,
   textAlign: 'left',
-  fontSize: 30,
+  fontSize: fontSize.FONT_30Px,
 }
 const SignInText: TextStyle = {
   ...TEXT,
-  fontSize: 17,
+  marginTop: -verticalSpacing[1],
+  fontSize: fontSize.FONT_16Px,
 }
 // !-- Heading View End --! //
 
 // <-- SignIn form view Start --> //
 const SignInFormView: ViewStyle = {
-  paddingVertical: spacing[2],
+  paddingVertical: verticalSpacing[2],
 }
 const FormFieldView: ViewStyle = {
-  marginBottom: spacing[4],
+  marginBottom: verticalSpacing[3],
 }
 const TextFieldView: ViewStyle = {
   borderBottomWidth: 1,
   borderBottomColor: color.palette.white,
-  paddingBottom: spacing[0],
+  paddingBottom: verticalSpacing[0],
 }
 const errorText: TextStyle = {
   color: color.palette.angry
@@ -91,6 +95,7 @@ const errorText: TextStyle = {
 // Sign In Button
 const SignInButton: ViewStyle = {
   ...BUTTON,
+  marginTop: verticalSpacing[3],
   backgroundColor: color.palette.golden,
 }
 const TextSignInButton: TextStyle = {
@@ -102,7 +107,7 @@ const TextSignInButton: TextStyle = {
 
 // <-- Social Account SignIn Start --> //
 const SocialButtonView: ViewStyle = {
-  paddingVertical: spacing[2],
+  paddingVertical: verticalSpacing[2],
 }
 const TextSocialButton: TextStyle = {
   ...TEXTBUTTON,

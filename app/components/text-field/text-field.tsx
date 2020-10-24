@@ -1,10 +1,13 @@
 import React from "react"
 import { View, TextInput, TextStyle, ViewStyle } from "react-native"
-import { color, typography } from "../../theme"
+import { color, fontSize, typography } from "../../theme"
 import { translate } from "../../i18n"
 import { Text } from "../text/text"
 import { TextFieldProps } from "./text-field.props"
 import { mergeAll, flatten } from "ramda"
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 // the base styling for the container
 const CONTAINER: ViewStyle = {
@@ -15,16 +18,19 @@ const CONTAINER: ViewStyle = {
 const LabelStyle: TextStyle = {
   fontFamily: typography.primary,
   color: color.text,
+  fontSize: fontSize.FONT_12Px
 }
 
 // the base styling for the TextInput
 const INPUT: TextStyle = {
   fontFamily: typography.primary,
   color: color.text,
-  minHeight: 34,
-  fontSize: 16,
+  minHeight: hp('5%'),
+  padding: 0,
+  fontSize: fontSize.FONT_18Px,
   backgroundColor: color.transparent,
 }
+
 
 // currently we have no presets, but that changes quickly when you build your app.
 const PRESETS: { [name: string]: ViewStyle } = {
