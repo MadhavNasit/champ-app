@@ -14,9 +14,12 @@ import FastImage from 'react-native-fast-image'
 import HTML from 'react-native-render-html';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { CirclesRotationScaleLoader } from 'react-native-indicator';
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
-import { color, typography } from "../../theme"
+import { color, fontSize, horizantalSpacing, typography } from "../../theme"
 
 interface ImageDetailsProps {
   route,
@@ -33,26 +36,26 @@ const CONTAINER: ViewStyle = {
 // Swiper Render View Style
 const SwipeImageView: ViewStyle = {
   flex: 8,
-  paddingVertical: 20
+  paddingVertical: hp('1.5%')
 }
 const SwipeImageStyle = {
   flex: 1
 }
 const SwipeTextView: ViewStyle = {
   flex: 5,
-  paddingVertical: 10,
+  paddingVertical: hp('0.75%'),
   alignItems: 'center'
 }
 const ItemCaption: TextStyle = {
   color: color.palette.white,
-  fontSize: 20,
+  fontSize: fontSize.FONT_20Px,
   fontFamily: typography.bold
 }
 
 // Swiper Component Styles
 const SwiperWrapper: ViewStyle = {
   flex: 1,
-  marginBottom: 15,
+  marginBottom: hp('1.5%'),
 }
 const SwiperSlide: ViewStyle = {
   flex: 1,
@@ -61,10 +64,10 @@ const PaginationContainer = {
   backgroundColor: color.transparent
 }
 const DotStyle = {
-  width: 13.3,
-  height: 13.3,
-  borderRadius: 6.5,
-  marginHorizontal: 8,
+  width: hp('1.6%'),
+  height: hp('1.6%'),
+  borderRadius: hp('1.6%'),
+  marginHorizontal: horizantalSpacing[2],
   backgroundColor: color.palette.white
 }
 
@@ -79,18 +82,18 @@ const ActivityLoaderStyle: ViewStyle = {
   alignItems: 'center'
 }
 
-// Empty List Container
+// Error View
 const ErrorView: ViewStyle = {
   alignItems: 'center',
-  paddingBottom: 50,
+  paddingBottom: hp('4.5%'),
 }
 const ErrorIcon: ImageStyle = {
-  height: 30,
+  height: hp('4%'),
   tintColor: color.palette.white
 }
 const ErrorText: TextStyle = {
   textAlign: 'center',
-  fontSize: 18,
+  fontSize: fontSize.FONT_18Px,
   fontFamily: typography.semiBold,
 }
 
@@ -182,7 +185,11 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
         </View>
         <View style={SwipeTextView} >
           <Text text={item.caption} style={ItemCaption} />
-          <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16, fontFamily: typography.light }, h2: { color: 'white', fontFamily: typography.semiBold } }}
+          <HTML tagsStyles={{
+            ul: { color: 'white', fontSize: fontSize.FONT_16Px, fontFamily: typography.light },
+            p: { color: 'white', fontSize: fontSize.FONT_16Px, fontFamily: typography.light },
+            h2: { color: 'white', fontFamily: typography.semiBold }
+          }}
             listsPrefixesRenderers={{
               ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {
                 return (
