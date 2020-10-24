@@ -7,7 +7,7 @@ import { StackActions } from '@react-navigation/native';
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
-import { color, spacing, typography } from "../../theme"
+import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
 import { Icon } from "../icon/icon"
 import { Text } from "../text/text"
 
@@ -21,14 +21,14 @@ export interface NavButtonProps {
 const NavButtonView: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'space-between',
-  marginVertical: 14,
-  paddingHorizontal: spacing[6]
+  marginVertical: verticalSpacing[3],
+  paddingHorizontal: horizantalSpacing[7]
 }
 const NavButtonStyle: ViewStyle = {
   borderWidth: 1,
   alignItems: 'center',
-  paddingHorizontal: 8,
-  paddingVertical: 6
+  paddingHorizontal: horizantalSpacing[2],
+  paddingVertical: verticalSpacing[2]
 }
 const NavButtonPrev: ViewStyle = {
   ...NavButtonStyle,
@@ -57,6 +57,7 @@ const NavIconNext: ImageStyle = {
 }
 const TEXT: TextStyle = {
   fontFamily: typography.regular,
+  fontSize: fontSize.FONT_16Px
 }
 const NavPrevText: TextStyle = {
   ...TEXT,
