@@ -11,12 +11,15 @@ import { useStores } from "../../models"
 
 // Component and theme import
 import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
-import { color, spacing, typography } from "../../theme"
+import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
 
 // node modules import
 import HTML from 'react-native-render-html';
 import YoutubePlayer, { InitialPlayerParams } from "react-native-youtube-iframe";
 import { CirclesRotationScaleLoader } from 'react-native-indicator';
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 interface VideoDetailsProps {
   route
@@ -31,7 +34,7 @@ const CONTAINER: ViewStyle = {
 }
 const FILL: ViewStyle = {
   flex: 1,
-  paddingHorizontal: spacing[6]
+  paddingHorizontal: horizantalSpacing[7]
 }
 
 // Text style 
@@ -42,13 +45,14 @@ const TEXT: TextStyle = {
 // FlatList View Style for main content
 const FlatListContainer: ViewStyle = {
   flexGrow: 1,
+  paddingBottom: hp('2.2%')
 }
 const FlatListStyle: ViewStyle = {
   paddingBottom: 15,
 }
 const UnorderedListText: TextStyle = {
   ...TEXT,
-  fontSize: 16,
+  fontSize: fontSize.FONT_16Px,
   fontFamily: typography.light
 }
 const ParagraphText: TextStyle = {
@@ -57,7 +61,7 @@ const ParagraphText: TextStyle = {
 }
 const BulletStyle: TextStyle = {
   ...TEXT,
-  fontSize: 16,
+  fontSize: fontSize.FONT_16Px,
   marginRight: 5
 }
 
@@ -74,18 +78,16 @@ const VideoActivityLoader: ViewStyle = {
 
 // Empty List Container
 const ErrorView: ViewStyle = {
-  flex: 1,
-  justifyContent: 'center',
   alignItems: 'center',
-  paddingBottom: 50,
+  paddingBottom: hp('4.5%'),
 }
 const ErrorIcon: ImageStyle = {
-  height: 30,
+  height: hp('4%'),
   tintColor: color.palette.white
 }
 const ErrorText: TextStyle = {
   textAlign: 'center',
-  fontSize: 18,
+  fontSize: fontSize.FONT_18Px,
   fontFamily: typography.semiBold,
 }
 
@@ -186,7 +188,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
       return (
         <View key={key}>
           <YoutubePlayer
-            height={200}
+            height={hp('22.5%')}
             initialPlayerParams={initialParams}
             play={playing}
             videoId={videoId}
