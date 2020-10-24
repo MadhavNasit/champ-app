@@ -1,11 +1,14 @@
 import * as React from "react"
 import { Dimensions, ImageStyle, SafeAreaView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
-import { color, typography } from "../../theme"
+import { color, fontSize, typography } from "../../theme"
 import { Icon } from "../icon/icon"
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 // Tab Bar style
 const TabBarView: ViewStyle = {
-  height: '10%',
+  height: hp('10.5%'),
   flexDirection: 'row',
   backgroundColor: 'black',
   alignContent: 'center'
@@ -26,14 +29,14 @@ const TabItemview: ViewStyle = {
   alignItems: 'center',
 }
 const TabIcon: ImageStyle = {
-  height: 23.3,
+  height: hp('3.2%'),
   resizeMode: 'contain',
   marginVertical: 2,
 }
 const TabLabel: TextStyle = {
   color: 'black',
   fontFamily: typography.regular,
-  fontSize: 16.3,
+  fontSize: fontSize.FONT_16Px,
   marginVertical: 2,
 }
 
@@ -42,7 +45,7 @@ const windowWidth = Dimensions.get('window').width;
 let borderWidth = windowWidth / 4;
 const Triangle: ViewStyle = {
   position: "absolute",
-  top: -16,
+  top: -hp('2%'),
   zIndex: 1,
   width: '100%',
   height: 0,
@@ -50,7 +53,7 @@ const Triangle: ViewStyle = {
   borderStyle: 'solid',
   borderLeftWidth: borderWidth,
   borderRightWidth: borderWidth,
-  borderBottomWidth: 16,
+  borderBottomWidth: hp('2%'),
   borderLeftColor: 'transparent',
   borderRightColor: 'transparent',
   borderBottomColor: 'white'
