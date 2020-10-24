@@ -10,10 +10,13 @@ import { useIsFocused, useNavigation } from "@react-navigation/native"
 
 // node modules import
 import FastImage from 'react-native-fast-image'
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 // Component and theme import
 import { ActivityLoader, Header, Icon, Screen, Text } from "../../components"
-import { color, spacing, typography } from "../../theme"
+import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
 import { useStores } from "../../models"
 
 interface SubCategoryProps {
@@ -27,7 +30,7 @@ const ROOT: ViewStyle = {
 }
 const CONTAINER: ViewStyle = {
   flex: 1,
-  paddingHorizontal: spacing[6]
+  paddingHorizontal: horizantalSpacing[7]
 }
 
 // sub category view
@@ -36,41 +39,41 @@ const FlatListview: ViewStyle = {
   justifyContent: 'center',
 }
 const CategoryButton: ViewStyle = {
-  marginVertical: spacing[2],
-  paddingVertical: spacing[4]
+  marginVertical: verticalSpacing[2],
+  paddingVertical: verticalSpacing[4]
 }
 const SubCategoryButton: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center'
 }
 const IconStyle = {
-  height: 60,
-  width: 60,
+  height: hp('7%'),
+  width: hp('7%'),
   borderColor: color.palette.golden,
   borderWidth: 2,
-  borderRadius: 60
+  borderRadius: hp('3.5%')
 }
 const CategoryText: TextStyle = {
   color: color.palette.white,
   fontFamily: typography.regular,
-  fontSize: 18,
+  fontSize: fontSize.FONT_18Px,
   letterSpacing: 1,
   textTransform: 'capitalize',
   paddingLeft: spacing[3]
 }
 
-// Empty List Container
+// Error View
 const ErrorView: ViewStyle = {
   alignItems: 'center',
-  paddingBottom: 50,
+  paddingBottom: hp('4.5%'),
 }
 const ErrorIcon: ImageStyle = {
-  height: 30,
+  height: hp('4%'),
   tintColor: color.palette.white
 }
 const ErrorText: TextStyle = {
   textAlign: 'center',
-  fontSize: 18,
+  fontSize: fontSize.FONT_18Px,
   fontFamily: typography.semiBold,
 }
 
