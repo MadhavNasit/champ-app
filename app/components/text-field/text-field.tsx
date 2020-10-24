@@ -16,14 +16,14 @@ const CONTAINER: ViewStyle = {
 
 // Style for Label
 const LabelStyle: TextStyle = {
-  fontFamily: typography.primary,
+  fontFamily: typography.light,
   color: color.text,
   fontSize: fontSize.FONT_12Px
 }
 
 // the base styling for the TextInput
 const INPUT: TextStyle = {
-  fontFamily: typography.primary,
+  fontFamily: typography.light,
   color: color.text,
   minHeight: hp('5%'),
   padding: 0,

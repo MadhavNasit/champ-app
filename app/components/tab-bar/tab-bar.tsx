@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Dimensions, ImageStyle, SafeAreaView, Text, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
-import { color } from "../../theme"
+import { color, typography } from "../../theme"
 import { Icon } from "../icon/icon"
 
 // Tab Bar style
@@ -32,6 +32,7 @@ const TabIcon: ImageStyle = {
 }
 const TabLabel: TextStyle = {
   color: 'black',
+  fontFamily: typography.regular,
   fontSize: 16.3,
   marginVertical: 2,
 }

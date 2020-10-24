@@ -33,9 +33,7 @@ const CONTAINER: ViewStyle = {
 // Common Styles
 const TEXT: TextStyle = {
   color: color.palette.white,
-  fontFamily: typography.primary,
 }
-const BOLD: TextStyle = { fontWeight: "bold" }
 
 const BUTTON: ViewStyle = {
   paddingVertical: verticalSpacing[4],
@@ -44,6 +42,7 @@ const BUTTON: ViewStyle = {
   marginBottom: verticalSpacing[2]
 }
 const TEXTBUTTON: TextStyle = {
+  fontFamily: typography.regular,
   fontSize: fontSize.FONT_16Px,
 }
 
@@ -66,12 +65,13 @@ const WelcomeTextView: ViewStyle = {
 }
 const WelcomeText: TextStyle = {
   ...TEXT,
-  ...BOLD,
+  fontFamily: typography.semiBold,
   textAlign: 'left',
   fontSize: fontSize.FONT_30Px,
 }
 const SignInText: TextStyle = {
   ...TEXT,
+  fontFamily: typography.regular,
   marginTop: -verticalSpacing[1],
   fontSize: fontSize.FONT_16Px,
 }
@@ -90,6 +90,7 @@ const TextFieldView: ViewStyle = {
   paddingBottom: verticalSpacing[0],
 }
 const errorText: TextStyle = {
+  fontFamily: 'SFProText-Light',
   fontSize: fontSize.FONT_16Px,
   color: color.palette.angry
 }

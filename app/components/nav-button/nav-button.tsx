@@ -7,7 +7,7 @@ import { StackActions } from '@react-navigation/native';
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 
-import { color, spacing } from "../../theme"
+import { color, spacing, typography } from "../../theme"
 import { Icon } from "../icon/icon"
 import { Text } from "../text/text"
 
@@ -55,10 +55,15 @@ const NavIconNext: ImageStyle = {
   marginLeft: 5,
   tintColor: color.palette.black
 }
+const TEXT: TextStyle = {
+  fontFamily: typography.regular,
+}
 const NavPrevText: TextStyle = {
+  ...TEXT,
   color: color.palette.white
 }
 const NavNextText: TextStyle = {
+  ...TEXT,
   color: color.palette.black
 }
 

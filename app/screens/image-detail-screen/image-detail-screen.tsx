@@ -16,7 +16,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { CirclesRotationScaleLoader } from 'react-native-indicator';
 
 import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
-import { color } from "../../theme"
+import { color, typography } from "../../theme"
 
 interface ImageDetailsProps {
   route,
@@ -46,7 +46,7 @@ const SwipeTextView: ViewStyle = {
 const ItemCaption: TextStyle = {
   color: color.palette.white,
   fontSize: 20,
-  fontWeight: 'bold'
+  fontFamily: typography.bold
 }
 
 // Swiper Component Styles
@@ -91,7 +91,7 @@ const ErrorIcon: ImageStyle = {
 const ErrorText: TextStyle = {
   textAlign: 'center',
   fontSize: 18,
-  fontWeight: 'bold'
+  fontFamily: typography.semiBold,
 }
 
 export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: ImageDetailsProps) {
@@ -182,7 +182,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
         </View>
         <View style={SwipeTextView} >
           <Text text={item.caption} style={ItemCaption} />
-          <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16 }, h2: { color: 'white' } }}
+          <HTML tagsStyles={{ ul: { color: 'white', fontSize: 16 }, p: { color: 'white', fontSize: 16, fontFamily: typography.light }, h2: { color: 'white', fontFamily: typography.semiBold } }}
             listsPrefixesRenderers={{
               ul: (htmlAttribs, children, convertedCSSStyles, passProps) => {
                 return (

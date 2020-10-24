@@ -10,7 +10,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 // Components and Screen imports
 import { Header, Icon, Screen, Text } from "../../components";
-import { color, fontSize, horizantalSpacing, spacing, verticalSpacing } from "../../theme";
+import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme";
 import { useStores } from "../../models";
 import { ActivityLoader } from "../../components/activity-loader/activity-loader";
 import {
@@ -42,6 +42,7 @@ const CategoryButton: ViewStyle = {
   paddingVertical: verticalSpacing[4]
 }
 const CategoryText: TextStyle = {
+  fontFamily: typography.regular,
   color: color.palette.white,
   letterSpacing: spacing[1]
 }
@@ -57,7 +58,7 @@ const ErrorIcon: ImageStyle = {
 const ErrorText: TextStyle = {
   textAlign: 'center',
   fontSize: fontSize.FONT_18Px,
-  fontWeight: 'bold'
+  fontFamily: typography.semiBold,
 }
 
 export const DashboardScreen = observer(function DashboardScreen() {

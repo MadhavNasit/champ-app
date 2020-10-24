@@ -18,6 +18,10 @@
 		2FB7460679CCC5CDC6E5D100 /* libPods-CHAMP-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A302E5E3246D48DC8E806ED /* libPods-CHAMP-tvOSTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		89B5F3E17AEC4125DC9E5844 /* libPods-CHAMP-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2742833F24A7BDFF8C04BC /* libPods-CHAMP-tvOS.a */; };
+		9A1E93AA254425660087D53B /* SFProText-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A1E93A6254425660087D53B /* SFProText-Light.ttf */; };
+		9A1E93AB254425660087D53B /* SFProText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A1E93A7254425660087D53B /* SFProText-Semibold.ttf */; };
+		9A1E93AC254425660087D53B /* SFProText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A1E93A8254425660087D53B /* SFProText-Bold.ttf */; };
+		9A1E93AD254425660087D53B /* SFProText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A1E93A9254425660087D53B /* SFProText-Regular.ttf */; };
 		9A61E65E253DA97B00566FA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9A61E65D253DA97B00566FA1 /* GoogleService-Info.plist */; };
 		BB004A3A204CF00EFE83B840 /* libPods-CHAMP-CHAMPTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC4AB4052D7A81736D7E6BBC /* libPods-CHAMP-CHAMPTests.a */; };
 		FA25475E507962D4B0E6BB4A /* libPods-CHAMP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5BC95B91DC92F22DAB42CE1 /* libPods-CHAMP.a */; };
@@ -61,6 +65,10 @@
 		7A233A77FE0F5EFFC87FEFD3 /* Pods-CHAMP-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHAMP-tvOS.release.xcconfig"; path = "Target Support Files/Pods-CHAMP-tvOS/Pods-CHAMP-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CHAMP/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		85F2D717006BB4F8CB9999F0 /* Pods-CHAMP-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHAMP-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-CHAMP-tvOSTests/Pods-CHAMP-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9A1E93A6254425660087D53B /* SFProText-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SFProText-Light.ttf"; path = "../../app/theme/fonts/SFProText-Light.ttf"; sourceTree = "<group>"; };
+		9A1E93A7254425660087D53B /* SFProText-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SFProText-Semibold.ttf"; path = "../../app/theme/fonts/SFProText-Semibold.ttf"; sourceTree = "<group>"; };
+		9A1E93A8254425660087D53B /* SFProText-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SFProText-Bold.ttf"; path = "../../app/theme/fonts/SFProText-Bold.ttf"; sourceTree = "<group>"; };
+		9A1E93A9254425660087D53B /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SFProText-Regular.ttf"; path = "../../app/theme/fonts/SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		9A61E65D253DA97B00566FA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A4C58FC7DCE49B119C967E95 /* Pods-CHAMP-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CHAMP-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-CHAMP-tvOSTests/Pods-CHAMP-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		A5BC95B91DC92F22DAB42CE1 /* libPods-CHAMP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CHAMP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,6 +177,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9A1E93A5254424C70087D53B /* Fonts */,
 				13B07FAE1A68108700A75B9A /* CHAMP */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CHAMPTests */,
@@ -191,6 +200,17 @@
 				2D02E4901E0B4A5D006451C7 /* CHAMP-tvOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9A1E93A5254424C70087D53B /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				9A1E93A8254425660087D53B /* SFProText-Bold.ttf */,
+				9A1E93A6254425660087D53B /* SFProText-Light.ttf */,
+				9A1E93A9254425660087D53B /* SFProText-Regular.ttf */,
+				9A1E93A7254425660087D53B /* SFProText-Semibold.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		B60EAD2C5EDDDCB075598ACC /* Pods */ = {
@@ -351,8 +371,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				9A1E93AC254425660087D53B /* SFProText-Bold.ttf in Resources */,
+				9A1E93AD254425660087D53B /* SFProText-Regular.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				9A61E65E253DA97B00566FA1 /* GoogleService-Info.plist in Resources */,
+				9A1E93AB254425660087D53B /* SFProText-Semibold.ttf in Resources */,
+				9A1E93AA254425660087D53B /* SFProText-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

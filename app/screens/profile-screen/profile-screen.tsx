@@ -12,7 +12,7 @@ import { useStores } from "../../models";
 
 // import component and theme
 import { Header, Icon, Screen, Text } from "../../components";
-import { color, spacing } from "../../theme";
+import { color, spacing, typography } from "../../theme";
 import { icons } from "../../components/icon/icons";
 
 // import node modules
@@ -61,16 +61,18 @@ const TEXT: TextStyle = {
 }
 const NameText: TextStyle = {
   ...TEXT,
+  fontFamily: typography.semiBold,
   fontSize: 24,
-  fontWeight: 'bold',
   marginBottom: 6,
 }
 const Emailaddress: TextStyle = {
   ...TEXT,
+  fontFamily: typography.light,
   fontSize: 18
 }
 const BirthDate: TextStyle = {
   ...TEXT,
+  fontFamily: typography.light,
   fontSize: 18
 }
 // -- User Details View Ends -- //
@@ -90,7 +92,13 @@ const ContentView: ViewStyle = {
 const SavedCategoryHeading: TextStyle = {
   color: color.palette.golden,
   fontSize: 20,
-  marginBottom: spacing[2]
+  marginBottom: spacing[2],
+  fontFamily: typography.regular,
+}
+const SearchInputStyle: TextStyle = {
+  ...TEXT,
+  textAlign: 'left',
+  fontFamily: typography.light,
 }
 const SearchInputView: ViewStyle = {
   marginBottom: spacing[1],
@@ -132,7 +140,8 @@ const HeaderInActive: ViewStyle = {
   borderWidth: 1
 }
 const AccordionHeaderText: TextStyle = {
-  textTransform: 'uppercase'
+  textTransform: 'uppercase',
+  fontFamily: typography.regular
 }
 const ActiveHeaderText: TextStyle = {
   ...AccordionHeaderText,
@@ -161,6 +170,7 @@ const BodySpacing: ViewStyle = {
 }
 const SubCategoryText: TextStyle = {
   marginBottom: spacing[1],
+  fontFamily: typography.regular,
 }
 const MediaIconView: ViewStyle = {
   marginRight: spacing[3],
@@ -492,7 +502,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
                   value={searchTerm}
                   onChangeText={(term) => { SearchCategories(term) }}
                   placeholderTextColor={color.palette.offWhite}
-                  style={[TEXT, { textAlign: 'left' }]}
+                  style={SearchInputStyle}
                   placeholder="Search categories"
                 />
                 <Icon

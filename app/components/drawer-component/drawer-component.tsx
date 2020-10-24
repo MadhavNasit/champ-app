@@ -5,8 +5,9 @@ import { DrawerItem } from "@react-navigation/drawer"
 
 import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
+import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
-import { color, spacing } from "../../theme"
+import { color, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
 import { Text } from "../"
 import { Icon } from "../icon/icon"
 import { Logout } from "../logout/logout"
@@ -23,8 +24,8 @@ const MainView: ViewStyle = {
   justifyContent: 'space-between',
 }
 const UpperView: ViewStyle = {
-  paddingVertical: spacing[2],
-  paddingLeft: spacing[4]
+  paddingVertical: verticalSpacing[2],
+  paddingLeft: horizantalSpacing[4]
 }
 const BrandDetails: ViewStyle = {
   padding: spacing[4],
@@ -36,17 +37,18 @@ const LogoStyle: ImageStyle = {
 }
 const BrandName: TextStyle = {
   ...TEXT,
-  fontSize: 23.,
-  fontWeight: 'bold'
+  fontSize: 23,
+  fontFamily: typography.bold
 }
 const OrganizationName: TextStyle = {
   ...TEXT,
-  fontSize: 5,
+  fontSize: 6,
+  fontFamily: typography.light,
   letterSpacing: 3
 }
 const DrawerItemLabel: TextStyle = {
+  fontFamily: typography.bold,
   fontSize: 20,
-  fontWeight: 'bold'
 }
 const LogOutButton: ViewStyle = {
   paddingLeft: spacing[4],

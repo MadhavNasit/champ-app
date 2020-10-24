@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image'
 
 // Component and theme import
 import { ActivityLoader, Header, Icon, Screen, Text } from "../../components"
-import { color, spacing } from "../../theme"
+import { color, spacing, typography } from "../../theme"
 import { useStores } from "../../models"
 
 interface SubCategoryProps {
@@ -52,6 +52,7 @@ const IconStyle = {
 }
 const CategoryText: TextStyle = {
   color: color.palette.white,
+  fontFamily: typography.regular,
   fontSize: 18,
   letterSpacing: 1,
   textTransform: 'capitalize',
@@ -70,7 +71,7 @@ const ErrorIcon: ImageStyle = {
 const ErrorText: TextStyle = {
   textAlign: 'center',
   fontSize: 18,
-  fontWeight: 'bold'
+  fontFamily: typography.semiBold,
 }
 
 export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: SubCategoryProps) {

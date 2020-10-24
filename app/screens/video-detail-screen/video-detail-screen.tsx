@@ -11,7 +11,7 @@ import { useStores } from "../../models"
 
 // Component and theme import
 import { ActivityLoader, Header, Icon, NavButton, Screen, Text } from "../../components"
-import { color, spacing } from "../../theme"
+import { color, spacing, typography } from "../../theme"
 
 // node modules import
 import HTML from 'react-native-render-html';
@@ -48,10 +48,12 @@ const FlatListStyle: ViewStyle = {
 }
 const UnorderedListText: TextStyle = {
   ...TEXT,
-  fontSize: 16
+  fontSize: 16,
+  fontFamily: typography.light
 }
 const ParagraphText: TextStyle = {
-  ...UnorderedListText
+  ...UnorderedListText,
+  fontFamily: typography.light
 }
 const BulletStyle: TextStyle = {
   ...TEXT,
@@ -84,7 +86,7 @@ const ErrorIcon: ImageStyle = {
 const ErrorText: TextStyle = {
   textAlign: 'center',
   fontSize: 18,
-  fontWeight: 'bold'
+  fontFamily: typography.semiBold,
 }
 
 export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: VideoDetailsProps) {

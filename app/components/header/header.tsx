@@ -4,7 +4,7 @@ import { HeaderProps } from "./header.props"
 import { Button } from "../button/button"
 import { Text } from "../text/text"
 import { Icon } from "../icon/icon"
-import { color, spacing } from "../../theme"
+import { color, spacing, typography } from "../../theme"
 import { translate } from "../../i18n/"
 import { useNavigation } from "@react-navigation/native"
 import { DrawerActions } from '@react-navigation/native';
@@ -21,9 +21,9 @@ const ROOT: ViewStyle = {
   borderBottomWidth: 0.3
 }
 const TITLE: TextStyle = {
+  fontFamily: typography.bold,
   textAlign: "center",
   fontSize: 24,
-  fontWeight: 'bold',
   textTransform: 'capitalize'
 }
 const TITLE_MIDDLE: ViewStyle = { flex: 6, justifyContent: "center" }
