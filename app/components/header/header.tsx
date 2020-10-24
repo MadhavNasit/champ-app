@@ -4,33 +4,35 @@ import { HeaderProps } from "./header.props"
 import { Button } from "../button/button"
 import { Text } from "../text/text"
 import { Icon } from "../icon/icon"
-import { color, spacing, typography } from "../../theme"
+import { color, fontSize, horizantalSpacing, typography, verticalSpacing } from "../../theme"
 import { translate } from "../../i18n/"
 import { useNavigation } from "@react-navigation/native"
 import { DrawerActions } from '@react-navigation/native';
-
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 // static styles
 const ROOT: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "flex-start",
-  paddingHorizontal: spacing[4],
-  paddingVertical: spacing[3],
-  borderBottomColor: color.palette.white,
+  paddingHorizontal: horizantalSpacing[4],
+  paddingVertical: verticalSpacing[4],
+  borderBottomColor: color.palette.offWhite,
   borderBottomWidth: 0.3
 }
 const TITLE: TextStyle = {
   fontFamily: typography.bold,
   textAlign: "center",
-  fontSize: 24,
+  fontSize: fontSize.FONT_24Px,
   textTransform: 'capitalize'
 }
 const TITLE_MIDDLE: ViewStyle = { flex: 6, justifyContent: "center" }
 const LEFT: ViewStyle = { flex: 1 }
 const RIGHT: ViewStyle = { flex: 1 }
 const IconStyle: ImageStyle = {
-  height: 17.7,
+  height: fontSize.FONT_21Px,
   resizeMode: 'contain'
 }
 
@@ -63,7 +65,7 @@ export function Header(props: HeaderProps) {
         )}
       {/* Screen Title */}
       <View style={TITLE_MIDDLE}>
-        <Text style={{ ...TITLE, ...titleStyle }} text={header} />
+        <Text style={{ ...TITLE, ...titleStyle }} text={header} numberOfLines={1} />
       </View>
       {/* Drawer opne Icon */}
       {rightIcon ? (
