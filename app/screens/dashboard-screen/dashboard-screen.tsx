@@ -10,9 +10,12 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 // Components and Screen imports
 import { Header, Icon, Screen, Text } from "../../components";
-import { color, spacing } from "../../theme";
+import { color, fontSize, horizantalSpacing, spacing, verticalSpacing } from "../../theme";
 import { useStores } from "../../models";
 import { ActivityLoader } from "../../components/activity-loader/activity-loader";
+import {
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen"
 
 // Screen Styles
 const ROOT: ViewStyle = {
@@ -22,7 +25,7 @@ const ROOT: ViewStyle = {
 //Content View Styles
 const CONTAINER: ViewStyle = {
   flex: 1,
-  paddingHorizontal: spacing[6]
+  paddingHorizontal: horizantalSpacing[7]
 }
 
 // Category data render Styles
@@ -35,25 +38,25 @@ const CategoryButton: ViewStyle = {
   borderColor: color.palette.white,
   borderWidth: 1,
   alignItems: 'center',
-  marginVertical: spacing[2],
-  paddingVertical: spacing[4]
+  marginVertical: verticalSpacing[2],
+  paddingVertical: verticalSpacing[4]
 }
 const CategoryText: TextStyle = {
   color: color.palette.white,
   letterSpacing: spacing[1]
 }
-
+// Error View
 const ErrorView: ViewStyle = {
   alignItems: 'center',
-  paddingBottom: 50,
+  paddingBottom: hp('4.5%'),
 }
 const ErrorIcon: ImageStyle = {
-  height: 30,
+  height: hp('4%'),
   tintColor: color.palette.white
 }
 const ErrorText: TextStyle = {
   textAlign: 'center',
-  fontSize: 18,
+  fontSize: fontSize.FONT_18Px,
   fontWeight: 'bold'
 }
 

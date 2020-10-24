@@ -90,6 +90,7 @@ const TextFieldView: ViewStyle = {
   paddingBottom: verticalSpacing[0],
 }
 const errorText: TextStyle = {
+  fontSize: fontSize.FONT_16Px,
   color: color.palette.angry
 }
 // Sign In Button
