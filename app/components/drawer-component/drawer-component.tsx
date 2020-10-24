@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../../models"
 import { heightPercentageToDP as hp } from "react-native-responsive-screen"
 
-import { color, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
+import { color, horizantalSpacing, fontSize, typography, verticalSpacing } from "../../theme"
 import { Text } from "../"
 import { Icon } from "../icon/icon"
 import { Logout } from "../logout/logout"
@@ -28,16 +28,16 @@ const UpperView: ViewStyle = {
   paddingLeft: horizantalSpacing[4]
 }
 const BrandDetails: ViewStyle = {
-  padding: spacing[4],
-  marginBottom: spacing[4]
+  padding: verticalSpacing[4],
+  marginBottom: verticalSpacing[4]
 }
 const LogoStyle: ImageStyle = {
-  height: 36,
-  width: 36
+  height: hp('5%'),
+  width: hp('5%')
 }
 const BrandName: TextStyle = {
   ...TEXT,
-  fontSize: 23,
+  fontSize: fontSize.FONT_24Px,
   fontFamily: typography.bold
 }
 const OrganizationName: TextStyle = {
@@ -48,11 +48,11 @@ const OrganizationName: TextStyle = {
 }
 const DrawerItemLabel: TextStyle = {
   fontFamily: typography.bold,
-  fontSize: 20,
+  fontSize: fontSize.FONT_21Px,
 }
 const LogOutButton: ViewStyle = {
-  paddingLeft: spacing[4],
-  marginBottom: spacing[2]
+  paddingLeft: horizantalSpacing[4],
+  marginBottom: verticalSpacing[4]
 }
 
 // Props
