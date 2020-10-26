@@ -239,6 +239,7 @@ export const SigninScreen = observer(function SigninScreen() {
                       onChangeText={(email) => handleEmail(email)}
                       placeholderTx="signinScreen.emailPlaceholder"
                       style={TextFieldView}
+                      keyboardType='email-address'
                       returnKeyType="next"
                       onSubmitEditing={() => passwordRef.current.focus()}
                       blurOnSubmit={false}
