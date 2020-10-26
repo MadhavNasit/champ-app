@@ -78,6 +78,13 @@ export const SubCategoriesModel = types
       }
     },
 
+    // clear sub category data
+    clearSubCategoryData() {
+      self.subCategoryMedia = [];
+      self.currentSubCategories = [];
+      self.subCategoryData.splice(0, self.subCategoryData.length);
+    },
+
     // clear data on focused out
     clearCurrentSubCategory() {
       self.currentSubCategories = [];

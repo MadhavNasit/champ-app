@@ -12,7 +12,7 @@ export const ActivityLoaderModel = types
   .actions(self => ({
     setLoading(isLoading: boolean) {
       self.loading = isLoading;
-    }
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 /**

@@ -20,7 +20,7 @@ export interface LogoutProps {
 export const Logout = observer(function Logout(props: LogoutProps) {
   const { buttonStyle, textStyle } = props
 
-  const { userAuth } = useStores();
+  const { userAuth, categoryData, subCategories, visitedSubcategories, activityLoader } = useStores();
 
   const LogOut = () => {
     Alert.alert(
@@ -35,6 +35,10 @@ export const Logout = observer(function Logout(props: LogoutProps) {
           text: "Logout",
           onPress: async () => {
             userAuth.removeAccess();
+            visitedSubcategories.clearVisitedSubCategories();
+            subCategories.clearSubCategoryData();
+            categoryData.clearCategoryData();
+            activityLoader.setLoading(false);
             const isSignedIn = await GoogleSignin.isSignedIn();
             if (isSignedIn) {
               try {

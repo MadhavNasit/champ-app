@@ -29,6 +29,11 @@ export const VisitedSubcategoriesModel = types
       self.visitedSubCategoryIds.splice(index, 1);
     },
 
+    clearVisitedSubCategories() {
+      self.currentSubCategoryIndex = 0;
+      self.visitedSubCategoryIds.splice(0, self.visitedSubCategoryIds.length);
+    }
+
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 /**

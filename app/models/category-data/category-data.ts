@@ -36,6 +36,11 @@ export const CategoryDataModel = types
         return { response: false, message: "Something went wrong." };
       }
     }),
+
+    // clear sub category data
+    clearCategoryData() {
+      self.mainCategoryData = [];
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 /**
