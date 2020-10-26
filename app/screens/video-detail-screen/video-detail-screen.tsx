@@ -20,6 +20,7 @@ import { CirclesRotationScaleLoader } from 'react-native-indicator';
 import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen"
+import { useNetInfo } from "@react-native-community/netinfo";
 
 interface VideoDetailsProps {
   route
@@ -97,6 +98,7 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const netInfo = useNetInfo();
   const { subCategories, visitedSubcategories } = useStores();
   const [response, setResponse] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>();
@@ -118,15 +120,21 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
       setIsOnline(false);
       setPlaying(false);
       setVideoReady(false);
+      console.tron.log('ner', netInfo);
       subCategories.clearSubCategoryMedia();
       BackHandler.removeEventListener("hardwareBackPress", backAction);
     };
   }, [isFocused, route.params.subCategoryId]);
 
+  // call when network connected or disconnected
+  useEffect(() => {
+    setIsOnline(netInfo.isConnected)
+    setVideoReady(false);
+  }, [netInfo.isConnected])
+
   // Api call and store data in mobx model
   const getSubCategoryData = async (parentId: number, subCategoryId: number) => {
-    let res = await subCategories.getSubCategoryData(parentId);
-    setIsOnline(res.response);
+    await subCategories.getSubCategoryData(parentId);
     visitedSubcategories.setCurrentSubCategoryIndex(parentId);
     subCategories.getCurrentSubCategories(parentId);
     subCategories.getSubCategoryMedia(subCategoryId);
@@ -188,13 +196,15 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
       let videoId = item.url.match(urlReg)[7];
       return (
         <View key={key}>
-          <YoutubePlayer
-            height={hp('22.5%')}
-            initialPlayerParams={initialParams}
-            play={playing}
-            videoId={videoId}
-            onReady={() => { setVideoReady(true) }}
-          />
+          {isOnline &&
+            <YoutubePlayer
+              height={hp('22.5%')}
+              initialPlayerParams={initialParams}
+              play={playing}
+              videoId={videoId}
+              onReady={() => { setVideoReady(true) }}
+            />
+          }
           {/* Show indicator while video loading */}
           {!videoReady && isOnline &&
             (
@@ -206,8 +216,10 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
           }
           {!isOnline &&
             (
-              <View style={[VideoActivityLoader, { borderWidth: 1, borderColor: color.palette.white }]}>
-                <Text text='No Internet Connection..!!' style={{ color: color.palette.white }} />
+              <View style={{ borderWidth: 1, borderColor: color.palette.white, height: 200 }}>
+                <View style={[VideoActivityLoader]}>
+                  <Text text='No Internet Connection..!!' style={{ color: color.palette.white }} />
+                </View>
               </View>
             )
           }

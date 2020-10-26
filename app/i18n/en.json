@@ -16,7 +16,7 @@
     "passwordPlaceholder": "Enter Password",
     "signinButton": "SIGN IN",
     "facebookSignIn": "Login with Facebook",
-    "gmailSignIn": "Login with gmail"
+    "gmailSignIn": "Login with Gmail"
   },
   "storybook": {
     "placeholder": "Placeholder",

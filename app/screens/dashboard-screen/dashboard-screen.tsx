@@ -13,9 +13,11 @@ import { Header, Icon, Screen, Text } from "../../components";
 import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme";
 import { useStores } from "../../models";
 import { ActivityLoader } from "../../components/activity-loader/activity-loader";
+
 import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen"
+import { useNetInfo } from "@react-native-community/netinfo";
 
 // Screen Styles
 const ROOT: ViewStyle = {
@@ -64,6 +66,8 @@ const ErrorText: TextStyle = {
 export const DashboardScreen = observer(function DashboardScreen() {
   // contains navigation props and method
   const navigation = useNavigation();
+  // return network status of device
+  const netInfo = useNetInfo();
   // Category data mobx store
   const { categoryData, visitedSubcategories } = useStores();
   // return true if screen is focused
@@ -83,7 +87,8 @@ export const DashboardScreen = observer(function DashboardScreen() {
       setResponse(false);
       BackHandler.removeEventListener("hardwareBackPress", backAction);
     }
-  }, [isFocused]);
+  }, [isFocused, netInfo.isConnected]);
+
 
   // Call APi and store in model
   const LoadDataFromApi = async () => {

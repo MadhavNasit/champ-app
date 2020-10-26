@@ -18,6 +18,7 @@ import {
 import { ActivityLoader, Header, Icon, Screen, Text } from "../../components"
 import { color, fontSize, horizantalSpacing, spacing, typography, verticalSpacing } from "../../theme"
 import { useStores } from "../../models"
+import { useNetInfo } from "@react-native-community/netinfo"
 
 interface SubCategoryProps {
   route,
@@ -81,6 +82,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const netInfo = useNetInfo();
   const { categoryData, subCategories, visitedSubcategories } = useStores();
   const [categoryName, setCategoryName] = useState('');
   const [response, setResponse] = useState<boolean>();
@@ -97,7 +99,7 @@ export const SubCategoryScreen = observer(function SubCategoryScreen({ route }: 
       subCategories.clearCurrentSubCategory();
       BackHandler.removeEventListener("hardwareBackPress", backAction);
     };
-  }, [isFocused, route.params.parentId]);
+  }, [isFocused, route.params.parentId, netInfo.isConnected]);
 
   // load data from api
   const LoadStoreData = async (parentId: number) => {

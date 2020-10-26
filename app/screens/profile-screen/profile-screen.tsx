@@ -23,6 +23,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from "react-native-responsive-screen"
+import { useNetInfo } from "@react-native-community/netinfo";
 
 // Main Cintainer stle
 const ROOT: ViewStyle = {
@@ -212,6 +213,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const netInfo = useNetInfo();
   const { userAuth, categoryData, subCategories, visitedSubcategories } = useStores();
 
   // Store viewed categories
@@ -223,6 +225,7 @@ export const ProfileScreen = observer(function ProfileScreen() {
   const [activeSections, setActiveSections] = useState([0]);
   // filter term for search input
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [imageError, setImageError] = useState(false);
 
   // called on every time screen focused
   useEffect(() => {
@@ -239,6 +242,13 @@ export const ProfileScreen = observer(function ProfileScreen() {
       BackHandler.removeEventListener("hardwareBackPress", backAction);
     }
   }, [isFocused]);
+
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      setImageError(false);
+    }
+  }, [netInfo.isConnected]);
+
 
   // Back on first screen for android
   const backAction = () => {
@@ -450,14 +460,24 @@ export const ProfileScreen = observer(function ProfileScreen() {
             }}>
             <FastImage
               source={
-                userAuth.userObj.profileUrl != ''
+                (userAuth.userObj.profileUrl != '')
                   ?
                   { uri: userAuth.userObj.profileUrl, priority: FastImage.priority.normal, }
                   :
                   icons.profile_placeholder}
               style={ProfileImage}
+              onError={() => setImageError(true)}
               resizeMode={FastImage.resizeMode.cover}
             />
+            {imageError && (
+              // <Text text='error' />
+              <FastImage
+                source={icons.profile_placeholder}
+                style={[ProfileImage, { position: 'absolute', top: 0, zIndex: 2 }]}
+                onError={() => setImageError(true)}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+            )}
           </Animated.View>
           {/* User Details */}
           <Animated.View

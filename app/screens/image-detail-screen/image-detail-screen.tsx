@@ -20,6 +20,7 @@ import {
 
 import { ActivityLoader, Header, NavButton, Screen, Text } from "../../components"
 import { color, fontSize, horizantalSpacing, typography } from "../../theme"
+import { useNetInfo } from "@react-native-community/netinfo"
 
 interface ImageDetailsProps {
   route,
@@ -87,11 +88,13 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
   // Return true on Screen Focus
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+  const netInfo = useNetInfo();
   // Store for Subcategory Data
   const { subCategories, visitedSubcategories } = useStores();
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [imageLoading, setImageLoading] = useState(false);
   const [response, setResponse] = useState<boolean>();
+  const [imageError, setImageError] = useState(false);
   const carousel = useRef()
   // Data fetch on screen focus
   useEffect(() => {
@@ -107,6 +110,12 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
       subCategories.clearSubCategoryMedia();
     };
   }, [isFocused, route.params.subCategoryId]);
+
+  useEffect(() => {
+    if (netInfo.isConnected) {
+      setImageError(false);
+    }
+  }, [netInfo.isConnected]);
 
   const setVisitedMedia = (index: number) => {
     visitedSubcategories.setSubCategoryVisited(subCategories.subCategoryMedia[index].id);
@@ -161,7 +170,13 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
             resizeMode={FastImage.resizeMode.contain}
             onLoadStart={() => setImageLoading(true)}
             onLoadEnd={() => setImageLoading(false)}
+            onError={() => setImageError(true)}
           />
+          {imageError && (
+            <View style={ActivityLoaderStyle}>
+              <Text text="No internet conncetion..!" />
+            </View>
+          )}
           {imageLoading && (
             <View style={ActivityLoaderStyle}>
               <CirclesRotationScaleLoader
