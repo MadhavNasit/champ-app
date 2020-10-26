@@ -3,7 +3,7 @@
 */
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImageStyle, TextStyle, View, ViewStyle, FlatList, Animated, Dimensions, TouchableOpacity, Alert, Platform, StatusBar, BackHandler } from "react-native";
+import { ImageStyle, TextStyle, View, ViewStyle, FlatList, TextInput, Animated, Dimensions, TouchableOpacity, Alert, Platform, StatusBar, BackHandler } from "react-native";
 
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
@@ -18,7 +18,6 @@ import { icons } from "../../components/icon/icons";
 // import node modules
 import Accordion from 'react-native-collapsible/Accordion';
 import FastImage from "react-native-fast-image";
-import { TextInput } from "react-native-gesture-handler";
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -86,7 +85,7 @@ const BirthDate: TextStyle = {
 // Content view
 const STATUSBARHEIGHT = Platform.OS == 'ios' ? 32 : StatusBar.currentHeight;
 const TABBARHEIGHT = hp('9.5%');
-const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - 40;
+const CONTENTVIEWHEIGHT = DEVICE_HEIGHT - HEADER_MIN_HEIGHT - TABBARHEIGHT - STATUSBARHEIGHT - hp('4.5%');
 const ContentView: ViewStyle = {
   marginTop: HEADER_SCROLL_DISTANCE,
   minHeight: CONTENTVIEWHEIGHT,
@@ -213,19 +212,24 @@ export const ProfileScreen = observer(function ProfileScreen() {
 
   const isFocused = useIsFocused();
   const navigation = useNavigation();
+
+  // network information
   const netInfo = useNetInfo();
+
+  const scrollRef = useRef(null);
   const { userAuth, categoryData, subCategories, visitedSubcategories } = useStores();
 
   // Store viewed categories
   const [categoryDetails, setCategoryDetails] = useState([]);
   const [filteredArray, setFilteredArray] = useState([]);
-  // Reference for scroll
+  // Reference for scroll animation
   const scrollY = useRef(new Animated.Value(0)).current;
   // state for active accordion section
   const [activeSections, setActiveSections] = useState([0]);
   // filter term for search input
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [imageError, setImageError] = useState(false);
+  const [isScrollable, setIsscrollable] = useState<boolean>();
 
   // called on every time screen focused
   useEffect(() => {
@@ -287,6 +291,12 @@ export const ProfileScreen = observer(function ProfileScreen() {
     // set categories details to state
     setCategoryDetails(tempVisitedMedia);
     setFilteredArray(tempVisitedMedia);
+    if (tempVisitedMedia.length > 0) {
+      setIsscrollable(true);
+    }
+    else {
+      setIsscrollable(false);
+    }
   }
 
   // -- Interpolate on Vertical Scroll -- //
@@ -512,15 +522,28 @@ export const ProfileScreen = observer(function ProfileScreen() {
       {/* Saved Category View */}
       <View style={{ flexGrow: 1, marginTop: HEADER_MIN_HEIGHT }} >
         <Animated.ScrollView
+          ref={scrollRef}
           style={FILL}
+          scrollEnabled={isScrollable}
+          endFillColor={color.palette.angry}
           scrollEventThrottle={16}
           overScrollMode='never'
           bounces={false}
           onScroll={Animated.event([
             { nativeEvent: { contentOffset: { y: scrollY } } }
           ], { useNativeDriver: false })}
+          onScrollEndDrag={(event) => {
+            if (event.nativeEvent.contentOffset.y < 30) {
+
+              scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
+            }
+            else if (event.nativeEvent.contentOffset.y <= 95) {
+              scrollRef.current?.scrollTo({ x: 0, y: 95, animated: true })
+            }
+          }
+          }
         >
-          <View style={ContentView}>
+          <View style={[ContentView, { minHeight: CONTENTVIEWHEIGHT }]}>
             <View>
               <Text text='Saved Category' style={SavedCategoryHeading} />
               {/* Search Categories */}
