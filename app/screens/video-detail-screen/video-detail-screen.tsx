@@ -120,7 +120,6 @@ export const VideoDetailScreen = observer(function VideoDetailScreen({ route }: 
       setIsOnline(false);
       setPlaying(false);
       setVideoReady(false);
-      console.tron.log('ner', netInfo);
       subCategories.clearSubCategoryMedia();
       BackHandler.removeEventListener("hardwareBackPress", backAction);
     };

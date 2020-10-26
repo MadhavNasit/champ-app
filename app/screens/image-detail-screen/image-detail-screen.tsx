@@ -177,7 +177,7 @@ export const ImageDetailScreen = observer(function ImageDetailScreen({ route }: 
               <Text text="No internet conncetion..!" />
             </View>
           )}
-          {imageLoading && (
+          {imageLoading && !imageError && (
             <View style={ActivityLoaderStyle}>
               <CirclesRotationScaleLoader
                 color={color.palette.golden} />

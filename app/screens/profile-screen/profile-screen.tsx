@@ -470,7 +470,6 @@ export const ProfileScreen = observer(function ProfileScreen() {
               resizeMode={FastImage.resizeMode.cover}
             />
             {imageError && (
-              // <Text text='error' />
               <FastImage
                 source={icons.profile_placeholder}
                 style={[ProfileImage, { position: 'absolute', top: 0, zIndex: 2 }]}
