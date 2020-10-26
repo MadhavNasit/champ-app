@@ -16,7 +16,7 @@ const StorybookUI = getStorybookUI({
 
 export function StorybookUIRoot() {
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       if (typeof __TEST__ === "undefined" || !__TEST__) {
         const Reactotron = require("../app/services/reactotron")
         const reactotron = new Reactotron.Reactotron()

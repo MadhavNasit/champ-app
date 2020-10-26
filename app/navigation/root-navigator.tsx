@@ -4,7 +4,7 @@
  * and a "main" flow (which is contained in your PrimaryNavigator) which the user
  * will use once logged in.
  */
-import React from "react"
+import React, { useEffect } from "react"
 import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native"
 
 import { createNativeStackNavigator } from "react-native-screens/native-stack"
@@ -12,6 +12,7 @@ import { observer } from "mobx-react-lite"
 import { useStores } from "../models"
 import { AuthNavigator } from "./auth-navigator"
 import { DrawerNavigator } from "./drawer-navigator"
+import SplashScreen from 'react-native-splash-screen'
 
 
 export type RootParamList = {
@@ -61,6 +62,11 @@ export const RootNavigator = React.forwardRef<
   NavigationContainerRef,
   Partial<React.ComponentProps<typeof NavigationContainer>>
 >((props, ref) => {
+  // Hide splash screen and show screen
+  useEffect(() => {
+    SplashScreen.hide()
+  }, []);
+
   return (
     <NavigationContainer {...props} ref={ref}>
       <RootStack />
